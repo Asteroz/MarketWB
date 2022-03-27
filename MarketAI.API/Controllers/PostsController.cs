@@ -19,7 +19,14 @@ namespace MarketAI.API.Controllers
         {
             _logger = logger;
         }
-
+        [HttpGet]
+        public PostModel GetPost(int id)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                return db.Posts.FirstOrDefault(o => o.Id == id);
+            }
+        }
         [HttpGet]
         public IEnumerable<PostModel> GetPosts()
         {
@@ -59,20 +66,13 @@ namespace MarketAI.API.Controllers
             }
         }
         [HttpPut]
-        public async Task<RequestStatus> UpdatePost(int id,PostModel updatedPost)
+        public async Task<RequestStatus> UpdatePost(PostModel updatedPost)
         {
             try
             {
                 using (APIDBContext db = new APIDBContext())
                 {
-                    var post = db.Posts.First(o => o.Id == id);
-                    if (post == null)
-                        return new RequestStatus("Поста с таким id не существует", 404);
-
-                    updatedPost.Id = post.Id;
-                    post = updatedPost;
-                    db.Posts.Update(post);
-
+                    db.Posts.Update(updatedPost);
                     await db.SaveChangesAsync();
                 }
                 return new RequestStatus("Пост успешно обновлен");

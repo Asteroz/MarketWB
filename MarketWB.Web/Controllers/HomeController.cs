@@ -1,4 +1,5 @@
 ﻿using MarketWB.Web.Models;
+using MarketWB.Web.Models.Home;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,7 +22,23 @@ namespace MarketWB.Web.Controllers
         {
             return View();
         }
+        [Route("Login")]
+        public IActionResult Login()
+        {
+            return View();
+        }
 
+
+        [Route("Registration")]
+        public IActionResult Registration()
+        {
+            return View();
+        }
+        [Route("Restore")]
+        public IActionResult Restore()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

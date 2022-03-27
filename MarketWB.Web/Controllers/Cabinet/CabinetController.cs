@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MarketWB.Web.Controllers
 {
+    //[Authorize]
     public class CabinetController : Controller
     {
         private readonly ILogger<CabinetController> _logger;
@@ -14,7 +16,11 @@ namespace MarketWB.Web.Controllers
         {
             _logger = logger;
         }
-
+        [Route("Cabinet/News")]
+        public IActionResult News()
+        {
+            return View("Views/Cabinet/News.cshtml");
+        }
         [Route("Cabinet/Profile")]
         public IActionResult Profile()
         {

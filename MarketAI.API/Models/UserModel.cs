@@ -22,5 +22,6 @@ namespace MarketAI.API.Models
         public List<TicketModel> Tickets { get; set; } = new List<TicketModel>();
         public DateTime SubscriptionBefore { get; set; }
         public bool WasPromocodeActivated { get; set; }
+        public string ActivatedPromocode { get; set; }
     }
 }

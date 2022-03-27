@@ -11,8 +11,12 @@ namespace MarketAI.API.Models
         [Key]
         public int Id { get; set; }
         public string Caption { get; set; }
-        public List<TagModel> Tags { get; set; } = new List<TagModel>();
+        public string Tags { get; set; }
+        //public List<TagModel> Tags { get; set; } = new List<TagModel>();
         public string ImgURL { get; set; }
         public string Description { get; set; }
+
+        public bool PublishAfter { get; set; }
+        public DateTime PublishAfterDate { get; set; }
     }
 }

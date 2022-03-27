@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MarketWB.Web.Controllers.Admin
 {
+    //[Authorize(Roles = "Admin")]
     public class StatsController : Controller
     {
         private readonly ILogger<StatsController> _logger;

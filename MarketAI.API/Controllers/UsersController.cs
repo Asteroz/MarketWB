@@ -20,6 +20,23 @@ namespace MarketAI.API.Controllers
             _logger = logger;
         }
         [HttpGet]
+        public UserModel GetUserByCredintials(string login,string password)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                var found = db.Users.FirstOrDefault(o => (o.Phone.Equals(login) || o.Email.Equals(login)) && o.Password == password);
+                return found;
+            }
+        }
+        public UserModel GetUserByPhoneOrEmail(string login)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                var found = db.Users.FirstOrDefault(o => (o.Phone.Equals(login) || o.Email.Equals(login)));
+                return found;
+            }
+        }
+        [HttpGet]
         public IEnumerable<UserModel> GetUsersByPage(int page)
         {
             using (APIDBContext db = new APIDBContext())
@@ -45,19 +62,12 @@ namespace MarketAI.API.Controllers
             }
         }
         [HttpPut]
-        public async Task<RequestStatus> UpdateUser(int id,UserModel user)
+        public async Task<RequestStatus> UpdateUser(UserModel user)
         {
             try
             {
                 using (APIDBContext db = new APIDBContext())
                 {
-                    var foundUser = db.Users.FirstOrDefault(o => o.Id == id);
-                    if(foundUser is null)
-                        return new RequestStatus("Пользователя с таким id не существует", 404);
-
-                    user.Id = id;
-                    foundUser = user;
-
                     db.Users.Update(user);
                     await db.SaveChangesAsync();
                     return new RequestStatus("Пользователь успешно добавлен");

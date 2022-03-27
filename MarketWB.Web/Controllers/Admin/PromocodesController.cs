@@ -1,33 +1,62 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MarketAI.API.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Promocodes = MarketAI.API.Controllers.PromocodeController;
 
 namespace MarketWB.Web.Controllers.Admin
 {
+    //[Authorize(Roles = "Admin")]
     public class PromocodesController : Controller
     {
         private readonly ILogger<PromocodesController> _logger;
-        public PromocodesController(ILogger<PromocodesController> logger)
+        private readonly Promocodes _api;
+        public PromocodesController(ILogger<PromocodesController> logger, Promocodes api)
         {
             _logger = logger;
+            _api = api;
         }
         [Route("Admin/Promocodes")]
         public IActionResult Promocodes()
         {
-            return View("Views/Admin/Promocodes/Promocodes.cshtml");
+            var promocodes = _api.GetPromocodes();
+            return View("Views/Admin/Promocodes/Promocodes.cshtml", promocodes);
         }
         [Route("Admin/CreatePromocode")]
         public IActionResult CreatePromocode()
         {
             return View("Views/Admin/Promocodes/CreatePromocode.cshtml");
         }
-        [Route("Admin/UpdatePromocode")]
-        public IActionResult UpdatePromocode()
+        [HttpPost]
+        public async Task<IActionResult> CreatePromocodePOST(PromocodeModel model)
         {
-            return View("Views/Admin/Promocodes/UpdatePromocode.cshtml");
+            await _api.CreatePromocode(model);
+            return Promocodes();
+        }
+
+
+        [Route("Admin/UpdatePromocode")]
+        public IActionResult UpdatePromocode(PromocodeModel model)
+        {
+            return View("Views/Admin/Promocodes/UpdatePromocode.cshtml", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdatePromocodePOST(PromocodeModel model)
+        {
+            await _api.UpdatePromocode(model.Id,model);
+            return Promocodes();
+        }
+
+
+        [Route("Admin/DeletePromocode")]
+        public async Task<IActionResult> DeletePromocode(int id)
+        {
+            await _api.RemovePromocode(id);
+            return Promocodes();
         }
     }
 }

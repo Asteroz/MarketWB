@@ -1,6 +1,9 @@
 ﻿@{
     Layout = "_AdminLayout";
 }
+@model MarketAI.API.Models.PostModel
+
+
 <div id="content">
     <div class="panel box-shadow-none content-header">
         <div class="panel-body">
@@ -19,26 +22,27 @@
                     <div class="panel-heading">
                         <h4>Новостная запись</h4>
                     </div>
-                    <div class="panel-body" style="padding-bottom:30px;">
+                    <form asp-action="UpdatePostPost" asp-controller="Posts" asp-route-post="@Model" method="POST" enctype="multipart/form-data" class="panel-body" style="padding-bottom:30px;">
+                        <input type="hidden" value="@Model.Id" asp-for="Id">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-right">Заголовок</label>
-                                <div class="col-sm-10"><input type="text" required class="form-control"></div>
+                                <div class="col-sm-10"><input type="text" required class="form-control" value="@Model.Caption" asp-for="Caption"></div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-right">Теги</label>
-                                <div class="col-sm-10"><input type="text" required class="form-control"></div>
+                                <div class="col-sm-10"><input type="text" required class="form-control" value="@Model.Tags" asp-for="Tags"></div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-right">Текст</label>
-                                <div class="col-sm-10"><textarea required class="form-control"></textarea></div>
+                                <div class="col-sm-10"><textarea required class="form-control" value="@Model.Description" asp-for="Description"></textarea></div>
                             </div>
                             <div class="col-sm-12 padding-0">
-                                <input type="checkbox" name="option" style="margin-left:90px;margin-top:15px"> Опубликовать позже
+                                <input type="checkbox" name="option" style="margin-left:90px;margin-top:15px" value="@Model.PublishAfter" asp-for="PublishAfter"> Опубликовать позже
                             </div>
                             <div class="form-group" style="margin-top:10px">
                                 <label class="col-sm-2 control-label text-right">Дата</label>
-                                <div class="col-sm-10"><input type="datetime-local" class="form-control"></div>
+                                <div class="col-sm-10"><input type="datetime-local" class="form-control" value="@Model.PublishAfterDate" asp-for="PublishAfterDate"></div>
                             </div>
 
                         </div>
@@ -50,8 +54,8 @@
                             </span>
                         </div>
 
-                        <input class="submit btn btn-danger" style="margin-top:10px;width:94%;" type="submit" value="Создать новость">
-                    </div>
+                        <input class="submit btn btn-danger" style="margin-top:10px;width:94%;" type="submit" value="Сохранить изменения">
+                    </form>
                 </div>
             </div>
         </div>

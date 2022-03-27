@@ -8,4 +8,8 @@
     <Folder Include="Views\Cabinet\Dashboard\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MarketAI.API\MarketAI.API.csproj" />
+  </ItemGroup>
+
 </Project>
