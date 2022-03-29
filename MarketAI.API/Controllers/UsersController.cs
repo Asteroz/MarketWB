@@ -3,6 +3,7 @@ using MarketAI.API.Models;
 using MarketAI.API.Models.Statuses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SmsAero;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,15 @@ namespace MarketAI.API.Controllers
         public UsersController(ILogger<UsersController> logger)
         {
             _logger = logger;
+        }
+        [HttpGet]
+        public UserModel GetUserById(int id)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                var found = db.Users.FirstOrDefault(o => o.Id == id);
+                return found;
+            }
         }
         [HttpGet]
         public UserModel GetUserByCredintials(string login,string password)
@@ -44,6 +54,12 @@ namespace MarketAI.API.Controllers
                 return db.Users.Skip(page * 20).ToList();
             }
         }
+
+
+
+
+
+
         [HttpPost]
         public async Task<RequestStatus> CreateUser(UserModel user)
         {
@@ -78,6 +94,36 @@ namespace MarketAI.API.Controllers
             {
                 return new RequestStatus(ex.Message + ex.StackTrace, 500);
             }
+        }
+
+        public async Task SendSMSCode(string phone)
+        {
+            string code = new Random().Next(100000, 999999).ToString();
+            string text = $"Код подтверждения : {code}";
+            string sign = $"SMS Aero";
+            await SendSMSCode(phone, text, sign, code);
+        }
+
+        public async Task<string> GetSMSCode(string phone)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                 return db.SMSCodes.FirstOrDefault(o => o.Phone == phone)?.Code;
+            }
+        }
+
+        [NonAction]
+        public async Task SendSMSCode(string phone, string text, string sign,string code)
+        {
+           await new SMSAero().SendSMS(phone, text, sign);
+           using (APIDBContext db = new APIDBContext())
+           {
+                var oldCodes = db.SMSCodes.Where(o => o.Phone == phone);
+                db.SMSCodes.RemoveRange(oldCodes);
+
+                db.SMSCodes.Add(new SMSCode { Phone = phone, Code = code });
+                await db.SaveChangesAsync();
+           }
         }
     }
 }

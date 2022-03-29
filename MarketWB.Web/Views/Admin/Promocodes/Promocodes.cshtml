@@ -35,7 +35,7 @@
                                         <td>@item.Id</td>
                                         <td>@item.Code</td>
                                         <td>@item.Percent</td>
-                                        <td><a asp-action="UpdatePromocode" asp-controller="Promocodes" asp-route-post="@item"><button class="btn btn-warning">Изменить</button></a></td>
+                                        <td><a asp-action="UpdatePromocode" asp-controller="Promocodes" asp-route-id="@item.Id"><button class="btn btn-warning">Изменить</button></a></td>
                                         <td><a asp-action="DeletePromocode" asp-controller="Promocodes" asp-route-id="@item.Id"><button class="btn btn-danger">Удалить</button></a></td>
                                     </tr>
                                 }

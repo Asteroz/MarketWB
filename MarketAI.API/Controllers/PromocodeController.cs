@@ -2,6 +2,7 @@
 using MarketAI.API.Models;
 using MarketAI.API.Models.Statuses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,15 @@ namespace MarketAI.API.Controllers
         {
             using (APIDBContext db = new APIDBContext())
             {
-                return db.Promocodes.ToList();
+                return db.Promocodes.AsNoTracking().ToList();
+            }
+        }
+        [HttpGet]
+        public PromocodeModel GetPromocode(int id)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                return db.Promocodes.AsNoTracking().FirstOrDefault(o => o.Id == id);
             }
         }
         [HttpDelete]
@@ -69,15 +78,10 @@ namespace MarketAI.API.Controllers
             {
                 using (APIDBContext db = new APIDBContext())
                 {
-                    var promocode = db.Promocodes.First(o => o.Id == id);
-                    if (promocode == null)
-                        return new RequestStatus("Промокод с таким id не существует", 404);
+                    var promocode = db.Promocodes.FirstOrDefault(o => o.Id == id);
+                    promocode.Percent = updatedPromocode.Percent;
+                    promocode.Code = updatedPromocode.Code;
 
-                    updatedPromocode.Id = promocode.Id;
-                    if (updatedPromocode.Code == promocode.Code)
-                        return new RequestStatus("Данный промокод уже существует", 400);
-
-                    promocode = updatedPromocode;
                     db.Promocodes.Update(promocode);
                     await db.SaveChangesAsync();
                 }

@@ -12,5 +12,15 @@ namespace MarketAI.API.Models
         public int Id { get; set; }
         public string Code { get; set; }
         public double Percent { get; set; }
+
+        public PromocodeModel Clone()
+        {
+            return new PromocodeModel
+            {
+                Id = Id,
+                Code = Code,
+                Percent = Percent
+            };
+        }
     }
 }

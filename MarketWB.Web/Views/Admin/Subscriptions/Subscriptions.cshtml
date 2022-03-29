@@ -22,6 +22,7 @@
                             <thead>
                                 <tr>
                                     <th>Id</th>
+                                    <th>Название</th>
                                     <th>Стоимость</th>
                                     <th>Кол-во дней</th>
                                     <th></th>
@@ -31,13 +32,14 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>@item.Id</td>
-                                        <td>@item.Price</td>
-                                        <td>@item.Days</td>
-                                        <td><a asp-action="UpdateSubscription" asp-controller="Subscription" asp-route-model="@item"><button class="btn btn-warning">Изменить</button></a></td>
-                                        <td><a asp-action="DeleteSubscription" asp-controller="Subscription" asp-route-id="@item.Id"><button class="btn btn-danger">Удалить</button></a></td>
-                                    </tr>
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Title</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Days</td>
+                                    <td><a asp-action="UpdateSubscription" asp-controller="Subscription" asp-route-id="@item.Id"><button class="btn btn-warning">Изменить</button></a></td>
+                                    <td><a asp-action="DeleteSubscription" asp-controller="Subscription" asp-route-id="@item.Id"><button class="btn btn-danger">Удалить</button></a></td>
+                                </tr>
                                 }
                             </tbody>
                         </table>

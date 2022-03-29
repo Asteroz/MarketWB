@@ -58,20 +58,16 @@ namespace MarketAI.API.Controllers
             }
         }
         [HttpPut]
-        public async Task<RequestStatus> UpdateSubscription(SubscriptionModel updatedSubscription)
+        public async Task<RequestStatus> UpdateSubscription(int id,SubscriptionModel subscription)
         {
             try
             {
                 using (APIDBContext db = new APIDBContext())
                 {
-                    var subscription = db.Subscriptions.First(o => o.Id == updatedSubscription.Id);
-
-                    if (subscription == null)
-                        return new RequestStatus("Тарифный план с таким id не существует", 404);
-
-                    subscription = updatedSubscription;
-                    db.Subscriptions.Update(subscription);
-
+                    var sub = db.Subscriptions.FirstOrDefault(o => o.Id == id);
+                    sub.Days = subscription.Days;
+                    sub.Price = subscription.Price;
+                    db.Subscriptions.Update(sub);
                     await db.SaveChangesAsync();
                 }
                 return new RequestStatus("Тарифный план успешно обновлен");

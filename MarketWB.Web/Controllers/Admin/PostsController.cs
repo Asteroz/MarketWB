@@ -12,7 +12,7 @@ using Posts = MarketAI.API.Controllers.PostsController;
 
 namespace MarketWB.Web.Controllers.Admin
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class PostsController : Controller
     {
         private readonly ILogger<PostsController> _logger;
@@ -59,9 +59,10 @@ namespace MarketWB.Web.Controllers.Admin
 
 
         [Route("Admin/UpdatePost")]
-        public async Task<IActionResult> UpdatePost(PostModel post)
+        public async Task<IActionResult> UpdatePost(int id)
         {
-            return View("Views/Admin/Posts/UpdatePost.cshtml", post);
+            var model = _api.GetPost(id);
+            return View("Views/Admin/Posts/UpdatePost.cshtml", model);
         }
         [Route("Admin/DeletePost")]
         public async Task<IActionResult> DeletePost(int id)
@@ -71,7 +72,7 @@ namespace MarketWB.Web.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdatePostPost(PostModel post)
+        public async Task<IActionResult> UpdatePostPost(int id,PostModel post)
         {
             var img = Request.Form.Files.FirstOrDefault();
             var filePath = "/uploads/" + Guid.NewGuid().ToString();

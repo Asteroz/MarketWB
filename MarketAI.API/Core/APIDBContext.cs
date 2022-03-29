@@ -1,4 +1,5 @@
 ﻿using MarketAI.API.Models;
+using MarketAI.API.Models.Stats;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,12 @@ namespace MarketAI.API.Core
         public DbSet<TicketModel> Tickets { get; set; }
         public DbSet<UserModel> Users { get; set; }
         public DbSet<WBAPITokenModel> WBAPITokens { get; set; }
+        public DbSet<SMSCode> SMSCodes { get; set; }
+
+
+
+        public DbSet<PaymentModel> PaymentModels { get; set; }
+        public DbSet<AuthStatsModel> AuthStatsModels { get; set; }
         public APIDBContext()
         {
             Database.EnsureCreated();

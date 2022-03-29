@@ -25,12 +25,13 @@ namespace MarketWB.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+
             services.AddSingleton(typeof(PostsController));
             services.AddSingleton(typeof(PromocodeController));
             services.AddSingleton(typeof(SubscriptionsController));
             services.AddSingleton(typeof(TicketController));
             services.AddSingleton(typeof(UsersController));
+            services.AddSingleton(typeof(StatsController));
 
             // установка конфигурации подключения
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -39,6 +40,7 @@ namespace MarketWB.Web
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Login");
                 });
 
+            services.AddControllersWithViews();
 
         }
 

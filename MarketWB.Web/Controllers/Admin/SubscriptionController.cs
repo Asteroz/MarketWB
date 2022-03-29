@@ -10,7 +10,7 @@ using Subscriptions = MarketAI.API.Controllers.SubscriptionsController;
 
 namespace MarketWB.Web.Controllers.Admin
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class SubscriptionController : Controller
     {
         private readonly ILogger<SubscriptionController> _logger;
@@ -40,15 +40,16 @@ namespace MarketWB.Web.Controllers.Admin
 
 
         [Route("Admin/UpdateSubscription")]
-        public IActionResult UpdateSubscription(SubscriptionModel model)
+        public IActionResult UpdateSubscription(int id)
         {
-            return View("Views/Admin/Subscriptions/UpdateSubscription.cshtml", model);
+            SubscriptionModel sub = _api.GetSubscriptions().FirstOrDefault(o => o.Id == id);
+            return View("Views/Admin/Subscriptions/UpdateSubscription.cshtml", sub);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSubscriptionPOST(SubscriptionModel model)
+        public async Task<IActionResult> UpdateSubscriptionPOST(int id,SubscriptionModel model)
         {
-            await _api.UpdateSubscription(model);
+            await _api.UpdateSubscription(id, model);
             return Subscriptions();
         }
 

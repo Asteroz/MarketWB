@@ -9,7 +9,7 @@ using Tickets = MarketAI.API.Controllers.TicketController;
 
 namespace MarketWB.Web.Controllers.Admin
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class TicketsController : Controller
     {
         private readonly ILogger<TicketsController> _logger;

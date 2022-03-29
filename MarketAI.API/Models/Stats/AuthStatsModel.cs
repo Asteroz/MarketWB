@@ -4,14 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MarketAI.API.Models
+namespace MarketAI.API.Models.Stats
 {
-    public class SubscriptionModel
+    public class AuthStatsModel
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; }
-        public double Price { get; set; }
-        public int Days { get; set; }
+        public DateTime Date { get; set; }
+        public UserModel User { get; set; }
     }
 }

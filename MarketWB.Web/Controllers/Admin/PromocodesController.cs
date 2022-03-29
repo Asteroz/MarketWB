@@ -10,7 +10,7 @@ using Promocodes = MarketAI.API.Controllers.PromocodeController;
 
 namespace MarketWB.Web.Controllers.Admin
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class PromocodesController : Controller
     {
         private readonly ILogger<PromocodesController> _logger;
@@ -40,14 +40,15 @@ namespace MarketWB.Web.Controllers.Admin
 
 
         [Route("Admin/UpdatePromocode")]
-        public IActionResult UpdatePromocode(PromocodeModel model)
+        public IActionResult UpdatePromocode(int id)
         {
+            var model = _api.GetPromocode(id);
             return View("Views/Admin/Promocodes/UpdatePromocode.cshtml", model);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdatePromocodePOST(PromocodeModel model)
+        public async Task<IActionResult> UpdatePromocodePOST(int id,PromocodeModel promocode)
         {
-            await _api.UpdatePromocode(model.Id,model);
+            await _api.UpdatePromocode(id, promocode);
             return Promocodes();
         }
 

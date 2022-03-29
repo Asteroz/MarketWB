@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace MarketAI.API.Models
 {
-    public class SubscriptionModel
+    public class SMSCode
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; }
-        public double Price { get; set; }
-        public int Days { get; set; }
+        public string Phone { get; set; }
+        public string Code { get; set; }
     }
 }

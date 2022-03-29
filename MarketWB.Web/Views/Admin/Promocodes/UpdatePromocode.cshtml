@@ -9,8 +9,7 @@
             <div class="col-md-12">
                 <h3 class="animated fadeInLeft">Промокоды</h3>
                 <p class="animated fadeInDown">
-                    Промокоды <span class="fa-angle-right fa"></span> Редактирование существующего промокода
-                </p>
+                    Промокоды <span class="fa-angle-right fa"></span> Редактирование промокода
             </div>
         </div>
     </div>
@@ -21,7 +20,7 @@
                     <div class="panel-heading">
                         <h4>Промокод на услуги</h4>
                     </div>
-                    <form asp-action="UpdatePromocodePOST" asp-controller="Promocodes" asp-route-post="@Model" method="POST" class="panel-body" style="padding-bottom:30px;">
+                    <form asp-action="UpdatePromocodePOST" asp-controller="Promocodes" asp-route-id="@Model.Id"  asp-route-model="@Model" method="POST" class="panel-body" style="padding-bottom:30px;">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-right">Промокод</label>

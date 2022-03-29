@@ -1,4 +1,5 @@
 ﻿using MarketAI.API.Enums;
+using MarketAI.API.Models.Stats;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,8 +19,12 @@ namespace MarketAI.API.Models
         public string Name { get; set; }
 
 
+        public bool IsOnline { get; set; }
+
+
         public List<WBAPITokenModel> WBAPIKeys { get; set; } = new List<WBAPITokenModel>();
         public List<TicketModel> Tickets { get; set; } = new List<TicketModel>();
+        public List<PaymentModel> Payments { get; set; } = new List<PaymentModel>();
         public DateTime SubscriptionBefore { get; set; }
         public bool WasPromocodeActivated { get; set; }
         public string ActivatedPromocode { get; set; }

@@ -37,7 +37,7 @@
                                         <td>@item.Caption</td>
                                         <td>@item.Tags</td>
                                         <td>@item.Description</td>
-                                        <td><a asp-action="UpdatePost" asp-controller="Posts" asp-route-post="@item"><button class="btn btn-warning">Изменить</button></a></td>
+                                        <td><a asp-action="UpdatePost" asp-controller="Posts" asp-route-id="@item.Id"><button class="btn btn-warning">Изменить</button></a></td>
                                         <td><a asp-action="DeletePost" asp-controller="Posts" asp-route-id="@item.Id"><button class="btn btn-danger">Удалить</button></a></td>
                                     </tr>
                                 }

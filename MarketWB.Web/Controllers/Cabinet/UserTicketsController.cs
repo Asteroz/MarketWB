@@ -1,4 +1,5 @@
 ﻿using MarketAI.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,6 +10,7 @@ using Tickets = MarketAI.API.Controllers.TicketController;
 
 namespace MarketWB.Web.Controllers.Cabinet
 {
+    [Authorize(Roles = "User")]
     public class UserTicketsController : Controller
     {
         private readonly ILogger<UserTicketsController> _logger;

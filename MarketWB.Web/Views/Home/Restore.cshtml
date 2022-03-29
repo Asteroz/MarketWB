@@ -34,44 +34,43 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100 p-t-50 p-b-90">
-                <form class="login100-form validate-form flex-sb flex-w" asp-action="Register" asp-controller="Users" asp-route-model="@Model" method="post">
+                <form class="login100-form validate-form flex-sb flex-w" id="form" asp-action="Register" asp-controller="Users" asp-route-model="@Model" method="post">
                     <span class="login100-form-title p-b-51">
-                        Регистрация
+                        Восстановление пароля
                     </span>
-
 
                     <div class="row">
                         <div class="col-md-7">
                             <div class="wrap-input100 validate-input m-b-16" data-validate="Телефон обязателен для заполнения">
-                                <input class="input100" type="text" name="username" required asp-for="Phone" placeholder="Телефон">
+                                <input class="input100" type="tel" id="phone_field" required asp-for="Phone" placeholder="Телефон">
                                 <span class="focus-input100"></span>
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <button class="login100-form-btn">
-                                Подтвердить
+                            <button class="login100-form-btn" type="button" id="smsButton" onclick="sendCode()">
+                                Выслать код
                             </button>
                         </div>
                     </div>
 
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Последние 4 цифры звонящего телефона">
-                        <input class="input100" type="text" name="username" required placeholder="Последние 4 цифры звонящего телефона">
-                        <span class="focus-input100"></span>
-                    </div>
-
-
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Пароль обязателен для заполнения">
-                        <input class="input100" type="password" name="pass" required asp-for="Password" placeholder="Пароль">
+                    <div class="wrap-input100 validate-input m-b-16" data-validate="Код обязателен для заполнения">
+                        <input class="input100" type="text" name="username" id="code_field" required placeholder="6-значный код">
                         <span class="focus-input100"></span>
                     </div>
 
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Пароль обязателен для заполнения">
-                        <input class="input100" type="password" name="pass" required placeholder="Подтвердите пароль">
+                        <input class="input100" type="password" required asp-for="Password" id="password_field" placeholder="Пароль">
                         <span class="focus-input100"></span>
                     </div>
+
+                    <div class="wrap-input100 validate-input m-b-16" data-validate="Пароль обязателен для заполнения">
+                        <input class="input100" type="password" required id="repeat_password_field"  placeholder="Повторите пароль">
+                        <span class="focus-input100"></span>
+                    </div>
+
 
                     <div class="container-login100-form-btn m-t-17">
-                        <button type="submit" class="login100-form-btn">
+                        <button id="register_btn" onclick="onFormSubmit()" type="button" disabled class="login100-form-btn">
                             Восстановить
                         </button>
                         <a class="login100-form-btn" style="margin-top: 10px" asp-action="Login" asp-controller="Home">
@@ -80,6 +79,11 @@
                             </button>
                         </a>
                     </div>
+
+                    <span class="login100-form-title p-b-51" style="color: red; font-size: 13px; margin-top: 12px" id="validation_error">
+
+                    </span>
+
 
                 </form>
             </div>
@@ -106,5 +110,90 @@
     <!--===============================================================================================-->
     <script src="~/js/login.js"></script>
 
+
+    <script>
+
+        async function sendCode() {
+            const phone = document.getElementById('phone_field').value;
+
+            if (phone.length < 9) {
+                validation_error.innerHTML = 'Введите номер телефона';
+                return;
+            }
+
+            await fetch('/CheckUser?login=' + phone)
+                .then((response) => {
+                    return response.json();
+                })
+                .then(async (data) => {
+                    console.log(data);
+                    if (data == 200) {
+                        validation_error.innerHTML = 'Пользователь с таким номером телефона не существует';
+                    }
+                    else {
+                        const response = await fetch('/SendSMSCode?toPhone=' + phone);
+
+                        let btn = document.getElementById('smsButton');
+                        let codeField = document.getElementById('code_field');
+
+                        btn.innerHTML = 'Подтвердить';
+                        codeField.setAttribute('placeholder', 'Введите 6-значный код');
+
+                        btn.onclick = confirmCode;
+                    }
+                });
+        }
+
+        async function confirmCode() {
+            let phone = document.getElementById('phone_field').value;
+            let codeField = document.getElementById('code_field');
+            let code = document.getElementById('code_field').value;
+            let btn = document.getElementById('smsButton');
+            let register_btn = document.getElementById('register_btn');
+
+            console.log('вход');
+            console.log(code);
+
+            await fetch('/GetSMSCode?toPhone=' + phone)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+
+                    console.log(data);
+
+                    if (code.length == 0) {
+                        codeField.setAttribute('placeholder', 'Введите 6-значный код');
+                    }
+                    else if (code == data) {
+                        btn.innerHTML = 'Подтверждено';
+
+                        codeField.setAttribute('disabled', 'true');
+                        btn.setAttribute('disabled', 'true');
+
+                        document.getElementById('phone_field').setAttribute('disabled', 'true');
+                        register_btn.removeAttribute('disabled');
+                    }
+                    else {
+                        codeField.value = 'Неверный код подтверждения';
+                    }
+                });
+        }
+
+        async function onFormSubmit() {
+            let password_field = document.getElementById('password_field');
+            let repeat_password_field = document.getElementById('repeat_password_field');
+            let validation_error = document.getElementById('validation_error');
+
+            if (password_field.value != repeat_password_field.value) {
+                validation_error.innerHTML = 'Пароли должны совпадать';
+            }
+            else {
+                document.getElementById('form').submit();
+            }
+
+          
+        }
+    </script>
 </body>
 </html>

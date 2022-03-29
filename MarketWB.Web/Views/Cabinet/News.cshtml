@@ -1,6 +1,7 @@
 @{
     Layout = "_Layout";
 }
+@model List<MarketAI.API.Models.PostModel>
 
     <!-- start: Css -->
     <link rel="stylesheet" type="text/css" href="~/css/bootstrap.min.css">
@@ -29,34 +30,37 @@
             </div>
         </div>
         <div class="col-md-12 top-20 padding-0">
-
-            <div class="col-md-12">
-                <div class="panel">
-                    <div class="panel-heading">
-                        <h3>
-                            Заголовок новости
-                            <small>13:00</small>
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="col-md-12 list-timeline">
-                            <div class="col-md-12 list-timeline-section bg-light">
-                                <div class="col-md-5 col-sm-7">
-                                    <img height="300px" width="400px" src="asset\img\avatar.jpg" />
-                                </div>
-                                <div class="col-md-7 col-sm-5">
-                                    <p class="">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua.
-                                    </p>
+            @foreach (var post in Model)
+            {
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3>
+                                @post.Caption
+                                <small>@post.CreatedAt</small>
+                                @foreach (var tag in post.TagsList)
+                                {
+                                    <span class="badge badge-primary">@tag</span>
+                                }
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-12 list-timeline">
+                                <div class="col-md-12 list-timeline-section bg-light">
+                                    <div class="col-md-5 col-sm-7">
+                                        <img height="300px" width="400px" src="@post.ImgURL" />
+                                    </div>
+                                    <div class="col-md-7 col-sm-5">
+                                        <p class="">
+                                            @post.Description
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-
+                 </div>           
+             }
         </div>
     </div>
 

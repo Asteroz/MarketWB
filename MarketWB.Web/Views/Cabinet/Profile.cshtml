@@ -25,22 +25,26 @@
                 <div class="panel-body">
                     <div class="col-md-12 list-timeline">
                         <div class="col-md-12 list-timeline-section bg-light">
-                            <button class="btn btn-outline-primary custom_button">
-                                <p class="button_header">Смена пароля</p>
-                                <span>Хотите сменить пароль? Не проблема!</span>
-                            </button>
+                            <a asp-action="ChangePassword" asp-controller="Cabinet">
+                                <button class="btn btn-outline-primary custom_button">
+                                    <p class="button_header">Смена пароля</p>
+                                    <span>Хотите сменить пароль? Не проблема!</span>
+                                </button>
+                            </a>
                             <br />
-                            <button class="btn btn-outline-primary custom_button" >
+                            <button class="btn btn-outline-primary custom_button">
                                 <p class="button_header">Промокод</p>
                                 <span>Ввести промокод скидки</span>
                             </button>
                             <br />
-                            <button class="btn btn-outline-primary custom_button"  >
-                                <p class="button_header">Продлить подписка</p>
-                                <span>.</span>
-                            </button>
+                            <a asp-action="Subscriptions" asp-controller="Cabinet">
+                                <button class="btn btn-outline-primary custom_button">
+                                    <p class="button_header">Продлить подписку</p>
+                                    <span>.</span>
+                                </button>
+                            </a>
                             <br />
-                            <button class="btn btn-outline-primary custom_button" >
+                            <button class="btn btn-outline-primary custom_button">
                                 <p class="button_header">Срок действия подписки</p>
                                 <span>до 11.11.9999</span>
                             </button>

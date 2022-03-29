@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MarketWB.Web.Controllers.Cabinet
 {
-    //[Authorize]
+    [Authorize(Roles = "User")]
     public class DashboardController : Controller
     {
         private readonly ILogger<DashboardController> _logger;
