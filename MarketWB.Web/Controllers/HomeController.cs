@@ -1,4 +1,6 @@
-﻿using MarketWB.Web.Models;
+﻿using MarketAI.API.Enums;
+using MarketWB.Web.Helpers;
+using MarketWB.Web.Models;
 using MarketWB.Web.Models.Home;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,15 +19,29 @@ namespace MarketWB.Web.Controllers
         {
             _logger = logger;
         }
-
+        [Route("/")]
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = UserHelper.GetUser(User);
+                if(user != null)
+                {
+                    if (user.UserRole == UserRole.User)
+                        return View("Views/Cabinet/Dashboard/Dashboard.cshtml");
+                    else if (user.UserRole == UserRole.Admin)
+                        return RedirectToAction("Visitors", "Stats");
+                    else
+                        return Login();
+                }
+          
+            }
+            return Login();
         }
         [Route("Login")]
         public IActionResult Login()
         {
-            return View();
+            return View("Views/Home/Login.cshtml");
         }
 
 

@@ -26,7 +26,8 @@ namespace MarketAI.API.Core
         public DbSet<AuthStatsModel> AuthStatsModels { get; set; }
         public APIDBContext()
         {
-            Database.EnsureCreated();
+            Database.Migrate();
+            
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,9 +36,15 @@ namespace MarketAI.API.Core
                        "user=root;" +
                        "password=H2c7V7p6;" +
                        "port=3306;" +
-                       "database=marketwb;",
+                       "database=marketwb;" +
+                       "Convert Zero Datetime=true;",
                        new MySqlServerVersion(new Version(8, 0, 11))
                    );
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TicketModel>().HasMany(c => c.Messages).WithOne(e => e.Owner);
+            modelBuilder.Entity<WBAPITokenModel>().HasMany(c => c.SelfCosts).WithOne(e => e.WBAPIToken);
         }
     }
 }

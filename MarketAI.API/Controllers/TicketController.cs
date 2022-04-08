@@ -25,7 +25,8 @@ namespace MarketAI.API.Controllers
         {
             using (APIDBContext db = new APIDBContext())
             {
-                return db.Tickets.Include(o => o.OpenedBy).ToList();
+                
+                return db.Tickets.Include(o => o.OpenedBy).Include(o => o.Messages).ToList();
             }
         }
         [HttpGet]
@@ -47,7 +48,30 @@ namespace MarketAI.API.Controllers
                     if (foundUser is null)
                         return new RequestStatus("Пользователя с таким id не существует", 404);
 
+                    ticket.CreatedAt = DateTime.Now;
                     foundUser.Tickets.Add(ticket);
+                    await db.SaveChangesAsync();
+                }
+                return new RequestStatus("Тикет успешно создан");
+            }
+            catch (Exception ex)
+            {
+                return new RequestStatus(ex.Message + ex.StackTrace, 500);
+            }
+        }
+
+        [HttpPost]
+        public async Task<RequestStatus> AddTicketMessage(TicketModel ticket,TicketMessage msg)
+        {
+            try
+            {
+                using (APIDBContext db = new APIDBContext())
+                {
+                    msg.OwnerId = ticket.Id;
+                    msg.CreatedAt = DateTime.Now;
+
+                    ticket.Messages.Add(msg);
+                    db.Tickets.Update(ticket);
                     await db.SaveChangesAsync();
                 }
                 return new RequestStatus("Тикет успешно создан");

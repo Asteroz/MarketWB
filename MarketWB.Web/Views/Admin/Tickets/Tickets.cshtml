@@ -25,7 +25,7 @@
                                     <th>Кем открыт</th>
                                     <th>Тема</th>
                                     <th>Описание</th>
-                                    <th>Тикет закрыт</th>
+                                    <th>Статус тикета</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -37,8 +37,22 @@
                                     <td>@item.OpenedBy.Email</td>
                                     <td>@item.Topic</td>
                                     <td>@item.Description</td>
-                                    <td>@item.IsClosed</td>
-                                    <td><a asp-action="UpdateSubscription" asp-controller="Subscription" asp-route-model="@item"><button class="btn btn-warning">Перейти в тикет</button></a></td>
+                                    <td>
+                                            @if (item.IsClosed)
+                                            {
+                                               <span>Тикет закрыт</span>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="CloseTicket" asp-controller="Tickets" asp-route-ticketId="@item.Id"><button class="btn btn-danger" style="width:92%">Закрыть тикет</button></a>
+                                            }
+                                    </td>                                 
+                                    <td>
+                                          @if (!item.IsClosed)
+                                          {
+                                             <a asp-action="CreateMessage" asp-controller="Tickets" asp-route-ticketId="@item.Id"><button class="btn btn-primary" style="width:92%">Перейти в тикет</button></a>
+                                          }
+                                    </td>
                                 </tr>
                                 }
                             </tbody>

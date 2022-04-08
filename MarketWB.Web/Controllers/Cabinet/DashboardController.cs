@@ -46,5 +46,12 @@ namespace MarketWB.Web.Controllers.Cabinet
         {
             return View("Views/Cabinet/Dashboard/CheckList.cshtml");
         }
+
+
+        [Route("Cabinet/Dashboard/SelfCosts")]
+        public IActionResult SelfCosts()
+        {
+            return View("Views/Cabinet/Dashboard/SelfCosts.cshtml");
+        }
     }
 }

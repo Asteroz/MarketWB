@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "_AdminLayout";
 }
+@model MarketAI.API.ViewModels.TicketPageVM
 <!-- start: Css -->
 <link rel="stylesheet" type="text/css" href="asset/css/bootstrap.min.css">
 
@@ -14,43 +15,608 @@
 
 
 <div id="content">
-    <div class="col-md-12" style="padding:20px;">
-        <div class="panel mail-wrapper">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Тикеты</h3>
+                <p class="animated fadeInDown">
+                    Тикеты <span class="fa-angle-right fa"></span> Тикет
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 top-20 padding-0">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-heading"><h3>@Model.Ticket.Topic</h3></div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <ul class="timeline">
+                             <li>
+                                  <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
+                                     <div class="timeline-panel">
+                                         <div class="timeline-heading">
+                                             <h4 class="timeline-title"></h4>
+                                             <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@Model.Ticket.CreatedAt</small></p>
+                                         </div>
+                                         <div class="timeline-body">
+                                             <p>@Model.Ticket.Description</p>
+                                         </div>
+                                         @if (!string.IsNullOrEmpty(Model.Ticket.AttachmentPath))
+                                         {
+                                            <a asp-action="GetAttachment" asp-controller="Tickets" asp-route-path="@Model.Ticket.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
+                                         }
+                                   </div>
+                              </li>
+                            @foreach (var message in Model.Ticket.Messages)
+                            {
+                                if(message.SentById == message.OwnerId)
+                                {
+                                    <li>
+                                        <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
+                                        <div class="timeline-panel">
+                                            <div class="timeline-heading">
+                                                <h4 class="timeline-title"></h4>
+                                                <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@message.CreatedAt</small></p>
+                                            </div>
+                                            <div class="timeline-body">
+                                                <p>@message.Message</p>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(message.AttachmentPath))
+                                            {
+                                               <a asp-action="GetAttachment" asp-controller="Tickets" asp-route-path="@message.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
+                                            }
+                                        </div>
+                                    </li>
+                                }
+                                else
+                                {
+                                      <li class="timeline-inverted">
+                                        <div class="timeline-badge warning"><i class="glyphicon glyphicon-credit-card"></i></div>
+                                          <div class="timeline-panel">
+                                            <div class="timeline-heading">
+                                                <h4 class="timeline-title"></h4>
+                                                <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@message.CreatedAt</small></p>
+                                            </div>
+                                            <div class="timeline-body">
+                                                 <p>@message.Message</p>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(message.AttachmentPath))
+                                            {
+                                               <a asp-action="GetAttachment" asp-controller="Tickets" asp-route-path="@message.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
+                                            }
+                                        </div>
+                                     </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="form-element">
+            <div class="col-md-12 padding-0">
+                <div class="col-md-12">
+                    <div class="panel form-element-padding">
+                        <div class="panel-heading">
+                            <h4>Написать сообщение</h4>
+                        </div>
 
-            <div class="panel-body">
-                <div class="col-md-12 padding-0">
-                    <div class="col-md-9 col-sm-12 padding-0 mail-right">
-                        <div class="mail-right-header col-md-12 col-sm-12">
-                            <div class="col-md-2 col-sm-2">
-                                <div class="btn-group pull-right right-option-v1">
-                                    <i class="fa fa-ellipsis-v right-option-v1-icon" data-toggle="dropdown"></i>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something else here</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Separated link</a></li>
-                                    </ul>
+                        <form asp-action="AddTicketMessage" asp-controller="Tickets" asp-route-ticketid="@Model.Ticket.Id" asp-route-msg="@Model.NewMessage"
+                                                                method="POST" enctype="multipart/form-data" class="panel-body" style="padding-bottom:30px;">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label text-right">Текст сообщения</label>
+                                    <div class="col-sm-10"><textarea required class="form-control" name="Message"></textarea></div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12 mail-right-content" style="padding=left:10px;">
-                            <div class="col-md-12 padding-0">
-                                <textarea class="summernote hidden" placeholder="Type Your Message.."></textarea>
+                            <div class="input-group fileupload-v1" style="width: 96%;">
+                                <input type="file" name="manualfile" class="fileupload-v1-file hidden" />
+                                <input type="text" class="form-control fileupload-v1-path" placeholder="File Path..." disabled>
+                                <span class="input-group-btn">
+                                    <button class="btn fileupload-v1-btn" type="button"><i class="fa fa-folder"></i>Вложение</button>
+                                </span>
                             </div>
-                            <div class="col-md-12">
-                                <div class="pull-right">
-                                    <input type="submit" class="btn btn-danger" value="Отправить сообщение" />
+
+                            <input class="submit btn btn-danger" style="margin-top:10px;width:94%;" type="submit" value="Отправить сообщение">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: content -->
+    <!-- start: right menu -->
+    <div id="right-menu">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#right-menu-user">
+                    <span class="fa fa-comment-o fa-2x"></span>
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#right-menu-notif">
+                    <span class="fa fa-bell-o fa-2x"></span>
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#right-menu-config">
+                    <span class="fa fa-cog fa-2x"></span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="right-menu-user" class="tab-pane fade in active">
+                <div class="search col-md-12">
+                    <input type="text" placeholder="search.." />
+                </div>
+                <div class="user col-md-12">
+                    <ul class="nav nav-list">
+                        <li class="online">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="gadget">
+                                <span class="fa  fa-mobile-phone fa-2x"></span>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="away">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="gadget">
+                                <span class="fa  fa-desktop"></span>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="offline">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="offline">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="online">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="gadget">
+                                <span class="fa  fa-mobile-phone fa-2x"></span>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="offline">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="online">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="gadget">
+                                <span class="fa  fa-mobile-phone fa-2x"></span>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="offline">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="offline">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="online">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="gadget">
+                                <span class="fa  fa-mobile-phone fa-2x"></span>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+                        <li class="online">
+                            <img src="asset/img/avatar.jpg" alt="user name">
+                            <div class="name">
+                                <h5><b>Bill Gates</b></h5>
+                                <p>Hi there.?</p>
+                            </div>
+                            <div class="gadget">
+                                <span class="fa  fa-mobile-phone fa-2x"></span>
+                            </div>
+                            <div class="dot"></div>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- Chatbox -->
+                <div class="col-md-12 chatbox">
+                    <div class="col-md-12">
+                        <a href="#" class="close-chat">X</a><h4>Akihiko Avaron</h4>
+                    </div>
+                    <div class="chat-area">
+                        <div class="chat-area-content">
+                            <div class="msg_container_base">
+                                <div class="row msg_container send">
+                                    <div class="col-md-9 col-xs-9 bubble">
+                                        <div class="messages msg_sent">
+                                            <p>
+                                                that mongodb thing looks good, huh?
+                                                tiny master db, and huge document store
+                                            </p>
+                                            <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-3 avatar">
+                                        <img src="asset/img/avatar.jpg" class=" img-responsive " alt="user name">
+                                    </div>
+                                </div>
+
+                                <div class="row msg_container receive">
+                                    <div class="col-md-3 col-xs-3 avatar">
+                                        <img src="asset/img/avatar.jpg" class=" img-responsive " alt="user name">
+                                    </div>
+                                    <div class="col-md-9 col-xs-9 bubble">
+                                        <div class="messages msg_receive">
+                                            <p>
+                                                that mongodb thing looks good, huh?
+                                                tiny master db, and huge document store
+                                            </p>
+                                            <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row msg_container send">
+                                    <div class="col-md-9 col-xs-9 bubble">
+                                        <div class="messages msg_sent">
+                                            <p>
+                                                that mongodb thing looks good, huh?
+                                                tiny master db, and huge document store
+                                            </p>
+                                            <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-3 avatar">
+                                        <img src="asset/img/avatar.jpg" class=" img-responsive " alt="user name">
+                                    </div>
+                                </div>
+
+                                <div class="row msg_container receive">
+                                    <div class="col-md-3 col-xs-3 avatar">
+                                        <img src="asset/img/avatar.jpg" class=" img-responsive " alt="user name">
+                                    </div>
+                                    <div class="col-md-9 col-xs-9 bubble">
+                                        <div class="messages msg_receive">
+                                            <p>
+                                                that mongodb thing looks good, huh?
+                                                tiny master db, and huge document store
+                                            </p>
+                                            <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row msg_container send">
+                                    <div class="col-md-9 col-xs-9 bubble">
+                                        <div class="messages msg_sent">
+                                            <p>
+                                                that mongodb thing looks good, huh?
+                                                tiny master db, and huge document store
+                                            </p>
+                                            <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-3 avatar">
+                                        <img src="asset/img/avatar.jpg" class=" img-responsive " alt="user name">
+                                    </div>
+                                </div>
+
+                                <div class="row msg_container receive">
+                                    <div class="col-md-3 col-xs-3 avatar">
+                                        <img src="asset/img/avatar.jpg" class=" img-responsive " alt="user name">
+                                    </div>
+                                    <div class="col-md-9 col-xs-9 bubble">
+                                        <div class="messages msg_receive">
+                                            <p>
+                                                that mongodb thing looks good, huh?
+                                                tiny master db, and huge document store
+                                            </p>
+                                            <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="chat-input">
+                        <textarea placeholder="type your message here.."></textarea>
+                    </div>
+                    <div class="user-list">
+                        <ul>
+                            <li class="online">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <div class="user-avatar"><img src="asset/img/avatar.jpg" alt="user name"></div>
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="offline">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="away">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="online">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="offline">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="away">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="offline">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="offline">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="away">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="online">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="away">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                            <li class="away">
+                                <a href="" data-toggle="tooltip" data-placement="left" title="Akihiko avaron">
+                                    <img src="asset/img/avatar.jpg" alt="user name">
+                                    <div class="dot"></div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <div id="right-menu-notif" class="tab-pane fade">
 
+                <ul class="mini-timeline">
+                    <li class="mini-timeline-highlight">
+                        <div class="mini-timeline-panel">
+                            <h5 class="time">07:00</h5>
+                            <p>Coding!!</p>
+                        </div>
+                    </li>
+
+                    <li class="mini-timeline-highlight">
+                        <div class="mini-timeline-panel">
+                            <h5 class="time">09:00</h5>
+                            <p>Playing The Games</p>
+                        </div>
+                    </li>
+                    <li class="mini-timeline-highlight">
+                        <div class="mini-timeline-panel">
+                            <h5 class="time">12:00</h5>
+                            <p>Meeting with <a href="#">Clients</a></p>
+                        </div>
+                    </li>
+                    <li class="mini-timeline-highlight mini-timeline-warning">
+                        <div class="mini-timeline-panel">
+                            <h5 class="time">15:00</h5>
+                            <p>Breakdown the Personal PC</p>
+                        </div>
+                    </li>
+                    <li class="mini-timeline-highlight mini-timeline-info">
+                        <div class="mini-timeline-panel">
+                            <h5 class="time">15:00</h5>
+                            <p>Checking Server!</p>
+                        </div>
+                    </li>
+                    <li class="mini-timeline-highlight mini-timeline-success">
+                        <div class="mini-timeline-panel">
+                            <h5 class="time">16:01</h5>
+                            <p>Hacking The public wifi</p>
+                        </div>
+                    </li>
+                    <li class="mini-timeline-highlight mini-timeline-danger">
+                        <div class="mini-timeline-panel">
+                            <h5 class="time">21:00</h5>
+                            <p>Sleep!</p>
+                        </div>
+                    </li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+
+            </div>
+            <div id="right-menu-config" class="tab-pane fade">
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>Notification</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch onoffswitch-info">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch1" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch1"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>Custom Designer</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch onoffswitch-danger">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch2"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>Autologin</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch onoffswitch-success">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch3" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch3"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>Auto Hacking</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch onoffswitch-warning">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch4" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch4"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>Auto locking</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch5" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch5"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>FireWall</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch6" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch6"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>CSRF Max</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch onoffswitch-warning">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch7" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch7"></label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>Man In The Middle</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch onoffswitch-danger">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch8" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch8"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6 padding-0">
+                        <h5>Auto Repair</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-onoffswitch onoffswitch-success">
+                            <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch9" checked>
+                            <label class="onoffswitch-label" for="myonoffswitch9"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <input type="button" value="More.." class="btnmore">
+                </div>
+
+            </div>
         </div>
     </div>
+    <!-- end: right menu -->
+
 </div>
 
 

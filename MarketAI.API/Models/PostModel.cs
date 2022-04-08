@@ -10,6 +10,7 @@ namespace MarketAI.API.Models
     public class PostModel
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Caption { get; set; }
         public string Tags { get; set; }

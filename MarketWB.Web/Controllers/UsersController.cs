@@ -57,8 +57,8 @@ namespace MarketWB.Web.Controllers
             var found = _api.GetUserByCredintials(model.Login, model.Password);
             if(found != null)
             {
-                  MakeAuth(found);
-                  var user = UserHelper.GetUser(HttpContext.User);
+                  var principal = await MakeAuth(found);
+                  var user = UserHelper.GetUser(principal);
                   _stats.SetUserOnline(user, true);
                   _stats.AddAuthStats(user);
 
@@ -132,7 +132,7 @@ namespace MarketWB.Web.Controllers
         }
 
 
-        private async void MakeAuth(UserModel user)
+        private async Task<ClaimsPrincipal> MakeAuth(UserModel user)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
            
@@ -144,10 +144,10 @@ namespace MarketWB.Web.Controllers
             };
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            
+            var principal = new ClaimsPrincipal(id);
             // установка аутентификационных куки
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
-            
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            return principal;
         }
 
         private void MakeUser(UserRole role)

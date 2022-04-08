@@ -69,6 +69,11 @@ namespace MarketAI.API.Controllers
                 {
                     db.Users.Add(user);
                     await db.SaveChangesAsync();
+
+                    user.UserData = new UserData();
+                    user.UserData.Owner = user;
+
+                    await db.SaveChangesAsync();
                 }
                 return new RequestStatus("Пользователь успешно добавлен");
             }

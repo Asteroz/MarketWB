@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_Layout";
 }
-@model MarketAI.API.Models.TicketModel
+@model MarketAI.API.ViewModels.TicketPageVM
 <!-- start: Content -->
 <div id="content">
     <div class="panel box-shadow-none content-header">
@@ -17,107 +17,76 @@
     <div class="col-md-12 top-20 padding-0">
         <div class="col-md-12">
             <div class="panel">
-                <div class="panel-heading"><h3>Тема тикета</h3></div>
+                <div class="panel-heading"><h3>@Model.Ticket.Topic</h3></div>
                 <div class="panel-body">
                     <div class="col-md-12">
                         <ul class="timeline">
-                            <li>
-                                <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                                        <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> 11 hours ago via Twitter</small></p>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="timeline-inverted">
-                                <div class="timeline-badge warning"><i class="glyphicon glyphicon-credit-card"></i></div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
-                                        <p>Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis. Interagi no mé, cursus quis, vehicula ac nisi. Aenean vel dui dui. Nullam leo erat, aliquet quis tempus a, posuere ut mi. Ut scelerisque neque et turpis posuere pulvinar pellentesque nibh ullamcorper. Pharetra in mattis molestie, volutpat elementum justo. Aenean ut ante turpis. Pellentesque laoreet mé vel lectus scelerisque interdum cursus velit auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac mauris lectus, non scelerisque augue. Aenean justo massa.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-badge danger"><i class="glyphicon glyphicon-credit-card"></i></div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="timeline-inverted">
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-badge info"><i class="glyphicon glyphicon-floppy-disk"></i></div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
-                                        <hr>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-                                                <i class="glyphicon glyphicon-cog"></i> <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li><a href="#">Action</a></li>
-                                                <li><a href="#">Another action</a></li>
-                                                <li><a href="#">Something else here</a></li>
-                                                <li class="divider"></li>
-                                                <li><a href="#">Separated link</a></li>
-                                            </ul>
+                             <li>
+                                  <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
+                                     <div class="timeline-panel">
+                                         <div class="timeline-heading">
+                                             <h4 class="timeline-title"></h4>
+                                             <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@Model.Ticket.CreatedAt</small></p>
+                                         </div>
+                                         <div class="timeline-body">
+                                             <p>@Model.Ticket.Description</p>
+                                         </div>
+                                         @if (!string.IsNullOrEmpty(Model.Ticket.AttachmentPath))
+                                         {
+                                            <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@Model.Ticket.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
+                                         }
+                                   </div>
+                              </li>
+                            @foreach (var message in Model.Ticket.Messages)
+                            {
+                                if(message.SentById == message.OwnerId)
+                                {
+                                    <li>
+                                        <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
+                                        <div class="timeline-panel">
+                                            <div class="timeline-heading">
+                                                <h4 class="timeline-title"></h4>
+                                                <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@message.CreatedAt</small></p>
+                                            </div>
+                                            <div class="timeline-body">
+                                                <p>@message.Message</p>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(message.AttachmentPath))
+                                            {
+                                               <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@message.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
+                                            }
                                         </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="timeline-inverted">
-                                <div class="timeline-badge success"><i class="glyphicon glyphicon-thumbs-up"></i></div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
-                                    </div>
-                                </div>
-                            </li>
+                                    </li>
+                                }
+                                else
+                                {
+                                      <li class="timeline-inverted">
+                                        <div class="timeline-badge warning"><i class="glyphicon glyphicon-credit-card"></i></div>
+                                          <div class="timeline-panel">
+                                            <div class="timeline-heading">
+                                                <h4 class="timeline-title"></h4>
+                                                <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@message.CreatedAt</small></p>
+                                            </div>
+                                            <div class="timeline-body">
+                                                 <p>@message.Message</p>
+                                            </div>
+                                             @if (!string.IsNullOrEmpty(message.AttachmentPath))
+                                            {
+                                               <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@message.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
+                                            }
+                                        </div>
+                                     </li>
+                                }
+                            }
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="form-element">
+         @if (!Model.Ticket.IsClosed)
+         {
+                   <div class="form-element">
             <div class="col-md-12 padding-0">
                 <div class="col-md-12">
                     <div class="panel form-element-padding">
@@ -125,11 +94,12 @@
                             <h4>Написать сообщение</h4>
                         </div>
 
-                        <form asp-action="CreatePostPOST" asp-controller="Posts" asp-route-post="@Model" method="POST" enctype="multipart/form-data" class="panel-body" style="padding-bottom:30px;">
+                        <form asp-action="AddTicketMessage" asp-controller="UserTickets" asp-route-ticketid="@Model.Ticket.Id" asp-route-msg="@Model.NewMessage"
+                                                                method="POST" enctype="multipart/form-data" class="panel-body" style="padding-bottom:30px;">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label text-right">Текст сообщения</label>
-                                    <div class="col-sm-10"><textarea required class="form-control" asp-for="Description"></textarea></div>
+                                    <div class="col-sm-10"><textarea required class="form-control" name="Message"></textarea></div>
                                 </div>
                             </div>
                             <div class="input-group fileupload-v1" style="width: 96%;">
@@ -138,14 +108,16 @@
                                 <span class="input-group-btn">
                                     <button class="btn fileupload-v1-btn" type="button"><i class="fa fa-folder"></i>Вложение</button>
                                 </span>
-                            </div>
-
-                            <input class="submit btn btn-danger" style="margin-top:10px;width:94%;" type="submit" value="Отправить сообщение">
+                            </div>   
+                            <input class="submit btn btn-primary" style="margin-top:10px;width:94%;" type="submit" value="Отправить сообщение">
                         </form>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>                              
+      }
+
+      
     </div>
     <!-- end: content -->
     <!-- start: right menu -->

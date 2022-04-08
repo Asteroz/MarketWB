@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_Layout";
 }
-@model MarketAI.API.Models.PostModel
+@model MarketAI.API.Models.TicketModel
 
 <div id="content">
     <div class="panel box-shadow-none content-header">
@@ -21,11 +21,11 @@
                     <div class="panel-heading">
                         <h4>Тикет</h4>
                     </div>
-                    <form asp-action="CreatePostPOST" asp-controller="Posts" asp-route-post="@Model" method="POST" enctype="multipart/form-data" class="panel-body" style="padding-bottom:30px;">
+                    <form asp-action="CreateTicketPost" asp-controller="UserTickets" asp-route-post="@Model" method="POST" enctype="multipart/form-data" class="panel-body" style="padding-bottom:30px;">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-right">Заголовок</label>
-                                <div class="col-sm-10"><input type="text" required class="form-control" asp-for="Caption"></div>
+                                <div class="col-sm-10"><input type="text" required class="form-control" asp-for="Topic"></div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-right">Суть проблемы</label>

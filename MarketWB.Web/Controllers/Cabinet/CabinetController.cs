@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Subscriptions = MarketAI.API.Controllers.SubscriptionsController;
 using Posts = MarketAI.API.Controllers.PostsController;
+using MarketWB.Web.ViewModels.Cabinet;
 
 namespace MarketWB.Web.Controllers
 {
@@ -26,9 +27,31 @@ namespace MarketWB.Web.Controllers
         [Route("Cabinet/News")]
         public IActionResult News()
         {
-            var posts = _posts.GetPosts();
-            return View("Views/Cabinet/News.cshtml", posts);
+            var vm = new NewsViewModel
+            {
+                Posts = _posts.GetPosts(),
+                Tags = _posts.GetAllTags().ToList()
+            };
+            vm.Tags.Insert(0, "Все новости");
+            return View("Views/Cabinet/News.cshtml", vm);
         }
+        [Route("Cabinet/News/{tag}")]
+        public IActionResult News(string tag)
+        {
+            var vm = new NewsViewModel
+            {
+                Posts = _posts.GetPosts(),
+                Tags = _posts.GetAllTags().ToList()
+            };
+            vm.Tags.Insert(0, "Все новости");
+
+            if (tag != "Все новости")
+                vm.Posts = vm.Posts.Where(o => o.Tags.Split(',').Any(o => o == tag)).ToList();
+
+            return View("Views/Cabinet/News.cshtml", vm);
+        }
+
+
         [Route("Cabinet/Profile")]
         public IActionResult Profile()
         {

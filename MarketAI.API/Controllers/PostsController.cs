@@ -82,5 +82,23 @@ namespace MarketAI.API.Controllers
                 return new RequestStatus(ex.Message + ex.StackTrace, 500);
             }
         }
+
+        [HttpGet]
+        public IEnumerable<string> GetAllTags()
+        {
+            var tags = new SortedSet<string>();
+            using (APIDBContext db = new APIDBContext())
+            {
+                foreach (var post in db.Posts)
+                {
+                    var postTags = post.Tags.Split(',');
+                    foreach (var tag in postTags)
+                    {
+                        tags.Add(tag);
+                    }
+                }
+            }
+            return tags;
+        }
     }
 }

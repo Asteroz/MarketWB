@@ -20,16 +20,17 @@ namespace MarketAI.API.Controllers
         }
 
         [HttpGet]
-        public void AddAuthStats(UserModel user)
+        public async Task AddAuthStats(UserModel user)
         {
             using (APIDBContext db = new APIDBContext())
             {
-                db.AuthStatsModels.Add(new Models.Stats.AuthStatsModel
+                var entry = new Models.Stats.AuthStatsModel
                 {
                     Date = DateTime.Now,
                     User = user
-                });
-                db.SaveChanges();
+                };
+                await db.AuthStatsModels.AddAsync(entry);
+                await db.SaveChangesAsync();
             }
         }
         [HttpGet]

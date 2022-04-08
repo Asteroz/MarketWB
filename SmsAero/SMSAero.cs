@@ -16,8 +16,6 @@ namespace SmsAero
             {
                 string url = $"https://gate.smsaero.ru/v2/sms/send?number={number}&text={text}&sign={sign}";
 
-                WebRequest req = WebRequest.Create(url);
-
                 RestClient client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 request.Credentials = new NetworkCredential(Email, ApiKey);

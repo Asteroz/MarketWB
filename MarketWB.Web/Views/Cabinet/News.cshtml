@@ -1,7 +1,8 @@
+@using MarketWB.Web.ViewModels.Cabinet
 @{
     Layout = "_Layout";
 }
-@model List<MarketAI.API.Models.PostModel>
+@model NewsViewModel
 
     <!-- start: Css -->
     <link rel="stylesheet" type="text/css" href="~/css/bootstrap.min.css">
@@ -27,10 +28,15 @@
         <div class="panel-body">
             <div class="col-md-12">
                 <h3 class="animated fadeInLeft">Новости</h3>
+                  @foreach (var tag in Model.Tags)
+                  {
+                     <a asp-action="News" asp-controller="Cabinet" asp-route-tag="@tag"><button class="btn btn-primary">@tag</button></a>
+                  }
             </div>
         </div>
+
         <div class="col-md-12 top-20 padding-0">
-            @foreach (var post in Model)
+            @foreach (var post in Model.Posts)
             {
                 <div class="col-md-12">
                     <div class="panel">
