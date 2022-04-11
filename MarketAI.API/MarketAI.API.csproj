@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.15">
       <PrivateAssets>all</PrivateAssets>
@@ -13,6 +18,7 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.4" />
+    <PackageReference Include="Yandex.Checkout.V3" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SmsAero\SmsAero.csproj" />
+    <ProjectReference Include="..\WildberriesAPI\WildberriesAPI.csproj" />
   </ItemGroup>
 
 

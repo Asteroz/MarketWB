@@ -54,9 +54,11 @@ namespace MarketWB.Web.Controllers.Admin
             await SetAttachmentIfHas(msg);
 
             msg.Message = Request.Form["Message"];
-            msg.SentById = UserHelper.GetUser(User).Id;
+            msg.SentBy = await UserHelper.GetUser(User);
+            msg.SentById = msg.SentBy.Id;
 
-            await _api.AddTicketMessage(ticket, msg);
+
+           await _api.AddTicketMessage(ticket, msg);
             return CreateMessage(ticket.Id);
         }
         [HttpGet]

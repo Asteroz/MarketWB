@@ -15,5 +15,8 @@ namespace MarketWB.Parsing.Models.Reports.Sales
         public DateTime? OrderDate { get; set; }
         public DateTime SaleDate { get; set; }
         public string DeliveryAddress { get; set; }
+
+
+        public string Brand { get; set; }
     }
 }

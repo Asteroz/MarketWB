@@ -42,6 +42,7 @@ namespace WildberriesAPI
             SortedSet<string> brands = new SortedSet<string>();
 
             var stocks = await GetStocks(DateTime.Now.AddYears(-4));
+
             foreach (var stock in stocks)
             {
                 if (!string.IsNullOrEmpty(stock.Subject))
@@ -52,6 +53,29 @@ namespace WildberriesAPI
             return brands.ToList();
         }
 
+        public async Task<BrandsAndCategories> GetOurBrandsAndCategories()
+        {
+            SortedSet<string> brands = new SortedSet<string>();
+            SortedSet<string> subjects = new SortedSet<string>();
+
+            var stocks = await GetStocks(DateTime.Now.AddYears(-4));
+            foreach (var stock in stocks)
+            {
+                if (!string.IsNullOrEmpty(stock.Subject))
+                {
+                    subjects.Add(stock.Subject);
+                }
+                if (!string.IsNullOrEmpty(stock.Brand))
+                {
+                    brands.Add(stock.Brand);
+                }
+            }
+            return new BrandsAndCategories
+            {
+                Brands = brands.ToList(),
+                Categories = subjects.ToList()
+            };
+        }
 
 
         public async Task<List<WBSaleModel>> GetSales(DateTime from)
@@ -64,6 +88,8 @@ namespace WildberriesAPI
             dynamic data = JsonConvert.DeserializeObject(response.Content);
 
             List<WBSaleModel> sales = new List<WBSaleModel>();
+            if (data is null) return sales;
+
             foreach (var item in data)
             {
                 try
@@ -87,6 +113,8 @@ namespace WildberriesAPI
             dynamic data = JsonConvert.DeserializeObject(response.Content);
 
             List<DetailByPeriodModel> sales = new List<DetailByPeriodModel>();
+            if (data is null) return sales;
+
             foreach (var item in data)
             {
                 try
@@ -107,6 +135,8 @@ namespace WildberriesAPI
             dynamic data = JsonConvert.DeserializeObject(response.Content);
 
             List<WBOrderModel> sales = new List<WBOrderModel>();
+            if (data is null) return sales;
+
             foreach (var item in data)
             {
                 try
@@ -128,6 +158,8 @@ namespace WildberriesAPI
             dynamic data = JsonConvert.DeserializeObject(response.Content);
 
             List<WBStockModel> sales = new List<WBStockModel>();
+            if (data is null) return sales;
+
             foreach (var item in data)
             {
                 try
@@ -150,6 +182,8 @@ namespace WildberriesAPI
             dynamic data = JsonConvert.DeserializeObject(response.Content);
 
             List<WBIncomeModel> sales = new List<WBIncomeModel>();
+            if (data is null) return sales;
+
             foreach (var item in data)
             {
                 try

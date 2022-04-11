@@ -1,7 +1,25 @@
+@using MarketWB.Web.ViewModels.Cabinet.Dashboard
 @{
     Layout = "_Layout";
 }
+@model DashboardVM
+
+@section css{
+      <script>
+      $(document).ready(function(){
+        $('.chart').horizBarChart({
+          selector: '.bar',
+          speed: 1000
+        });
+      });
+    </script>
+}
+
+
 <div id="content">
+
+    @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
+
     <div class="panel box-shadow-none content-header">
         <div class="panel-body">
             <div class="col-md-12">
@@ -12,220 +30,154 @@
     <div class="col-md-12">
 
         <div class="col-md-12 padding-0">
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-cyan border-none">
-                        <h4>Заказы</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <!-- <div class="panel">
-                  <div class="panel-heading bg-red border-none">
-                    <h4>Название инфокарточки</h4>
-                  </div>
-                  <div class="panel-body" style="padding-bottom:10px;">
-                    <h4>777 шт.</h4>
-                  </div>
-                </div> -->
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-blue border-none">
-                        <h4>Заказов на сумму</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
+            <a asp-action="Sales" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-cyan border-none">
+                            <h4>Продажи</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                            <h4>@Model.DashboardReport.SalesCount шт.</h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-gray-600 border-none">
-                        <h4>Средний чек продажи</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
+            </a>
+            <a asp-action="Sales" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                   <div class="panel">
+                      <div class="panel-heading bg-red border-none">
+                        <h4>Продаж на сумму</h4>
+                      </div>
+                      <div class="panel-body" style="padding-bottom:10px;">
+                        <h4>@Model.DashboardReport.SalesSum ₽</h4>
+                      </div>
+                   </div>
+                </div>
+             </a>
+            <a asp-action="Orders" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-blue border-none">
+                            <h4>Заказы</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                            <h4>@Model.DashboardReport.OrdersCount шт.</h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
+            <a asp-action="Orders" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-gray-600 border-none">
+                            <h4>Заказов на сумму</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                            <h4>@Model.DashboardReport.OrdersSum ₽</h4>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-12 padding-0">
+             <a asp-action="Returns" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-green border-none">
+                            <h4>Возвраты</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                            <h4>@Model.DashboardReport.ReturnsCount шт.</h4>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="Returns" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-red border-none">
+                            <h4>Возвратов на сумму</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                            <h4>@Model.DashboardReport.ReturnsSum ₽</h4>
+                        </div>
+                    </div>
+                </div>
+             </a>
+             <a asp-action="Cancels" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-teal border-none">
+                            <h4>Отмены</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                             <h4>@Model.DashboardReport.CancelsCount шт.</h4>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="Cancels" asp-controller="Dashboard">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-pink border-none">
+                            <h4>Отмен на сумму</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                            <h4>@Model.DashboardReport.CancelsSum ₽</h4>
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
 
         <div class="col-md-12 padding-0">
             <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="panel">
                     <div class="panel-heading bg-green border-none">
-                        <h4>Продажи</h4>
+                        <h4>Прибыль</h4>
                     </div>
                     <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
+                        <h4>@Model.DashboardReport.Profit ₽</h4>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="panel">
                     <div class="panel-heading bg-red border-none">
-                        <h4>Выкуп</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-teal border-none">
-                        <h4>Продану на сумму</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-pink border-none">
-                        <h4>Прибыль за период</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12 padding-0">
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-yellow border-none">
-                        <h4>Заказы</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-yellow border-none">
-                        <h4>Отказы</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 %</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading  bg-gray-600 border-none">
-                        <h4>Продано - возвраты</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-gray-600 border-none">
                         <h4>Маржинальность</h4>
                     </div>
                     <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
+                        <h4>@Model.DashboardReport.Marginality%</h4>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-12 padding-0">
-            <div class="col-md-3 col-sm-6 col-xs-6">
+             <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="panel">
                     <div class="panel-heading bg-pink border-none">
-                        <h4>Возвраты</h4>
+                        <h4>Продажи за день</h4>
                     </div>
                     <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
+                         <h4>@Model.DashboardReport.SalesCountToday шт.</h4>
+                         <h4>@Model.DashboardReport.SalesSumToday ₽</h4>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="panel">
                     <div class="panel-heading bg-pink border-none">
-                        <h4>Возвраты</h4>
+                        <h4>Возвраты за день</h4>
                     </div>
                     <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 %</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading  bg-red border-none">
-                        <h4>Сумма возвратов</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-gray-600 border-none">
-                        <h4>Планируемый маржинальный доход</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
+                         <h4>@Model.DashboardReport.ReturnsCountToday шт.</h4>
+                         <h4>@Model.DashboardReport.ReturnsSumToday ₽</h4>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-12 padding-0">
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading  bg-gray-600  border-none">
-                        <h4>Товаров с оборачиваемостью ≤ 14 дней</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading  bg-gray-600  border-none">
-                        <h4>Себестоимость остатков на WB</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 %</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading  bg-gray-600  border-none">
-                        <h4>Потенциал выручки на сегодня</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
-                    <div class="panel-heading bg-gray-600 border-none">
-                        <h4>Остатков на WB</h4>
-                    </div>
-                    <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>777 шт.</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
 
+@*
         <div class="col-md-12">
             <div class="panel">
                 <div class="panel-heading bg-white border-none" style="padding:20px;">
@@ -259,9 +211,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
 
-        <div class="col-md-12">
+     @*   <div class="col-md-12">
             <div class="panel">
                 <div class="panel-heading bg-white border-none" style="padding:20px;">
                     <div class="col-md-6 col-sm-6 col-sm-12 text-left">
@@ -294,7 +246,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
 
         <div class="col-md-12">
             <div class="panel">
@@ -303,7 +255,15 @@
                 </div>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <canvas class="bar-chart"></canvas>
+                        <div class="chart-horiz">
+                          <!-- Actual bar chart -->
+                            <ul class="chart">
+                                 @foreach(var brand in Model.DashboardReport.ProfitByBrands)
+                                 {     
+                                     <li class="past" title="@brand.Key"><span class="bar" data-number="@brand.Value.ToString().Replace(',','.')"></span><span class="number">@brand.Value</span></li>
+                                 }
+        	                </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -315,7 +275,16 @@
                 </div>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <canvas class="bar-chart"></canvas>
+                      <div class="chart-horiz">
+                          <!-- Actual bar chart -->
+                            <ul class="chart">
+                                 @foreach(var brand in Model.DashboardReport.ProfitByCategories)
+                                 {     
+                                     <li class="title" title="@brand.Key"></li>
+                                     <li class="past" title=""><span class="bar" data-number="@brand.Value.ToString().Replace(',','.')"></span><span class="number">@brand.Value</span></li>
+                                 }
+        	                </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -326,8 +295,16 @@
                     <h4>Маржинальность на бренд, %</h4>
                 </div>
                 <div class="panel-body">
-                    <div class="col-md-12">
-                        <canvas class="bar-chart"></canvas>
+                    <div id="bar-chart" class="col-md-12">
+                      <div class="chart-horiz">
+                          <!-- Actual bar chart -->
+                            <ul class="chart">               
+                                @foreach(var brand in Model.DashboardReport.MarginalityByBrands)
+                                {     
+                                     <li class="past" title="@brand.Key"><span class="bar" data-number="@brand.Value.ToString().Replace(',','.')"></span><span class="number">@brand.Value</span></li>
+                                }
+        	                </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -339,7 +316,15 @@
                 </div>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <canvas class="bar-chart"></canvas>
+                        <div class="chart-horiz">
+                          <!-- Actual bar chart -->
+                            <ul class="chart">
+                                @foreach(var brand in Model.DashboardReport.MarginalityByCategories)
+                                {     
+                                     <li class="past" title="@brand.Key"><span class="bar" data-number="@brand.Value.ToString().Replace(',','.')"></span><span class="number">@brand.Value</span></li>
+                                }
+        	                </ul>
+                        </div>
                     </div>
                 </div>
             </div>

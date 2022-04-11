@@ -1,0 +1,35 @@
+@{
+    Layout = "_Layout";
+}
+@model List<MarketAI.API.Models.SubscriptionModel>
+
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h1 class="animated fadeInLeft">Приобретите подписку, чтобы пользоваться сервисом</h1>
+                <h3 class="animated fadeInLeft">Доступные тарифные планы</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+
+        <div class="col-md-12 padding-0">
+            @foreach (var sub in Model)
+            {
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="panel">
+                        <div class="panel-heading bg-cyan border-none">
+                            <h4>@sub.Title</h4>
+                        </div>
+                        <div class="panel-body" style="padding-bottom:10px;">
+                            <h4>Цена : @sub.Price руб</h4>
+                            <h4>Срок : @sub.Days дней</h4>
+                            <button class="btn btn-primary">Приобрести</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

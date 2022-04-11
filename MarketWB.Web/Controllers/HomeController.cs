@@ -20,15 +20,15 @@ namespace MarketWB.Web.Controllers
             _logger = logger;
         }
         [Route("/")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (User.Identity.IsAuthenticated)
             {
-                var user = UserHelper.GetUser(User);
+                var user = await UserHelper.GetUser(User);
                 if(user != null)
                 {
                     if (user.UserRole == UserRole.User)
-                        return View("Views/Cabinet/Dashboard/Dashboard.cshtml");
+                        return RedirectToAction("Dashboard", "Dashboard");
                     else if (user.UserRole == UserRole.Admin)
                         return RedirectToAction("Visitors", "Stats");
                     else

@@ -25,7 +25,6 @@ namespace MarketAI.API.Controllers
         {
             using (APIDBContext db = new APIDBContext())
             {
-                
                 return db.Tickets.Include(o => o.OpenedBy).Include(o => o.Messages).ToList();
             }
         }
@@ -67,10 +66,12 @@ namespace MarketAI.API.Controllers
             {
                 using (APIDBContext db = new APIDBContext())
                 {
+                    msg.Owner = ticket;
                     msg.OwnerId = ticket.Id;
                     msg.CreatedAt = DateTime.Now;
 
                     ticket.Messages.Add(msg);
+
                     db.Tickets.Update(ticket);
                     await db.SaveChangesAsync();
                 }

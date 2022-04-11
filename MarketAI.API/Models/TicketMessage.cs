@@ -12,10 +12,13 @@ namespace MarketAI.API.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         public UserModel SentBy { get; set; }
-        public int SentById { get; set; }
+        public int? SentById { get; set; }
+
         public TicketModel Owner { get; set; }
-        public int OwnerId { get; set; }
+        public int? OwnerId { get; set; }
+
         public string Message { get; set; }
         public string AttachmentPath { get; set; }
 

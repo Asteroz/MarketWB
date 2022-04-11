@@ -7,7 +7,7 @@
   <meta name="author" content="Isna Nur Azis">
   <meta name="keyword" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Miminium</title>
+  <title>Администраторская панель</title>
 
   <!-- start: Css -->
   <link rel="stylesheet" type="text/css" href="~/css/bootstrap.min.css">
@@ -17,6 +17,8 @@
   <link rel="stylesheet" type="text/css" href="~/css/plugins/font-awesome.min.css"/>
   <link rel="stylesheet" type="text/css" href="~/css/plugins/datatables.bootstrap.min.css"/>
   <link rel="stylesheet" type="text/css" href="~/css/plugins/animate.min.css"/>
+  <link rel="stylesheet" type="text/css" href="asset/css/plugins/icheck/skins/flat/red.css" />
+  <link rel="stylesheet" type="text/css" href="asset/css/plugins/summernote.css" />
   <link href="~/css/style.css" rel="stylesheet">
   <!-- end: Css -->
 
@@ -792,6 +794,9 @@
     <script src="~/js/plugins/nouislider.min.js"></script>
     <script src="~/js/plugins/jquery.validate.min.js"></script>
 
+    <script src="~/js/plugins/icheck.min.js"></script>
+    <script src="~/js/plugins/summernote.min.js"></script>
+
     <!-- custom -->
     <script src="~/js/main.js"></script>
 
@@ -801,6 +806,8 @@
             $('#datatables-example').DataTable();
         });
     </script>
+
+    @RenderSection("js",false)
     <!-- end: Javascript -->
 </body>
 </html>

@@ -26,5 +26,19 @@ namespace MarketWB.Parsing.Models.Reports
 
 
         public double Profit { get; set; }
+        public double Marginality { get; set; }
+
+
+        public int SalesCountToday { get; set; }
+        public double SalesSumToday { get; set; }
+        public int ReturnsCountToday { get; set; }
+        public double ReturnsSumToday { get; set; }
+
+
+        public Dictionary<string,double> MarginalityByCategories { get; set; } = new Dictionary<string, double>();
+        public Dictionary<string, double> ProfitByCategories { get; set; } = new Dictionary<string, double>();
+
+        public Dictionary<string, double> MarginalityByBrands { get; set; } = new Dictionary<string, double>();
+        public Dictionary<string, double> ProfitByBrands { get; set; } = new Dictionary<string, double>();
     }
 }

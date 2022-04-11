@@ -44,13 +44,13 @@
                                             }
                                             else
                                             {
-                                                <a asp-action="CloseTicket" asp-controller="Tickets" asp-route-ticketId="@item.Id"><button class="btn btn-danger" style="width:92%">Закрыть тикет</button></a>
+                                                <a asp-action="CloseTicket" asp-controller="Tickets" asp-route-ticketId="@item.Id"><button class="btn btn-danger" style="width:80%">Закрыть тикет</button></a>
                                             }
                                     </td>                                 
                                     <td>
                                           @if (!item.IsClosed)
                                           {
-                                             <a asp-action="CreateMessage" asp-controller="Tickets" asp-route-ticketId="@item.Id"><button class="btn btn-primary" style="width:92%">Перейти в тикет</button></a>
+                                             <a asp-action="CreateMessage" asp-controller="Tickets" asp-route-ticketId="@item.Id"><button class="btn btn-primary" style="width:80%">Перейти в тикет</button></a>
                                           }
                                     </td>
                                 </tr>

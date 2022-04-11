@@ -27,9 +27,9 @@ namespace MarketAI.API.Controllers
                 var entry = new Models.Stats.AuthStatsModel
                 {
                     Date = DateTime.Now,
-                    User = user
                 };
-                await db.AuthStatsModels.AddAsync(entry);
+                user.Auths.Add(entry);
+                db.Users.Update(user);
                 await db.SaveChangesAsync();
             }
         }

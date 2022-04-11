@@ -58,13 +58,13 @@ namespace MarketWB.Web.Controllers
             if(found != null)
             {
                   var principal = await MakeAuth(found);
-                  var user = UserHelper.GetUser(principal);
+                  var user = await UserHelper.GetUser(principal);
                   _stats.SetUserOnline(user, true);
-                  _stats.AddAuthStats(user);
+                   await _stats.AddAuthStats(user);
 
                 if (found.UserRole == MarketAI.API.Enums.UserRole.User)
-                    return View("Views/Cabinet/Dashboard/Dashboard.cshtml");
-                 else if (found.UserRole == MarketAI.API.Enums.UserRole.Admin)
+                    return RedirectToAction("Dashboard", "Dashboard");
+                else if (found.UserRole == MarketAI.API.Enums.UserRole.Admin)
                     return RedirectToAction("Visitors","Stats");
             }
             return View();
@@ -82,7 +82,7 @@ namespace MarketWB.Web.Controllers
 
             await _api.CreateUser(model);
 
-            return View("Views/Cabinet/Dashboard/Dashboard.cshtml");
+            return RedirectToAction("Dashboard", "Dashboard");
         }
         [HttpPost]
         public async Task<IActionResult> Restore(UserModel model)
@@ -92,7 +92,7 @@ namespace MarketWB.Web.Controllers
                 return RedirectToAction("Restore", "Home");
 
             found.Password = model.Password;
-            await _api.UpdateUser(found);
+            await _api.ChangePassword(found);
 
             return RedirectToAction("Login", "Home");
         }
@@ -100,7 +100,7 @@ namespace MarketWB.Web.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var user = UserHelper.GetUser(User);
+            var user = await UserHelper.GetUser(User);
             _stats.SetUserOnline(user, false);
 
             return RedirectToAction("Login", "Home");
@@ -125,12 +125,16 @@ namespace MarketWB.Web.Controllers
 
         [Route("ChangePassword")]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(UserModel user)
+        public async Task ChangePassword([FromBody]UserModel user)
         {
-             await _api.UpdateUser(user);
-             return RedirectToAction("Dashboard", "Dashboard");
+             await _api.ChangePassword(user);
         }
-
+        [Route("ActivatePromocode")]
+        [HttpPost]
+        public async Task ActivatePromocode([FromBody] UserModel user)
+        {
+            await _api.ActivatePromocode(user);
+        }
 
         private async Task<ClaimsPrincipal> MakeAuth(UserModel user)
         {

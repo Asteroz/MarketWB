@@ -1,12 +1,20 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace WildberriesAPI.Models
 {
     public class WBOrderModel
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public string APIKey { get; set; }
+
+
         [JsonProperty("number")]
         public long? Number { get; set; }
         [JsonProperty("date")]

@@ -23,16 +23,19 @@ namespace MarketAI.API.Models
 
         public bool IsOnline { get; set; }
 
-
         public UserData UserData { get; set; }
-        public int UserDataId { get; set; }
+        public int? UserDataId { get; set; }
 
 
         public List<WBAPITokenModel> WBAPIKeys { get; set; } = new List<WBAPITokenModel>();
         public List<TicketModel> Tickets { get; set; } = new List<TicketModel>();
         public List<PaymentModel> Payments { get; set; } = new List<PaymentModel>();
         public List<AuthStatsModel> Auths { get; set; } = new List<AuthStatsModel>();
+
         public DateTime SubscriptionBefore { get; set; }
+        [NotMapped]
+        public bool IsSubscriptionEnded => SubscriptionBefore < DateTime.UtcNow;
+
         public bool WasPromocodeActivated { get; set; }
         public string ActivatedPromocode { get; set; }
     }

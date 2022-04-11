@@ -28,9 +28,10 @@ namespace MarketWB.Web.Controllers.Cabinet
         }
 
         [Route("Cabinet/MyTickets")]
-        public IActionResult MyTickets()
+        public async Task<IActionResult> MyTickets()
         {
-            var tickets = _api.GetAllTickets().Where(o => o.OpenedBy != null && o.OpenedBy.Id == UserHelper.GetUser(User).Id);
+            var user = await UserHelper.GetUser(User);
+            var tickets = _api.GetAllTickets().Where(o => o.OpenedBy != null && o.OpenedBy.Id == user.Id);
             return View("Views/Cabinet/Tickets/MyTickets.cshtml", tickets);
         }
         [Route("Cabinet/ShowTicket")]
@@ -53,7 +54,7 @@ namespace MarketWB.Web.Controllers.Cabinet
         public async Task<IActionResult> CreateTicketPost(TicketModel ticket)
         {
             await SetAttachmentIfHas(ticket);
-            ticket.OpenedBy = UserHelper.GetUser(User);
+            ticket.OpenedBy = await UserHelper.GetUser(User);
 
             await _api.OpenTicket(ticket.OpenedBy.Id, ticket);
             return ShowTicket(ticket.Id);

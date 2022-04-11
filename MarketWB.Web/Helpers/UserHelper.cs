@@ -12,10 +12,10 @@ namespace MarketWB.Web.Helpers
 {
     public static class UserHelper
     {
-        public static UserModel GetUser(ClaimsPrincipal principal)
+        public static async Task<UserModel> GetUser(ClaimsPrincipal principal)
         {
             UsersController api = new UsersController(null);
-           return api.GetUserById(Convert.ToInt32(principal.Identity.Name));
+           return await api.GetUserById(Convert.ToInt32(principal.Identity.Name));
         }
     }
 }

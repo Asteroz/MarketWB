@@ -34,7 +34,7 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100 p-t-50 p-b-90">
-                <form class="login100-form validate-form flex-sb flex-w" id="form" asp-action="Register" asp-controller="Users" asp-route-model="@Model" method="post">
+                <form class="login100-form validate-form flex-sb flex-w" id="form"method="post">
                     <span class="login100-form-title p-b-51">
                         Восстановление пароля
                     </span>
@@ -42,7 +42,7 @@
                     <div class="row">
                         <div class="col-md-7">
                             <div class="wrap-input100 validate-input m-b-16" data-validate="Телефон обязателен для заполнения">
-                                <input class="input100" type="tel" id="phone_field" required asp-for="Phone" placeholder="Телефон">
+                                <input class="input100" type="tel" id="phone_field" required name="phone" placeholder="Телефон">
                                 <span class="focus-input100"></span>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                     </div>
 
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Пароль обязателен для заполнения">
-                        <input class="input100" type="password" required asp-for="Password" id="password_field" placeholder="Пароль">
+                        <input class="input100" type="password" required name="password" id="password_field" placeholder="Пароль">
                         <span class="focus-input100"></span>
                     </div>
 
@@ -181,6 +181,7 @@
         }
 
         async function onFormSubmit() {
+
             let password_field = document.getElementById('password_field');
             let repeat_password_field = document.getElementById('repeat_password_field');
             let validation_error = document.getElementById('validation_error');
@@ -189,10 +190,21 @@
                 validation_error.innerHTML = 'Пароли должны совпадать';
             }
             else {
-                document.getElementById('form').submit();
+               let form =  document.getElementById('form');
+               let model =
+               {
+                   phone: form.elements.phone.value,
+                   password : form.elements.password.value
+               }
+               let response = await fetch('/ChangePassword', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                      },
+                      body: JSON.stringify(model),
+                });
+                window.location.href = "/Login";
             }
-
-          
         }
     </script>
 </body>

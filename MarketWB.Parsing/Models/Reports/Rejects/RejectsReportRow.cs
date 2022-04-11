@@ -13,7 +13,7 @@ namespace MarketWB.Parsing.Models.Reports.Rejects
         public double? LostProfit { get; set; }
         public double? Logistic { get; set; }
         public DateTime OrderDate { get; set; }
-        public DateTime SaleDate { get; set; }
+        public DateTime? SaleDate { get; set; }
         public string DeliveryAddress { get; set; }
     }
 }

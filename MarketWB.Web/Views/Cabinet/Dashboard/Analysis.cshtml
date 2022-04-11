@@ -17,41 +17,7 @@
     }
  </style>
 <div id="content">
-    <div class="col-md-12 header-wb">
-        <div class="col-md-3 header-col">
-            <h6 class="header-h6" data-toggle="modal" data-target="#add_key_popup">Список токенов</h6>
-            <select  style="width: 80%" class="form-select header-select">
-                  <option selected>токен</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-            </select>
-            <button style="width: 15%" class="v-btn">О</button>
-        </div>
-        <div class="col-md-3 header-col">
-            <h6 class="header-h6">Бренд</h6>
-            <select style="width: 100%" class="form-select header-select">
-                  <option selected>токен</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-            </select>
-        </div>
-        <div class="col-md-3 header-col">
-            <h6 class="header-h6">Категория</h6>
-            <select  style="width: 100%" class="form-select header-select">
-                  <option selected>токен</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-            </select>
-        </div>
-          <div class="col-md-3 header-col">
-            <h6 class="header-h6">Период</h6>
-            <input style="width: 80%" type="datetime-local" />
-            <button style="width: 10%" class="v-btn">О</button>
-        </div>
-    </div>
+    @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
     <div class="panel box-shadow-none content-header">
         <div class="panel-body">
             <div class="col-md-12">

@@ -1,12 +1,20 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace WildberriesAPI.Models
 {
     public class DetailByPeriodModel
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public string APIKey { get; set; }
+
+
         [JsonProperty("realizationreport_id")]
         public long? RealizationReportId { get; set; }
         [JsonProperty("suppliercontract_code")]

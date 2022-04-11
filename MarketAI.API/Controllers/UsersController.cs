@@ -2,6 +2,7 @@
 using MarketAI.API.Models;
 using MarketAI.API.Models.Statuses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SmsAero;
 using System;
@@ -21,11 +22,17 @@ namespace MarketAI.API.Controllers
             _logger = logger;
         }
         [HttpGet]
-        public UserModel GetUserById(int id)
+        public async Task<UserModel> GetUserById(int id)
         {
-            using (APIDBContext db = new APIDBContext())
+            await using (APIDBContext db = new APIDBContext())
             {
-                var found = db.Users.FirstOrDefault(o => o.Id == id);
+                var found = db.Users
+                    .Include(o => o.UserData)
+                    .Include(o => o.UserData.SelectedWBAPIToken.SelfCosts)
+                    .Include(o => o.UserData.SelectedWBAPIToken.ExtraExpenses)
+                    .Include(o => o.WBAPIKeys)
+                    .FirstOrDefault(o => o.Id == id);
+                await db.DisposeAsync();
                 return found;
             }
         }
@@ -34,7 +41,12 @@ namespace MarketAI.API.Controllers
         {
             using (APIDBContext db = new APIDBContext())
             {
-                var found = db.Users.FirstOrDefault(o => (o.Phone.Equals(login) || o.Email.Equals(login)) && o.Password == password);
+                var found = db.Users
+                    .Include(o => o.UserData)
+                    .Include(o => o.UserData.SelectedWBAPIToken.SelfCosts)
+                    .Include(o => o.UserData.SelectedWBAPIToken.ExtraExpenses)
+                    .Include(o => o.WBAPIKeys)
+                    .FirstOrDefault(o => (o.Phone.Equals(login) || o.Email.Equals(login)) && o.Password == password);
                 return found;
             }
         }
@@ -42,7 +54,12 @@ namespace MarketAI.API.Controllers
         {
             using (APIDBContext db = new APIDBContext())
             {
-                var found = db.Users.FirstOrDefault(o => (o.Phone.Equals(login) || o.Email.Equals(login)));
+                var found = db.Users
+                    .Include(o => o.UserData)
+                    .Include(o => o.UserData.SelectedWBAPIToken.SelfCosts)
+                    .Include(o => o.UserData.SelectedWBAPIToken.ExtraExpenses)
+                    .Include(o => o.WBAPIKeys)
+                    .FirstOrDefault(o => (o.Phone.Equals(login) || o.Email.Equals(login)));
                 return found;
             }
         }
@@ -51,7 +68,7 @@ namespace MarketAI.API.Controllers
         {
             using (APIDBContext db = new APIDBContext())
             {
-                return db.Users.Skip(page * 20).ToList();
+                return db.Users.Include(o => o.UserData).Skip(page * 20).ToList();
             }
         }
 
@@ -71,8 +88,8 @@ namespace MarketAI.API.Controllers
                     await db.SaveChangesAsync();
 
                     user.UserData = new UserData();
-                    user.UserData.Owner = user;
 
+                    db.Users.Update(user);
                     await db.SaveChangesAsync();
                 }
                 return new RequestStatus("Пользователь успешно добавлен");
@@ -89,7 +106,11 @@ namespace MarketAI.API.Controllers
             {
                 using (APIDBContext db = new APIDBContext())
                 {
-                    db.Users.Update(user);
+                    var found = db.Users.FirstOrDefault(o => o.Id == user.Id);
+                    found.ActivatedPromocode = user.ActivatedPromocode;
+                    found.Password = user.Password;
+
+                    db.Users.Update(found);
                     await db.SaveChangesAsync();
                     return new RequestStatus("Пользователь успешно добавлен");
                 }
@@ -100,6 +121,50 @@ namespace MarketAI.API.Controllers
                 return new RequestStatus(ex.Message + ex.StackTrace, 500);
             }
         }
+        [HttpPut]
+        public async Task<RequestStatus> ChangePassword(UserModel user)
+        {
+            try
+            {
+                using (APIDBContext db = new APIDBContext())
+                {
+                    var found = db.Users.FirstOrDefault(o => o.Phone == user.Phone);
+                    found.Password = user.Password;
+
+                    db.Users.Update(found);
+                    await db.SaveChangesAsync();
+                    return new RequestStatus("Пользователь успешно добавлен");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new RequestStatus(ex.Message + ex.StackTrace, 500);
+            }
+        }
+        [HttpPut]
+        public async Task<RequestStatus> ActivatePromocode(UserModel user)
+        {
+            try
+            {
+                using (APIDBContext db = new APIDBContext())
+                {
+                    var found = db.Users.FirstOrDefault(o => o.Id == user.Id);
+                    found.ActivatedPromocode = user.ActivatedPromocode;
+                    db.Users.Update(found);
+                    await db.SaveChangesAsync();
+                    return new RequestStatus("Пользователь успешно добавлен");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new RequestStatus(ex.Message + ex.StackTrace, 500);
+            }
+        }
+
+
+
+
 
         public async Task SendSMSCode(string phone)
         {

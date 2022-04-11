@@ -27,9 +27,11 @@ namespace MarketWB.Web.Controllers
         [Route("Cabinet/News")]
         public IActionResult News()
         {
+            var posts  = _posts.GetPosts().Where(o => !o.PublishAfter
+                                           || (o.PublishAfter && o.PublishAfterDate < DateTime.Now));
             var vm = new NewsViewModel
             {
-                Posts = _posts.GetPosts(),
+                Posts = posts,
                 Tags = _posts.GetAllTags().ToList()
             };
             vm.Tags.Insert(0, "Все новости");
@@ -53,9 +55,10 @@ namespace MarketWB.Web.Controllers
 
 
         [Route("Cabinet/Profile")]
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
-            return View("Views/Cabinet/Profile.cshtml");
+            var user =await UserHelper.GetUser(User);
+            return View("Views/Cabinet/Profile.cshtml", user);
         }
         [Route("Cabinet/About")]
         public IActionResult About()
@@ -82,6 +85,13 @@ namespace MarketWB.Web.Controllers
         {
             var subscriptions = _subscriptions.GetSubscriptions();
             return View("Views/Cabinet/Subscriptions.cshtml", subscriptions);
+        }
+
+        [Route("Cabinet/NeedToPay")]
+        public IActionResult NeedToPay()
+        {
+            var subscriptions = _subscriptions.GetSubscriptions();
+            return View("Views/Cabinet/NeedToPay.cshtml", subscriptions);
         }
     }
 }

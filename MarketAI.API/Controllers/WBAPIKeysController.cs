@@ -30,43 +30,36 @@ namespace MarketAI.API.Controllers
             }
         }
         [HttpDelete]
-        public async Task<RequestStatus> RemovePromocode(int userId, int id)
+        public async Task<RequestStatus> RemoveToken(int userId, int id)
         {
             using (APIDBContext db = new APIDBContext())
             {
-                var foundUser = db.Users.FirstOrDefault(o => o.Id == userId);
-                if (foundUser is null)
-                    return new RequestStatus("Пользователя с таким id не существует", 404);
-
-
+                var foundUser = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
                 var apiKey = db.WBAPITokens.Include(o => o.Owner).First(o => o.Id == id);
-                if (apiKey == null)
-                    return new RequestStatus("Токена с таким id не существует", 404);
-                if(apiKey.Owner.Id != foundUser.Id)
-                    return new RequestStatus("Пользователь не владеет данным ключом", 400);
 
+                if(foundUser.UserData.SelectedWBAPITokenId == id)
+                {
+                    foundUser.UserData.SelectedWBAPIToken = null;
+                }
+
+                foundUser.WBAPIKeys.Remove(apiKey);
                 db.WBAPITokens.Remove(apiKey);
+                db.Users.Update(foundUser);
+
                 await db.SaveChangesAsync();
             }
             return new RequestStatus("Токен успешно удален");
         }
         [HttpPost]
-        public async Task<RequestStatus> CreatePromocode(int userId, WBAPITokenModel token)
+        public async Task<RequestStatus> CreateToken(int userId, WBAPITokenModel token)
         {
             try
             {
                 using (APIDBContext db = new APIDBContext())
                 {
                     var foundUser = db.Users.FirstOrDefault(o => o.Id == userId);
-                    if (foundUser is null)
-                        return new RequestStatus("Пользователя с таким id не существует", 404);
-
-                    if(foundUser.WBAPIKeys.Any(o => o.Name == token.Name))
-                        return new RequestStatus("Ключ с таким названием уже существует", 400);
-                    if (foundUser.WBAPIKeys.Any(o => o.APIKey == token.APIKey))
-                        return new RequestStatus("Ключ с таким api токеном уже существует", 400);
-
                     token.Owner = foundUser;
+
                     foundUser.WBAPIKeys.Add(token);
                     await db.SaveChangesAsync();
                 }
@@ -78,7 +71,7 @@ namespace MarketAI.API.Controllers
             }
         }
         [HttpPut]
-        public async Task<RequestStatus> UpdatePromocode(int userId, WBAPITokenModel updatedToken)
+        public async Task<RequestStatus> UpdateToken(int userId, WBAPITokenModel updatedToken)
         {
             try
             {
@@ -110,5 +103,60 @@ namespace MarketAI.API.Controllers
                 return new RequestStatus(ex.Message + ex.StackTrace, 500);
             }
         }
+
+
+
+
+        public async Task SetSelectedToken(int userId,int keyId)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+               var user = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
+               user.UserData.SelectedWBAPITokenId = keyId;
+               db.Users.Update(user);
+               await db.SaveChangesAsync();
+            }
+        }
+        public async Task SetSelectedBrand(int userId, string brand)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                var user = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
+                user.UserData.SelectedWBBrand = brand;
+                db.Users.Update(user);
+                await db.SaveChangesAsync();
+            }
+        }
+        public async Task SetSelectedCategory(int userId, string category)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                var user = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
+                user.UserData.SelectedWBCategory = category;
+                db.Users.Update(user);
+                await db.SaveChangesAsync();
+            }
+        }
+        public async Task SetChangedPeriodFrom(int userId, DateTime date)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                var user = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
+                user.UserData.SelectedPeriodFrom = date;
+                db.Users.Update(user);
+                await db.SaveChangesAsync();
+            }
+        }
+        public async Task SetChangedPeriodTo(int userId, DateTime date)
+        {
+            using (APIDBContext db = new APIDBContext())
+            {
+                var user = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
+                user.UserData.SelectedPeriodTo = date;
+                db.Users.Update(user);
+                await db.SaveChangesAsync();
+            }
+        }
+
     }
 }

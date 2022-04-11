@@ -2,16 +2,6 @@
     Layout = "_AdminLayout";
 }
 @model MarketAI.API.ViewModels.TicketPageVM
-<!-- start: Css -->
-<link rel="stylesheet" type="text/css" href="asset/css/bootstrap.min.css">
-
-<!-- plugins -->
-<link rel="stylesheet" type="text/css" href="asset/css/plugins/font-awesome.min.css" />
-<link rel="stylesheet" type="text/css" href="asset/css/plugins/icheck/skins/flat/red.css" />
-<link rel="stylesheet" type="text/css" href="asset/css/plugins/animate.min.css" />
-<link rel="stylesheet" type="text/css" href="asset/css/plugins/summernote.css" />
-<link href="asset/css/style.css" rel="stylesheet">
-<!-- end: Css -->
 
 
 <div id="content">
@@ -32,7 +22,7 @@
                 <div class="panel-body">
                     <div class="col-md-12">
                         <ul class="timeline">
-                             <li>
+                             <li class="timeline-inverted">
                                   <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
                                      <div class="timeline-panel">
                                          <div class="timeline-heading">
@@ -50,10 +40,10 @@
                               </li>
                             @foreach (var message in Model.Ticket.Messages)
                             {
-                                if(message.SentById == message.OwnerId)
+                                if(message.SentById != message.OwnerId)
                                 {
                                     <li>
-                                        <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
+                                        <div class="timeline-badge"><i class="glyphicon glyphicon-credit-card"></i></div>
                                         <div class="timeline-panel">
                                             <div class="timeline-heading">
                                                 <h4 class="timeline-title"></h4>
@@ -618,24 +608,7 @@
     <!-- end: right menu -->
 
 </div>
-
-
-
-<!-- start: Javascript -->
-<script src="~/js/jquery.min.js"></script>
-<script src="~/js/jquery.ui.min.js"></script>
-<script src="~/js/bootstrap.min.js"></script>
-
-
-<!-- plugins -->
-<script src="~/js/plugins/moment.min.js"></script>
-<script src="~/js/plugins/icheck.min.js"></script>
-<script src="~/js/plugins/summernote.min.js"></script>
-<script src="~/js/plugins/jquery.nicescroll.js"></script>
-
-
-<!-- custom -->
-<script src="~/js/main.js"></script>
+@section js{
 <script type="text/javascript">
     (function (jQuery) {
         $('input').iCheck({
@@ -648,4 +621,6 @@
         });
     })(jQuery);
 </script>
+}
+
 <!-- end: Javascript -->

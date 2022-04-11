@@ -1,6 +1,9 @@
+@using MarketWB.Web.ViewModels.Cabinet.Dashboard
 @{
     Layout = "_Layout";
 }
+@model DashboardSelfCostsVM
+
 <style>
     .table_input{
         width: 100%;
@@ -8,6 +11,9 @@
 </style>
 
 <div id="content">
+
+    @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
+
     <div class="panel box-shadow-none content-header">
         <div class="panel-body">
             <div class="col-md-12">
@@ -39,16 +45,22 @@
                                     </tr>
                                 </thead>
                                 <tbody id="table_body">
-                                    <tr data-id="0">
-                                        <td><input class="table_input" type="number"/></td>
-                                        <td><input class="table_input" type="number"/></td>
-                                        <td><input class="table_input" type="number"/></td>
-                                        <td><input class="table_input" type="number"/></td>
-                                        <td><input class="table_input" type="number"/></td>
-                                        <td><input class="table_input" type="number"/></td>
-                                        <td><input class="table_input" type="number"/></td>
-                                        <td><a><button onclick="DeleteRow(0)" style="btn btn-danger">Удалить</button></a></td>
-                                    </tr>
+                                    @if(Model.Token != null)
+                                    {
+                                        foreach(var selfCost in Model.Token.SelfCosts)
+                                        {
+                                            <tr data-id="@selfCost.Id">
+                                                <td><input class="table_input" type="number" value="@selfCost.ProductId"/></td>
+                                                <td><input class="table_input" type="number" value="@selfCost.PurchaseCost"/></td>
+                                                <td><input class="table_input" type="number" value="@selfCost.PackagingCost"/></td>
+                                                <td><input class="table_input" type="number" value="@selfCost.DeliveryToYourStockCost"/></td>
+                                                <td><input class="table_input" type="number" value="@selfCost.DeliveryToWbStockCost"/></td>
+                                                <td><input class="table_input" type="number" value="@selfCost.FFServicesCost"/></td>
+                                                <td><input class="table_input" type="number" value="@selfCost.PhotographCost"/></td>
+                                                <td><a><button onclick="DeleteRow(@selfCost.Id)" style="btn btn-danger">Удалить</button></a></td>
+                                            </tr> 
+                                        }
+                                    }                                
                                 </tbody>
                             </table>
                         </div>
@@ -61,13 +73,21 @@
 
     <script>
          async function CreateRow(){
+
+               let response = await fetch('/Cabinet/Dashboard/AddSelfCost', {
+                   method: 'PUT',
+               });
+
+               let json = await response.json();
+
                var row = document.createElement('tr');
+               row.setAttribute('data-id',json);
               
                let html = '';
                for (let i =0;i<7;i++){
-                   html += '<td><input class="table_input" type="number"/></td>';
+                   html += '<td><input class="table_input" type="number" value="0"/></td>';
                }
-               html += ' <td><a><button onclick="DeleteRow(0)" style="btn btn-danger">Удалить</button></a></td>';
+               html += ` <td><a><button onclick="DeleteRow(${json})" style="btn btn-danger">Удалить</button></a></td>`;
 
 
                row.innerHTML = html;
@@ -76,11 +96,46 @@
                table_body.prepend(row);
          }
     
-         async function SaveRows(){
-
-         }
+        
          async function DeleteRow(id){
 
+             let response = await fetch('/Cabinet/Dashboard/DeleteSelfCost?id='+id, {
+                   method: 'DELETE',
+               });
+
+             let table_body = document.getElementById('table_body');
+             var row = document.querySelector('tr[data-id="'+id+'"]');
+             table_body.removeChild(row);
          }
+
+        async function SaveRows(){
+            let table_body = document.getElementById('table_body');
+            let rows = table_body.children;
+
+            for (let i =0;i<rows.length;i++){
+                let row = rows[i];
+                let cells = row.children;
+                let model = {
+                    Id: new Number(row.getAttribute('data-id')),
+                    ProductId: new Number(cells[0].children[0].value),
+                    PurchaseCost: new Number(cells[1].children[0].value),
+                    PackagingCost: new Number(cells[2].children[0].value),
+                    DeliveryToYourStockCost: new Number(cells[3].children[0].value),
+                    DeliveryToWbStockCost: new Number(cells[4].children[0].value),
+                    FFServicesCost: new Number(cells[5].children[0].value),
+                    PhotographCost: new Number(cells[6].children[0].value),
+                }
+        
+        
+                let response = await fetch('/Cabinet/Dashboard/UpdateSelfCost', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(model)});
+            }
+        }
+
+
     </script>
 </div>

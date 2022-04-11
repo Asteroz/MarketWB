@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarketAI.API\MarketAI.API.csproj" />
+    <ProjectReference Include="..\MarketWB.Parsing\MarketWB.Parsing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Новая папка\" />
   </ItemGroup>
 
 </Project>

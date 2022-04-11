@@ -1,0 +1,263 @@
+﻿@using MarketWB.Web.ViewModels.Cabinet.Dashboard
+@model AbsDashboardVM
+<style>
+    .header-wb{
+        background:#e5e5e5;
+        padding:0;
+    }
+    .header-col{
+        padding:5px;
+    }
+    .header-h6{
+        color: black;
+    }
+    .header-select{
+        border-color: black;
+    }
+    .header-button{
+        width: 100%;
+        height: 45px;
+    }
+
+    .header_datepicker{
+        background: #FFFFFF;
+        border: 1px solid #999999;
+        width : 90%;
+        position: relative;
+        margin-right: 5px;
+    }
+    .header_absolute_btn{
+        position:absolute;
+        right:2px;
+        width: 15%;
+    }
+    .square_btn{
+        border : 1px #2196F3 solid;
+        color: #2196F3;
+        width: 25px;
+        height: 25px;
+    }
+    .circle_btn{
+        border : 1px #2196F3 solid;
+        color: #2196F3;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+    }
+    .add_key{
+        right: 10px;
+        top: 10px;
+    }
+    .refresh_key{
+        top: 40px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .popup-item{
+        margin-top: 10px;
+        height:30px;
+    }
+    .popup-close{
+        margin-top: -30px !important;
+    }
+
+
+ </style>
+
+  <div class="col-md-12 header-wb">
+        <div class="col-md-3 header-col">
+            <h6 class="header-h6">Список токенов</h6>
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle header-button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @if(Model.User.UserData.SelectedWBAPIToken == null)
+                    {
+                        <span>Токен не выбран</span>
+                    }
+                    else
+                    {
+                        <span>@Model.User.UserData.SelectedWBAPIToken.Name</span>
+                    }
+                 </button>
+                 <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">   
+                        @foreach(var token in Model.User.WBAPIKeys)
+                        {
+                            <div style="display:inline;">
+                                 <button onclick="deleteApiKey(@token.Id)" style="position:absolute;right: 10px;">Удалить</button>
+                                 <div onclick="setKeySelected(@token.Id)">
+                                     <a class="dropdown-item">@token.Name</a>
+                                 </div>
+                            </div> 
+                        }
+                 </div>
+                <button type="button" class="v-btn header_absolute_btn square_btn add_key" data-toggle="modal" data-target="#myModal">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-3 header-col">
+            <h6 class="header-h6">Бренд</h6>
+             <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle header-button" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @if(Model.User.UserData.SelectedWBBrand == null)
+                {
+                    <span>Все бренды</span>
+                }
+                else
+                {
+                   <span>@Model.User.UserData.SelectedWBBrand</span>
+                }
+             </button>
+             <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton2">   
+                    @foreach(var brand in Model.Brands)
+                    {
+                       <div onclick="setBrandSelected('@brand.Brand')">
+                           <a class="dropdown-item" href="#">@brand.Brand</a>
+                       </div> 
+                    }
+             </div>
+          </div>
+        </div>
+        <div class="col-md-3 header-col">
+            <h6 class="header-h6">Категория</h6>
+              <div class="dropdown">
+              <button  class="btn btn-secondary dropdown-toggle header-button" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @if(Model.User.UserData.SelectedWBCategory == null)
+                {
+                    <span>Все категории</span>
+                }
+                else
+                {
+                   <span>@Model.User.UserData.SelectedWBCategory</span>
+                }
+             </button>
+             <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton3">   
+                    @foreach(var category in Model.Categories)
+                    {
+                       <div onclick="setCategorySelected('@category.Category')">
+                           <a class="dropdown-item" href="#">@category.Category</a>
+                       </div> 
+                    }
+             </div>
+          </div>
+        </div>
+          <div class="col-md-3 header-col">
+            <h6 class="header-h6">Период</h6>
+            <div style="display:inline-block; width:85%;">
+                <div style="display:block;">
+                    <button onclick="document.location.reload()" class="v-btn header_absolute_btn circle_btn refresh_key">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                    <div>
+                         <input name="from" class="header_datepicker" type="datetime-local" onchange="setChangedPeriodFrom(event)" value="@Model.User.UserData.SelectedPeriodFrom.ToString("yyyy-MM-ddThh:mm")" />
+                    </div>
+                       <div>
+                         <input name="to" class="header_datepicker" type="datetime-local"  onchange="setChangedPeriodTo(event)" value="@Model.User.UserData.SelectedPeriodTo.ToString("yyyy-MM-ddThh:mm")" />
+                    </div>
+              
+                </div>
+          
+            </div>
+          
+         
+        </div>
+    </div>
+
+    
+
+      <!-- Popups -->
+
+          <div class="modal" id="myModal">
+             <div class="modal-dialog">
+                <div class="modal-content">
+                   <!-- Modal Header -->
+                   <div class="modal-header">
+                      <h4 class="modal-title">Добавление токена Wildberries</h4>
+                      <button type="button" class="close popup-close" data-dismiss="modal">&times;</button>
+                   </div>
+                   <!-- Modal body -->
+                   <div class="modal-body">
+                     <div class="form-group popup-item">
+                        <label class="col-sm-2 control-label text-right ">Название</label>
+                        <div class="col-sm-10 popup_item"><input id="apikey_name" type="text" required class="form-control" name="Name"></div>
+                     </div>
+                     <div class="form-group popup-item">
+                         <label class="col-sm-2 control-label text-right">Токен</label>
+                         <div  class="col-sm-10 popup_item"><input  id="apikey_token" type="text" name="APIKey" required class="form-control"></div>
+                     </div>
+                   </div>
+                   <!-- Modal footer -->
+                   <div class="modal-footer" >
+                        <button type="button" onclick="addApiKey()" class="btn btn-primary popup_item" data-dismiss="modal">Добавить</button>
+                        <button type="button" class="btn btn-light popup_item" data-dismiss="modal">Отмена</button>
+                   </div>
+                </div>
+             </div>
+          </div>
+    <!--end Popups -->
+
+
+    <script>
+        async function addApiKey(){
+            let key = {
+              Name: document.getElementById('apikey_name').value,
+              APIKey: document.getElementById('apikey_token').value
+            };
+
+            let response = await fetch('/WBKeys/CreateWBKey', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(key)
+            });
+
+            document.location.reload();
+        }
+          async function deleteApiKey(id){
+             let response = await fetch('/WBKeys/DeleteWBKey?id='+id, {
+                 method: 'DELETE',
+             });
+             document.location.reload();
+        }
+
+
+        async function setKeySelected(value){
+             let response = await fetch('/WBKeys/SelectWBKey?keyId='+value, {
+                 method: 'PUT',
+             });
+             document.location.reload();
+        }
+
+        async function setBrandSelected(value){
+             let response = await fetch('/WBKeys/SelectWBBrand?brand='+value, {
+                 method: 'PUT',
+             });
+             document.location.reload();
+        }
+        async function setCategorySelected(value){
+             let response = await fetch('/WBKeys/SelectWBCategory?category='+value, {
+                  method: 'PUT',
+              });
+             document.location.reload();
+        }
+
+        async function setChangedPeriodFrom(event){
+             var selectElement = event.target;
+             var value = selectElement.value;
+             let response = await fetch('/WBKeys/SetChangedPeriodFrom?period='+value, {
+                 method: 'PUT',
+              });
+             document.location.reload();
+        }
+        async function setChangedPeriodTo(event){
+             var selectElement = event.target;
+             var value = selectElement.value;
+             let response = await fetch('/WBKeys/SetChangedPeriodTo?period='+value, {
+                  method: 'PUT',
+             });
+             document.location.reload();
+        }
+    </script>
+   

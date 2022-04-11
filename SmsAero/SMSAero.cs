@@ -8,8 +8,9 @@ namespace SmsAero
 {
     public class SMSAero
     {
-        public string Email { get; set; } = "kachokabricosyan@gmail.com";
-        public string ApiKey { get; set; } = "E72RGexsdy3MYxn4V79i8MkflrS";
+        public string Email { get; set; } = "wb.pr0@yandex.ru";
+        public string ApiKey { get; set; } = "XKhmj42CPORGnZrFWSmGKsvjEtc6";
+
         public async Task SendSMS(string number,string text,string sign)
         {
             try

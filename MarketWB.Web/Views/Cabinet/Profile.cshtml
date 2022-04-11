@@ -1,6 +1,22 @@
+@using MarketAI.API.Models
 @{
     Layout = "_Layout";
 }
+@model UserModel
+<style>
+    .popup-item{
+        margin-top: 10px;
+        height:30px;
+    }
+    .popup-close{
+        margin-top: -30px !important;
+    }
+    .popup-error{
+       color: red;
+    }
+ </style>
+
+
 <div id="content">
 
     <div class="panel-body">
@@ -25,16 +41,22 @@
                 <div class="panel-body">
                     <div class="col-md-12 list-timeline">
                         <div class="col-md-12 list-timeline-section bg-light">
-                            <a asp-action="ChangePassword" asp-controller="Cabinet">
-                                <button class="btn btn-outline-primary custom_button">
+                            <button class="btn btn-outline-primary custom_button" data-toggle="modal" data-target="#changePassword">
                                     <p class="button_header">Смена пароля</p>
                                     <span>Хотите сменить пароль? Не проблема!</span>
-                                </button>
-                            </a>
+                            </button>
                             <br />
-                            <button class="btn btn-outline-primary custom_button">
+                            <button class="btn btn-outline-primary custom_button"
+                                @if (!string.IsNullOrEmpty(Model.ActivatedPromocode)){ @("disabled")} data-toggle="modal" data-target="#activatePromocode">
                                 <p class="button_header">Промокод</p>
-                                <span>Ввести промокод скидки</span>
+                                @if (string.IsNullOrEmpty(Model.ActivatedPromocode))
+                                {
+                                    <span>Ввести промокод скидки</span>
+                                }
+                                else
+                                {
+                                    <span>Промокод уже активирован</span>
+                                }
                             </button>
                             <br />
                             <a asp-action="Subscriptions" asp-controller="Cabinet">
@@ -46,7 +68,14 @@
                             <br />
                             <button class="btn btn-outline-primary custom_button">
                                 <p class="button_header">Срок действия подписки</p>
-                                <span>до 11.11.9999</span>
+                                @if (Model.IsSubscriptionEnded)
+                                {
+                                    <span>Подписка не активна</span>
+                                }
+                                else
+                                {
+                                    <span>до @Model.SubscriptionBefore</span>
+                                }
                             </button>
                         </div>
                     </div>
@@ -55,3 +84,113 @@
         </div>
     </div>
 </div>
+
+
+   <!-- Popups -->
+
+          <div class="modal" id="changePassword">
+             <div class="modal-dialog">
+                <div class="modal-content">
+                   <!-- Modal Header -->
+                   <div class="modal-header">
+                      <h4 class="modal-title">Изменение пароля</h4>
+                      <button type="button" class="close popup-close" data-dismiss="modal">&times;</button>
+                   </div>
+                   <!-- Modal body -->
+                   <div class="modal-body">
+                     <div class="form-group popup-item">
+                        <label class="col-sm-2 control-label text-right ">Новый пароль</label>
+                        <div class="col-sm-10 popup_item"><input id="new_password" type="password" required class="form-control" name="Name"></div>
+                     </div>
+                     <div class="form-group popup-item">
+                         <label class="col-sm-2 control-label text-right">Повторите пароль</label>
+                         <div  class="col-sm-10 popup_item"><input  id="new_password_repeat" type="password" name="APIKey" required class="form-control"></div>
+                     </div>
+                   </div>
+                   <h4 id="password_validation_error" class="popup-error"></h4>
+                   <!-- Modal footer -->
+                   <div class="modal-footer" >
+                        <button type="button" onclick="changePassword()" class="btn btn-primary popup_item" data-dismiss="modal">Сменить пароль</button>
+                        <button type="button" class="btn btn-light popup_item" data-dismiss="modal">Отмена</button>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+          <div class="modal" id="activatePromocode">
+             <div class="modal-dialog">
+                <div class="modal-content">
+                   <!-- Modal Header -->
+                   <div class="modal-header">
+                      <h4 class="modal-title">Активация промокода</h4>
+                      <button type="button" class="close popup-close" data-dismiss="modal">&times;</button>
+                   </div>
+                   <!-- Modal body -->
+                   <div class="modal-body">
+                     <div class="form-group popup-item">
+                        <label class="col-sm-2 control-label text-right ">Введите промокод</label>
+                        <div class="col-sm-10 popup_item"><input id="promocode" type="text" required class="form-control" name="Name"></div>
+                     </div>
+                   </div>
+                   <!-- Modal footer -->
+                   <div class="modal-footer" >
+                        <button type="button" onclick="activatePromocode()" class="btn btn-primary popup_item" data-dismiss="modal">Активировать</button>
+                        <button type="button" class="btn btn-light popup_item" data-dismiss="modal">Отмена</button>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+    <!--end Popups -->
+    <script>
+      async function changePassword() {
+
+        let new_password = document.getElementById('new_password');
+        let repeat_password = document.getElementById('new_password_repeat');
+        let validation_error = document.getElementById('password_validation_error');
+
+
+        if (new_password.value != repeat_password.value) {
+            validation_error.innerHTML = 'Пароли должны совпадать';
+            return;
+        }
+        if (new_password.value.length < 6) {
+            validation_error.innerHTML = 'Минимальная длина пароля должно составлять 6 символов';
+            return;
+        }
+
+        let model = {
+            Id : @Model.Id,
+            Password : new_password.value,
+        };
+
+        let response = await fetch('/ChangePassword', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                      },
+                      body: JSON.stringify(model),
+              });
+       }
+
+        async function activatePromocode() {
+
+        let promocode = document.getElementById('promocode');
+
+
+        let model = {
+            Id : @Model.Id,
+            ActivatedPromocode : promocode.value
+        };
+
+        let response = await fetch('/ActivatePromocode', 
+                  {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                      },
+                      body: JSON.stringify(model),
+                  });
+          document.location.reload();
+       }
+    </script>

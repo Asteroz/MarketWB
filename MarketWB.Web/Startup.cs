@@ -1,4 +1,6 @@
 using MarketAI.API.Controllers;
+using MarketWB.Parsing;
+using MarketWB.Web.Jobs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,8 +34,12 @@ namespace MarketWB.Web
             services.AddSingleton(typeof(TicketController));
             services.AddSingleton(typeof(UsersController));
             services.AddSingleton(typeof(StatsController));
+            services.AddSingleton(typeof(SelfCostsController));
+            services.AddSingleton(typeof(WBAPIKeysController));
+            services.AddSingleton(typeof(ExtraExpensesController));
 
-            // установка конфигурации подключения
+
+            // установка конфигурации подключени
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => //CookieAuthenticationOptions
                 {
@@ -41,7 +47,6 @@ namespace MarketWB.Web
                 });
 
             services.AddControllersWithViews();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +76,8 @@ namespace MarketWB.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            WBParsingJob.StartAsync(new System.Threading.CancellationToken());
         }
     }
 }

@@ -26,7 +26,7 @@ namespace MarketWB.Web.Controllers.Admin
         {
             List<GroupedVisitorsByDay> stats = new List<GroupedVisitorsByDay>();
 
-            var visitors = _stats.GetVisitors().GroupBy(o => o.Date);
+            var visitors = _stats.GetVisitors().GroupBy(o => o.Date.Date);
             foreach (var day in visitors)
             {
                 stats.Add(new GroupedVisitorsByDay

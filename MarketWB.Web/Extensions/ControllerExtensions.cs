@@ -1,14 +1,15 @@
 ﻿using MarketAI.API.Models;
 using MarketWB.Web.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace MarketWB.Web.Extensions
 {
     public static class ControllerExtensions
     {
-        public static UserModel GetUser(this Controller controller)
+        public static async Task<UserModel> GetUser(this Controller controller)
         {
-            return UserHelper.GetUser(controller.User);
+            return await UserHelper.GetUser(controller.User);
         }
     }
 }

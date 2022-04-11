@@ -9,8 +9,10 @@ namespace MarketAI.API.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int ProductId { get; set; }
+
         public WBAPITokenModel WBAPIToken { get; set; }
         public int WBAPITokenId { get; set; }
+
         public double PurchaseCost { get; set; }
         public double PackagingCost { get; set; }
         public double DeliveryToYourStockCost { get; set; }
