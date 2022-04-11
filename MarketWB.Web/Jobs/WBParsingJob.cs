@@ -31,11 +31,9 @@ namespace MarketWB.Web.Jobs
 
         private static async void DoWork(object state)
         {
-            List<WBAPITokenModel> tokens = new List<WBAPITokenModel>();
-
             var db = MarketWBParser.db;
 
-            tokens = await db.WBAPITokens.ToListAsync();
+            var tokens = await db.WBAPITokens.ToListAsync();
             await Task.Delay(3000);
             foreach (var token in tokens)
             {
@@ -69,26 +67,22 @@ namespace MarketWB.Web.Jobs
 
         public static async Task ParseImmediatelyIfNewKey(WBAPITokenModel token)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                if (db.WBIncomes.Any(o => o.APIKey == token.APIKey))
-                    return;
+            var db = MarketWBParser.db;
 
-                token.CreatedFirstTime = true;
-                db.WBAPITokens.Update(token);
-                await db.SaveChangesAsync();
+            token.CreatedFirstTime = true;
+            db.WBAPITokens.Update(token);
+            await db.SaveChangesAsync();
 
-                await ParseWBIncomes(token, db);
-                await Task.Delay(60000);
-                await ParseWBOrders(token, db);
-                await Task.Delay(60000);
-                await ParseWBSales(token, db);
-                await Task.Delay(60000);
-                await ParseWBStocks(token, db);
-                await Task.Delay(60000);
-                await ParseDetailByPeriodModels(token, db);
-                await ParseBrandAndCategoryTitles(token, db);
-            }
+            await ParseWBIncomes(token, db);
+            await Task.Delay(60000);
+            await ParseWBOrders(token, db);
+            await Task.Delay(60000);
+            await ParseWBSales(token, db);
+            await Task.Delay(60000);
+            await ParseWBStocks(token, db);
+            await Task.Delay(60000);
+            await ParseDetailByPeriodModels(token, db);
+            await ParseBrandAndCategoryTitles(token, db);
         }
 
 

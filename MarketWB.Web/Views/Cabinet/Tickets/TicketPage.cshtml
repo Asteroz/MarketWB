@@ -39,7 +39,7 @@
                               </li>
                             @foreach (var message in Model.Ticket.Messages)
                             {
-                                if(message.SentById == message.OwnerId)
+                                if(message.SentById == message.Owner.OpenedById)
                                 {
                                     <li>
                                         <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>

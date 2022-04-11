@@ -131,10 +131,17 @@ namespace MarketAI.API.Controllers
         {
             using (APIDBContext db = new APIDBContext())
             {
-                var user = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
-                user.UserData.SelectedWBCategory = category;
-                db.Users.Update(user);
-                await db.SaveChangesAsync();
+                try
+                {
+                    var user = db.Users.Include(o => o.UserData).FirstOrDefault(o => o.Id == userId);
+                    user.UserData.SelectedWBCategory = category;
+                    db.Users.Update(user);
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
         public async Task SetChangedPeriodFrom(int userId, DateTime date)

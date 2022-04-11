@@ -14,36 +14,40 @@ namespace MarketAI.API.Controllers
     public class ExtraExpensesController : ControllerBase
     {
         private readonly ILogger<ExtraExpensesController> _logger;
-        private readonly APIDBContext db;
-        public ExtraExpensesController(ILogger<ExtraExpensesController> logger, APIDBContext _db)
+        public ExtraExpensesController(ILogger<ExtraExpensesController> logger)
         {
             _logger = logger;
-            db = _db;
         }
 
 
         [HttpDelete]
         public async Task<RequestStatus> RemoveExtraExpense(WBAPITokenModel token, int id)
         {
-            var expense = token.ExtraExpenses.FirstOrDefault(o => o.Id == id);
-            token.ExtraExpenses.Remove(expense);
+            using (APIDBContext db = new APIDBContext())
+            {
+                var expense = token.ExtraExpenses.FirstOrDefault(o => o.Id == id);
+                token.ExtraExpenses.Remove(expense);
 
-            db.ExtraExpenses.Remove(expense);
+                db.ExtraExpenses.Remove(expense);
 
-            db.WBAPITokens.Update(token);
-            await db.SaveChangesAsync();
-            return new RequestStatus("Запись успешно удалена");
+                db.WBAPITokens.Update(token);
+                await db.SaveChangesAsync();
+                return new RequestStatus("Запись успешно удалена");
+            }
         }
         [HttpPut]
         public async Task<int> CreateExtraExpense(WBAPITokenModel token)
         {
-            var expense = new ExtraExpenseModel();
-            expense.WBAPITokenId = token.Id;
-            token.ExtraExpenses.Add(expense);
+            using (APIDBContext db = new APIDBContext())
+            {
+                var expense = new ExtraExpenseModel();
+                expense.WBAPITokenId = token.Id;
+                token.ExtraExpenses.Add(expense);
 
-            db.WBAPITokens.Update(token);
-            await db.SaveChangesAsync();
-            return expense.Id;
+                db.WBAPITokens.Update(token);
+                await db.SaveChangesAsync();
+                return expense.Id;
+            }
         }
         [HttpPut]
         public async Task<RequestStatus> UpdateExtraExpense(ExtraExpenseModel model)

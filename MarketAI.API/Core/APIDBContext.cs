@@ -63,7 +63,11 @@ namespace MarketAI.API.Core
                        "port=3306;" +
                        "database=marketwb;" +
                        "Convert Zero Datetime= true;",
-                       new MySqlServerVersion(new Version(8, 0, 11)));
+                       new MySqlServerVersion(new Version(8, 0, 11)),
+                       o =>
+                       {
+                           o.EnableRetryOnFailure(100);
+                       });
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
