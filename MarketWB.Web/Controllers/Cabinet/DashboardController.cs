@@ -58,7 +58,7 @@ namespace MarketWB.Web.Controllers.Cabinet
 
             var vm = new DashboardVM
             {
-                DashboardReport = await MarketWBParser.GenerateDashboardReport(user.UserData),
+                DashboardReport = MarketWBParser.GenerateDashboardReport(user.UserData),
             };
             vm = (DashboardVM)await InitVM(user, vm);
             return View("Views/Cabinet/Dashboard/Dashboard.cshtml", vm);
@@ -76,7 +76,7 @@ namespace MarketWB.Web.Controllers.Cabinet
             ReturnsReport report = null;
             if (user.UserData.SelectedWBAPIToken != null)
             {
-                report = await MarketWBParser.GenerateReturnsReport(user.UserData);
+                report =  MarketWBParser.GenerateReturnsReport(user.UserData);
             }
             var vm = new DashboardReturnsVM
             {
@@ -96,7 +96,7 @@ namespace MarketWB.Web.Controllers.Cabinet
             OrdersReport report = null;
             if (user.UserData.SelectedWBAPIToken != null)
             {
-                report = await MarketWBParser.GenerateOrdersReport(user.UserData);
+                report =  MarketWBParser.GenerateOrdersReport(user.UserData);
             }
             var vm = new DashboardOrdersVM
             {
@@ -116,7 +116,7 @@ namespace MarketWB.Web.Controllers.Cabinet
             SalesReport report = null;
             if(user.UserData.SelectedWBAPIToken != null)
             {
-                report = await MarketWBParser.GenerateSalesReport(user.UserData);
+                report = MarketWBParser.GenerateSalesReport(user.UserData);
             }
             var vm = new DashboardSalesVM
             {
@@ -137,7 +137,7 @@ namespace MarketWB.Web.Controllers.Cabinet
 
             if (user.UserData.SelectedWBAPIToken != null)
             {
-                report = await MarketWBParser.GenerateRejectsReport(user.UserData);
+                report = MarketWBParser.GenerateRejectsReport(user.UserData);
             }
             var vm = new DashboardCancelsVM
             {
@@ -255,8 +255,8 @@ namespace MarketWB.Web.Controllers.Cabinet
         private async Task<AbsDashboardVM> InitVM(UserModel user,AbsDashboardVM vm)
         {
             vm.User = user;
-            vm.Brands = await MarketWBParser.GetWBBrands(user.UserData.SelectedWBAPIToken);
-            vm.Categories = await MarketWBParser.GetWBCategories(user.UserData.SelectedWBAPIToken);
+            vm.Brands =  MarketWBParser.GetWBBrands(user.UserData.SelectedWBAPIToken);
+            vm.Categories =  MarketWBParser.GetWBCategories(user.UserData.SelectedWBAPIToken);
             vm.Brands.Insert(0,new AvailableWBBrand() { Brand = "Все бренды" });
             vm.Categories.Insert(0,new AvailableWBCategory() { Category = "Все категории" });
             return vm;

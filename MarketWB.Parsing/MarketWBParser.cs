@@ -20,9 +20,9 @@ namespace MarketWB.Parsing
     public static class MarketWBParser
     {
 
-        public static APIDBContext db { get; set; } = new APIDBContext();
+        public static APIDBContext db = new APIDBContext();
 
-        public static async Task<SalesReport> GenerateSalesReport(UserData filter)
+        public static SalesReport GenerateSalesReport(UserData filter)
         {
             var report = new SalesReport();
             if (filter.SelectedWBAPIToken is null) return report;
@@ -30,16 +30,16 @@ namespace MarketWB.Parsing
             List<WBSaleModel> sales = new List<WBSaleModel>();
             List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
 
-            sales = await db.WBSales.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date <= filter.SelectedPeriodTo
-                        && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToListAsync();
-            realizations = await db.DetailByPeriodModels
+            sales =  db.WBSales.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date <= filter.SelectedPeriodTo
+                        && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
+            realizations =  db.DetailByPeriodModels
                 .Where(o =>
                 o.RrDt >= filter.SelectedPeriodFrom
                 && o.RrDt <= filter.SelectedPeriodTo
                 && o.APIKey == filter.SelectedWBAPIToken.APIKey)
-                .ToListAsync();
-            sales = await FilterSales(filter, sales);
-            realizations = await FilterRealizations(filter, realizations);
+                .ToList();
+            sales = FilterSales(filter, sales);
+            realizations = FilterRealizations(filter, realizations);
 
             foreach (var realization in realizations)
             {
@@ -85,7 +85,7 @@ namespace MarketWB.Parsing
 
             return report;
         }
-        public static async Task<OrdersReport> GenerateOrdersReport(UserData filter)
+        public static OrdersReport GenerateOrdersReport(UserData filter)
         {
             var report = new OrdersReport();
             if (filter.SelectedWBAPIToken is null) return report;
@@ -93,16 +93,16 @@ namespace MarketWB.Parsing
             List<WBOrderModel> orders = new List<WBOrderModel>();
             List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
 
-            orders = await db.WBOrders.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date
-                        <= filter.SelectedPeriodTo && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToListAsync();
-            realizations = await db.DetailByPeriodModels
+            orders =  db.WBOrders.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date
+                        <= filter.SelectedPeriodTo && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
+            realizations =  db.DetailByPeriodModels
                    .Where(o =>
                    o.RrDt >= filter.SelectedPeriodFrom
                    && o.RrDt <= filter.SelectedPeriodTo
                    && o.APIKey == filter.SelectedWBAPIToken.APIKey)
-                   .ToListAsync();
-            orders = await FilterOrders(filter, orders);
-            realizations = await FilterRealizations(filter, realizations);
+                   .ToList();
+            orders = FilterOrders(filter, orders);
+            realizations = FilterRealizations(filter, realizations);
 
 
             foreach (var realization in realizations)
@@ -132,7 +132,7 @@ namespace MarketWB.Parsing
 
             return report;
         }
-        public static async Task<RejectsReport> GenerateRejectsReport(UserData filter)
+        public static RejectsReport GenerateRejectsReport(UserData filter)
         {           
             var report = new RejectsReport();
             if (filter.SelectedWBAPIToken is null) return report;
@@ -147,8 +147,8 @@ namespace MarketWB.Parsing
                    o.RrDt >= filter.SelectedPeriodFrom
                    && o.RrDt <= filter.SelectedPeriodTo
                    && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
-            orders = await FilterOrders(filter, orders);
-            realizations = await FilterRealizations(filter, realizations);
+            orders = FilterOrders(filter, orders);
+            realizations = FilterRealizations(filter, realizations);
 
             foreach (var order in orders.Where(o => o.IsCancel))
             {
@@ -194,7 +194,7 @@ namespace MarketWB.Parsing
             }
             return report;
         }
-        public static async Task<ReturnsReport> GenerateReturnsReport(UserData filter)
+        public static ReturnsReport GenerateReturnsReport(UserData filter)
         {
             var report = new ReturnsReport();
             if (filter.SelectedWBAPIToken is null) return report;
@@ -202,16 +202,16 @@ namespace MarketWB.Parsing
             List<WBOrderModel> orders = new List<WBOrderModel>();
             List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
 
-            orders = await db.WBOrders.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date <= filter.SelectedPeriodTo
-                                                          && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToListAsync();
-            realizations = await db.DetailByPeriodModels
+            orders =  db.WBOrders.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date <= filter.SelectedPeriodTo
+                                                          && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
+            realizations =  db.DetailByPeriodModels
                 .Where(o =>
                 o.RrDt >= filter.SelectedPeriodFrom
                 && o.RrDt <= filter.SelectedPeriodTo
                 && o.APIKey == filter.SelectedWBAPIToken.APIKey)
-                .ToListAsync();
-            orders = await FilterOrders(filter, orders);
-            realizations = await FilterRealizations(filter, realizations);
+                .ToList();
+            orders =  FilterOrders(filter, orders);
+            realizations = FilterRealizations(filter, realizations);
 
             foreach (var realization in realizations.Where(o => o.ReturnAmount > 0))
             {
@@ -254,7 +254,7 @@ namespace MarketWB.Parsing
             return report;
         }
 
-        public static async Task<DashboardReport> GenerateDashboardReport(UserData filter)
+        public static DashboardReport GenerateDashboardReport(UserData filter)
         {
             if (filter.SelectedWBAPIToken is null)
                 return new DashboardReport();
@@ -268,12 +268,12 @@ namespace MarketWB.Parsing
                 SelectedWBBrand = "",
             };
 
-            var allSales = await GenerateSalesReport(sharedFilter);
+            var allSales = GenerateSalesReport(sharedFilter);
 
-            var sales = await GenerateSalesReport(filter);
-            var cancels = await GenerateRejectsReport(filter);
-            var returns = await GenerateReturnsReport(filter);
-            var orders = await GenerateOrdersReport(filter);
+            var sales = GenerateSalesReport(filter);
+            var cancels =  GenerateRejectsReport(filter);
+            var returns =  GenerateReturnsReport(filter);
+            var orders =  GenerateOrdersReport(filter);
 
             double total = 0;
             double profit = 0;
@@ -348,51 +348,50 @@ namespace MarketWB.Parsing
             return report;
         }
 
-        public static async Task<List<AvailableWBCategory>> GetWBCategories(WBAPITokenModel apikey)
+        public static List<AvailableWBCategory> GetWBCategories(WBAPITokenModel apikey)
         {
             if (apikey is null) return new List<AvailableWBCategory>();
-            return await db.AvailableWBCategories.Where(o => o.APIKey == apikey.APIKey).ToListAsync();
+            return db.AvailableWBCategories.Where(o => o.APIKey == apikey.APIKey).ToList();
         }
-        public static async Task<List<AvailableWBBrand>> GetWBBrands(WBAPITokenModel apikey)
+        public static List<AvailableWBBrand> GetWBBrands(WBAPITokenModel apikey)
         {
             if (apikey is null) return new List<AvailableWBBrand>();
-            using (APIDBContext db = new APIDBContext())
-                return await db.AvailableWBBrands.Where(o => o.APIKey == apikey.APIKey).ToListAsync();
+            return db.AvailableWBBrands.Where(o => o.APIKey == apikey.APIKey).ToList();
         }
 
 
 
-        private static async Task<List<WBSaleModel>> FilterSales(UserData filter, List<WBSaleModel> sales)
+        private static List<WBSaleModel> FilterSales(UserData filter, List<WBSaleModel> sales)
         {
-            if (await HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey,filter.SelectedWBBrand))
+            if (HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey,filter.SelectedWBBrand))
             {
                 sales = sales.Where(o => o.Brand == filter.SelectedWBBrand).ToList();
             }
-            if (await HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
+            if (HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
             {
                 sales = sales.Where(o => o.Subject == filter.SelectedWBCategory).ToList();
             }
             return sales;
         }
-        private static async Task<List<WBOrderModel>> FilterOrders(UserData filter, List<WBOrderModel> orders)
+        private static List<WBOrderModel> FilterOrders(UserData filter, List<WBOrderModel> orders)
         {
-            if (await HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBBrand))
+            if (HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBBrand))
             {
                 orders = orders.Where(o => o.Brand == filter.SelectedWBBrand).ToList();
             }
-            if (await HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
+            if (HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
             {
                 orders = orders.Where(o => o.Subject == filter.SelectedWBCategory).ToList();
             }
             return orders;
         }
-        private static async Task<List<DetailByPeriodModel>> FilterRealizations(UserData filter, List<DetailByPeriodModel> realizations)
+        private static List<DetailByPeriodModel> FilterRealizations(UserData filter, List<DetailByPeriodModel> realizations)
         {
-            if (await HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBBrand))
+            if (HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBBrand))
             {
                 realizations = realizations.Where(o => o.BrandName == filter.SelectedWBBrand).ToList();
             }
-            if (await HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
+            if (HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
             {
                 realizations = realizations.Where(o => o.SubjectName == filter.SelectedWBCategory).ToList();
             }
@@ -400,14 +399,14 @@ namespace MarketWB.Parsing
         }
 
 
-        private static async Task<bool> HasAPIKeyBrand(string apikey,string brand)
+        private static bool HasAPIKeyBrand(string apikey,string brand)
         {
             if (string.IsNullOrEmpty(brand)) return false;
             if (string.IsNullOrEmpty(apikey)) return false;
             if (string.IsNullOrEmpty("Все бренды")) return false;
             return db.AvailableWBBrands.Any(o => o.APIKey == apikey && o.Brand == brand);
         }
-        private static async Task<bool> HasAPIKeyCategory(string apikey, string category)
+        private static bool HasAPIKeyCategory(string apikey, string category)
         {
             if (string.IsNullOrEmpty(category)) return false;
             if (string.IsNullOrEmpty(apikey)) return false;
