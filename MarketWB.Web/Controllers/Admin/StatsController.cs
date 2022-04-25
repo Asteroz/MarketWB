@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Stats = MarketAI.API.Controllers.StatsController;
+using Stats = MarketAI.API.Controllers.StatsModule;
 
 namespace MarketWB.Web.Controllers.Admin
 {

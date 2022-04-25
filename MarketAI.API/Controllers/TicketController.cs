@@ -14,43 +14,36 @@ namespace MarketAI.API.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ILogger<TicketController> _logger;
-        public TicketController(ILogger<TicketController> logger)
+        private readonly APIDBContext db;
+        public TicketController(ILogger<TicketController> logger, APIDBContext _db)
         {
             _logger = logger;
+            db = _db;
         }
 
 
         [HttpGet]
         public IEnumerable<TicketModel> GetAllTickets()
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.Tickets.Include(o => o.OpenedBy).Include(o => o.Messages).ToList();
-            }
+            return db.Tickets.Include(o => o.OpenedBy).Include(o => o.Messages).ToList();
         }
         [HttpGet]
         public IEnumerable<TicketModel> GetUserTickets(int userId)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.Tickets.Include(o => o.OpenedBy).Where(o => o.OpenedBy.Id == userId).ToList();
-            }
+            return db.Tickets.Include(o => o.OpenedBy).Where(o => o.OpenedBy.Id == userId).ToList();
         }
         [HttpPost]
         public async Task<RequestStatus> OpenTicket(int userId,TicketModel ticket)
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    var foundUser = db.Users.FirstOrDefault(o => o.Id == userId);
-                    if (foundUser is null)
-                        return new RequestStatus("Пользователя с таким id не существует", 404);
+                var foundUser = db.Users.FirstOrDefault(o => o.Id == userId);
+                if (foundUser is null)
+                    return new RequestStatus("Пользователя с таким id не существует", 404);
 
-                    ticket.CreatedAt = DateTime.Now;
-                    foundUser.Tickets.Add(ticket);
-                    await db.SaveChangesAsync();
-                }
+                ticket.CreatedAt = DateTime.Now;
+                foundUser.Tickets.Add(ticket);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Тикет успешно создан");
             }
             catch (Exception ex)
@@ -64,17 +57,14 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    msg.Owner = ticket;
-                    msg.OwnerId = ticket.Id;
-                    msg.CreatedAt = DateTime.Now;
+                msg.Owner = ticket;
+                msg.OwnerId = ticket.Id;
+                msg.CreatedAt = DateTime.Now;
 
-                    ticket.Messages.Add(msg);
+                ticket.Messages.Add(msg);
 
-                    db.Tickets.Update(ticket);
-                    await db.SaveChangesAsync();
-                }
+                db.Tickets.Update(ticket);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Тикет успешно создан");
             }
             catch (Exception ex)
@@ -87,16 +77,13 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    var fountTicket = db.Tickets.FirstOrDefault(o => o.Id == ticketId);
-                    if (fountTicket is null)
-                        return new RequestStatus("Тикет с таким id не существует", 404);
+                var fountTicket = db.Tickets.FirstOrDefault(o => o.Id == ticketId);
+                if (fountTicket is null)
+                    return new RequestStatus("Тикет с таким id не существует", 404);
 
-                    fountTicket.IsClosed = true;
-                    db.Tickets.Update(fountTicket);
-                    await db.SaveChangesAsync();
-                }
+                fountTicket.IsClosed = true;
+                db.Tickets.Update(fountTicket);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Тикет успешно создан");
             }
             catch (Exception ex)
@@ -109,24 +96,21 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    var foundUser = db.Users.FirstOrDefault(o => o.Id == fromUserId);
-                    if (foundUser is null)
-                        return new RequestStatus("Пользователя с таким id не существует", 404);
+                var foundUser = db.Users.FirstOrDefault(o => o.Id == fromUserId);
+                if (foundUser is null)
+                    return new RequestStatus("Пользователя с таким id не существует", 404);
 
-                    var foundTicket = db.Tickets.FirstOrDefault(o => o.Id == ticketId);
-                    if (foundTicket is null)
-                        return new RequestStatus("Тикет с таким id не существует", 404);
+                var foundTicket = db.Tickets.FirstOrDefault(o => o.Id == ticketId);
+                if (foundTicket is null)
+                    return new RequestStatus("Тикет с таким id не существует", 404);
 
-                    msg.Owner = foundTicket;
-                    msg.SentBy = foundUser;
+                msg.Owner = foundTicket;
+                msg.SentBy = foundUser;
 
-                    foundTicket.Messages.Add(msg);
-                    db.Tickets.Update(foundTicket);
+                foundTicket.Messages.Add(msg);
+                db.Tickets.Update(foundTicket);
 
-                    await db.SaveChangesAsync();
-                }
+                await db.SaveChangesAsync();
                 return new RequestStatus("Тикет успешно создан");
             }
             catch (Exception ex)

@@ -10,9 +10,6 @@
     }
 </style>
 
-<div id="content">
-
-    @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
 
     <div class="panel box-shadow-none content-header">
         <div class="panel-body">
@@ -39,28 +36,25 @@
                                         <th>Фотограф</th>
                                        @* <th> </th>*@
                                          <div style="display:block;">
-                                                <button onclick="CreateRow()" style="btn btn-primary">Добавить позицию</button>
-                                                <button onclick="SaveRows()" style="btn btn-success">Сохранить</button>
+                                               @* <button onclick="CreateRow()" style="btn btn-primary">Добавить позицию</button>*@
+                                                <button onclick="SaveRows()" class="btn">Сохранить изменения</button>
                                         </div>
                                     </tr>
                                 </thead>
                                 <tbody id="table_body">
-                                    @if(Model.Token != null)
-                                    {
-                                        foreach(var selfCost in Model.Token.SelfCosts)
-                                        {
+                                     @foreach(var selfCost in Model.User.SelfCosts)
+                                     {
                                             <tr data-id="@selfCost.Id">
-                                                <td><input class="table_input" type="number" value="@selfCost.ProductId"/></td>
+                                                <td>@selfCost.ProductId</td>
                                                 <td><input class="table_input" type="number" value="@selfCost.PurchaseCost"/></td>
                                                 <td><input class="table_input" type="number" value="@selfCost.PackagingCost"/></td>
                                                 <td><input class="table_input" type="number" value="@selfCost.DeliveryToYourStockCost"/></td>
                                                 <td><input class="table_input" type="number" value="@selfCost.DeliveryToWbStockCost"/></td>
                                                 <td><input class="table_input" type="number" value="@selfCost.FFServicesCost"/></td>
                                                 <td><input class="table_input" type="number" value="@selfCost.PhotographCost"/></td>
-                                                <td><a><button onclick="DeleteRow(@selfCost.Id)" style="btn btn-danger">Удалить</button></a></td>
+                                                @*<td><a><button onclick="DeleteRow(@selfCost.Id)" style="btn btn-danger">Удалить</button></a></td>*@
                                             </tr> 
-                                        }
-                                    }                                
+                                    }                               
                                 </tbody>
                             </table>
                         </div>
@@ -117,7 +111,7 @@
                 let cells = row.children;
                 let model = {
                     Id: new Number(row.getAttribute('data-id')),
-                    ProductId: new Number(cells[0].children[0].value),
+                    ProductId: new Number(cells[0].innerHTML),
                     PurchaseCost: new Number(cells[1].children[0].value),
                     PackagingCost: new Number(cells[2].children[0].value),
                     DeliveryToYourStockCost: new Number(cells[3].children[0].value),
@@ -138,4 +132,3 @@
 
 
     </script>
-</div>

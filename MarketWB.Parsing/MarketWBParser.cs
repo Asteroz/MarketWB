@@ -17,263 +17,343 @@ using WildberriesAPI.Models;
 
 namespace MarketWB.Parsing
 {
-    public static class MarketWBParser
+    public class MarketWBParser
     {
+        private readonly APIDBContext db;
+        public MarketWBParser(APIDBContext _db)
+        {
+            db = _db;
+        }
 
-        public static APIDBContext db = new APIDBContext();
-
-        public static SalesReport GenerateSalesReport(UserData filter)
+        public SalesReport GenerateSalesReport(UserModel user)
         {
             var report = new SalesReport();
-            if (filter.SelectedWBAPIToken is null) return report;
+            if (user.UserData.SelectedWBAPITokens.Count == 0) return report;
 
-            List<WBSaleModel> sales = new List<WBSaleModel>();
-            List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
-
-            sales =  db.WBSales.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date <= filter.SelectedPeriodTo
-                        && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
-            realizations =  db.DetailByPeriodModels
-                .Where(o =>
-                o.RrDt >= filter.SelectedPeriodFrom
-                && o.RrDt <= filter.SelectedPeriodTo
-                && o.APIKey == filter.SelectedWBAPIToken.APIKey)
-                .ToList();
-            sales = FilterSales(filter, sales);
-            realizations = FilterRealizations(filter, realizations);
-
-            foreach (var realization in realizations)
+            foreach(var token in user.UserData.SelectedWBAPITokens)
             {
-                var selfCost = filter.SelectedWBAPIToken.SelfCosts.FirstOrDefault(o => o.ProductId == realization.NmId);
-                var sale = sales.FirstOrDefault(o => o.NmId == realization.NmId);
+                List<WBSaleModel> sales = new List<WBSaleModel>();
+                List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
 
-                if (sale is null) continue;
+                sales = db.WBSales
+                    .Where(o => o.Date >= user.UserData.SelectedPeriodFrom
+                     && o.Date <= user.UserData.SelectedPeriodTo
+                     && o.APIKey == token.APIKey)
+                    .Where(o => o.FinishedPrice > 0)
+                    .ToList();
 
+                realizations = db.DetailByPeriodModels
+                    .Where(o => o.RrDt >= user.UserData.SelectedPeriodFrom).
+                     Where(o => o.RrDt <= user.UserData.SelectedPeriodTo).
+                     Where(o => o.APIKey == token.APIKey)
+                    .ToList();
 
-                var salesRow = new SalesReportRow
+                sales = FilterSales(user.UserData, sales);
+                realizations = FilterRealizations(user.UserData, realizations);
+
+                foreach (var sale in sales)
                 {
-                    ThumbnailPath = null,
-                    SaleDate = realization.SaleDt,
-                    Category = sale?.Category,
-                    Price = realization.RetailPrice,
-                    Title = realization.SubjectName,
-                    DeliveryAddress = realization.OfficeName,
-                    OrderDate = realization.OrderDt,
-                    Logistic = realization.DeliveryRub,
+                    var selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == sale.NmId);
+                    var realization = realizations.FirstOrDefault(o => o.NmId == sale.NmId && o.DeliveryRub > 0);
+                    var realization2 = realizations.FirstOrDefault(o => o.NmId == sale.NmId && o.DeliveryRub == 0);
+                    if (realization == null || realization2 == null) continue;
 
-                    Brand = realization.BrandName
-                };
 
-                double profit = 0;
-                if (realization.DeliveryRub > 0)
-                {
-                    salesRow.Price = sale.FinishedPrice;
-                    profit = (double)sale.ForPay;
+
+                    var salesRow = new SalesReportRow
+                    {
+                        ThumbnailPath = null,
+                        SaleDate = sale.Date,
+                        Category = sale.Category,
+                        Title = sale.Subject,
+                        DeliveryAddress = realization.OfficeName,
+                        OrderDate = realization.OrderDt,
+
+                        SelfCost = selfCost?.TotalSelfCost,
+
+                        Logistic = realization.DeliveryRub,
+
+                        Brand = sale.Brand,
+                        Article = (long)sale.NmId,
+
+                        IsSelfBuy = sale.IsSelfBuy
+                    };
+
+                    double profit = 0;
+                    salesRow.Price = Math.Abs((double)sale.FinishedPrice);
+                    salesRow.Comission = salesRow.Price / 100 * realization2.CommissionPercent;
+
+                    if (!sale.IsSelfBuy)
+                        profit = (double)sale.ForPay;
+
                     if (selfCost != null)
                         profit -= selfCost.TotalSelfCost;
-                }
-                else
-                {
-                    profit = (double)realization.ppvz_for_pay;
-                    if (selfCost != null)
-                        profit -= selfCost.TotalSelfCost;
-                }
-                salesRow.Profit = profit;
 
-                report.Rows.Add(salesRow);
+                    salesRow.Profit = profit;
+
+                    report.Rows.Add(salesRow);
+                }
             }
-
-
             return report;
         }
-        public static OrdersReport GenerateOrdersReport(UserData filter)
+
+        public OrdersReport GenerateOrdersReport(UserModel user)
+
         {
             var report = new OrdersReport();
-            if (filter.SelectedWBAPIToken is null) return report;
+            if (user.UserData.SelectedWBAPITokens.Count == 0) return report;
 
-            List<WBOrderModel> orders = new List<WBOrderModel>();
-            List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
-
-            orders =  db.WBOrders.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date
-                        <= filter.SelectedPeriodTo && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
-            realizations =  db.DetailByPeriodModels
-                   .Where(o =>
-                   o.RrDt >= filter.SelectedPeriodFrom
-                   && o.RrDt <= filter.SelectedPeriodTo
-                   && o.APIKey == filter.SelectedWBAPIToken.APIKey)
-                   .ToList();
-            orders = FilterOrders(filter, orders);
-            realizations = FilterRealizations(filter, realizations);
-
-
-            foreach (var realization in realizations)
+            foreach (var token in user.UserData.SelectedWBAPITokens)
             {
-                var order = orders.FirstOrDefault(o => o.NmId == realization.NmId);
+                List<WBOrderModel> orders = new List<WBOrderModel>();
+                List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
 
-                var salesRow = new OrdersReportRow
-                {
-                    ThumbnailPath = null,
-                    Category = order?.Category,
-                    OrderDate = realization.OrderDt,
-                    Title = realization.SubjectName,
-                    DeliveryAddress = realization.OfficeName,
-                    Logistic = realization.DeliveryRub,
-                };
-                if (realization.DeliveryRub > 0)
-                {
-                    salesRow.Price = order.TotalPrice;
-                }
-                else
-                {
-                    salesRow.Price = realization.ppvz_for_pay;
-                }
+                orders = db.WBOrders.Where(o =>
+                           o.Date >= user.UserData.SelectedPeriodFrom
+                           && o.Date <= user.UserData.SelectedPeriodTo
+                           && o.APIKey == token.APIKey)
+                            .ToList();
 
-                report.Rows.Add(salesRow);
+                realizations = db.DetailByPeriodModels.Where(o =>
+                      o.RrDt >= user.UserData.SelectedPeriodFrom
+                      && o.RrDt <= user.UserData.SelectedPeriodTo
+                      && o.APIKey == token.APIKey)
+                       .ToList();
+
+                orders = FilterOrders(user.UserData, orders);
+                realizations = FilterRealizations(user.UserData, realizations);
+
+
+
+
+                foreach (var order in orders)
+                {
+                    var realization = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub > 0);
+                    var selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == order.NmId);
+
+                    var salesRow = new OrdersReportRow
+                    {
+                        ThumbnailPath = null,
+                        Category = order?.Category,
+                        OrderDate = order.Date,
+                        Title = order.Subject,
+     
+                        SelfCost = selfCost?.TotalSelfCost,
+
+                        Brand = order.Brand,
+                        Article = (long)order.NmId,
+
+                        IsSelfBuy = order.IsSelfBuy
+                    };
+
+                    if(realization != null)
+                    {
+                        salesRow.DeliveryAddress = realization.OfficeName;
+                        salesRow.Logistic = realization.DeliveryRub;
+                    }
+
+                    salesRow.Price = order.TotalPrice - (order.TotalPrice / 100 * order.DiscountPercent);
+
+                    report.Rows.Add(salesRow);
+                }
             }
-
             return report;
         }
-        public static RejectsReport GenerateRejectsReport(UserData filter)
+        public RejectsReport GenerateRejectsReport(UserModel user)
         {           
             var report = new RejectsReport();
-            if (filter.SelectedWBAPIToken is null) return report;
+            if (user.UserData.SelectedWBAPITokens.Count == 0) return report;
 
-            List<WBOrderModel> orders;
-            List<DetailByPeriodModel> realizations;
-
-            orders = db.WBOrders.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date <= filter.SelectedPeriodTo
-                                   && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
-            realizations = db.DetailByPeriodModels
-                   .Where(o =>
-                   o.RrDt >= filter.SelectedPeriodFrom
-                   && o.RrDt <= filter.SelectedPeriodTo
-                   && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
-            orders = FilterOrders(filter, orders);
-            realizations = FilterRealizations(filter, realizations);
-
-            foreach (var order in orders.Where(o => o.IsCancel))
+            foreach (var token in user.UserData.SelectedWBAPITokens)
             {
-                var realization = realizations.FirstOrDefault(o => o.NmId == order.NmId);
-                if (realization == null) continue;
+        
 
-                SelfCostModel selfCost = filter.SelectedWBAPIToken.SelfCosts.FirstOrDefault(o => o.ProductId == realization.NmId);
+                List<WBOrderModel> orders = db.WBOrders.Where(o => 
+                o.Date >= user.UserData.SelectedPeriodFrom 
+                && o.Date <= user.UserData.SelectedPeriodTo
+                && o.APIKey == token.APIKey
+                && o.IsCancel)
+                .ToList();
 
-                var salesRow = new RejectsReportRow
+                List<DetailByPeriodModel> realizations = db.DetailByPeriodModels
+                       .Where(o =>
+                       o.RrDt >= user.UserData.SelectedPeriodFrom
+                       && o.RrDt <= user.UserData.SelectedPeriodTo
+                       && o.APIKey == token.APIKey)
+                       .ToList();
+
+                orders = FilterOrders(user.UserData, orders).ToList();
+
+
+
+                realizations = FilterRealizations(user.UserData, realizations);
+
+                foreach (var order in orders)
                 {
-                    ThumbnailPath = null,
-                    Category = order.Category,
-                    SaleDate = realization?.SaleDt,
-                    OrderDate = order.Date,
-                    DeliveryAddress = realization?.OfficeName,
-                    Logistic = realization?.DeliveryRub,
-                    Title = realization?.SubjectName,
-                };
+                    var realization = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub == 0);
+                    var realization2 = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub > 0);
+              
+
+                
+
+                 //   if (realization == null) continue;
 
 
-                double profit = 0;
-                if (realization.DeliveryRub > 0)
-                {
-                    salesRow.Price = order.TotalPrice;
-                    profit = (double)order.TotalPrice - ((double)order.TotalPrice / 100 * (double)order.DiscountPercent);
+                    SelfCostModel selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == order.NmId);
+
+                    var salesRow = new RejectsReportRow
+                    {
+                        ThumbnailPath = null,
+                        Category = order.Category,
+                        SaleDate = realization2?.SaleDt,
+                        OrderDate = order.Date,
+                        Title = order.Subject,
+                        CancelDate = order.CancelDT,
+
+                        Logistic = realization2?.DeliveryRub,
+
+                        Brand = order.Brand,
+                        Article = (long)order.NmId
+                    };
+
+
+                    double profit = 0;
+
+                    var price = (double)order.TotalPrice - ((double)order.TotalPrice / 100 * (double)order.DiscountPercent);
+
+                    salesRow.Price = price;
+                    profit = price;
+
                     if (selfCost != null)
                         profit -= selfCost.TotalSelfCost;
+
+
+                    if (realization != null)
+                    {
+                        salesRow.LostProfit = profit - realization2.DeliveryRub - (salesRow.Price / 100 * realization.CommissionPercent);
+                    }
+                    else
+                    {
+                        salesRow.LostProfit = profit;
+                    }
+
+
+                    report.Rows.Add(salesRow);
                 }
-                else
-                {
-                    salesRow.Price = realization.RetailPrice;
-                    profit = (double)realization.ppvz_for_pay;
-                    if (selfCost != null)
-                        profit -= selfCost.TotalSelfCost;
-                }
-                if (selfCost != null)
-                    profit -= selfCost.TotalSelfCost;
-
-                salesRow.LostProfit = profit;
-
-
-                report.Rows.Add(salesRow);
-            }
+            }   
             return report;
         }
-        public static ReturnsReport GenerateReturnsReport(UserData filter)
+        public ReturnsReport GenerateReturnsReport(UserModel user)
         {
             var report = new ReturnsReport();
-            if (filter.SelectedWBAPIToken is null) return report;
+            if (user.UserData.SelectedWBAPITokens.Count == 0) return report;
 
-            List<WBOrderModel> orders = new List<WBOrderModel>();
-            List<DetailByPeriodModel> realizations = new List<DetailByPeriodModel>();
-
-            orders =  db.WBOrders.Where(o => o.Date >= filter.SelectedPeriodFrom && o.Date <= filter.SelectedPeriodTo
-                                                          && o.APIKey == filter.SelectedWBAPIToken.APIKey).ToList();
-            realizations =  db.DetailByPeriodModels
-                .Where(o =>
-                o.RrDt >= filter.SelectedPeriodFrom
-                && o.RrDt <= filter.SelectedPeriodTo
-                && o.APIKey == filter.SelectedWBAPIToken.APIKey)
-                .ToList();
-            orders =  FilterOrders(filter, orders);
-            realizations = FilterRealizations(filter, realizations);
-
-            foreach (var realization in realizations.Where(o => o.ReturnAmount > 0))
+            foreach (var token in user.UserData.SelectedWBAPITokens)
             {
-                var order = orders.FirstOrDefault(o => o.NmId == realization.NmId);
-                if (order is null) continue;
+
+                var stocks = db.WBStocks.Where(o => o.APIKey == token.APIKey).ToList();
+
+                var orders = db.WBSales.Where(o => 
+                o.Date >= user.UserData.SelectedPeriodFrom 
+                && o.Date <= user.UserData.SelectedPeriodTo                                             
+                && o.APIKey == token.APIKey
+                && o.FinishedPrice < 0
+                && o.SaleID.StartsWith("R")).ToList();
+
+               var realizations = db.DetailByPeriodModels
+                    .Where(o =>
+                    o.RrDt >= user.UserData.SelectedPeriodFrom
+                    && o.RrDt <= user.UserData.SelectedPeriodTo
+                    && o.APIKey == token.APIKey)
+                    .ToList();
+                orders = FilterSales(user.UserData, orders);
 
 
-                var selfCost = filter.SelectedWBAPIToken.SelfCosts.FirstOrDefault(o => o.ProductId == realization.NmId);
+                realizations = FilterRealizations(user.UserData, realizations);
 
-                var salesRow = new ReturnsReportRow
+                foreach (var order in orders)
                 {
-                    ThumbnailPath = null,
-                    SaleDate = realization.SaleDt,
-                    OrderDate = realization.OrderDt,
-                    DeliveryAddress = realization.OfficeName,
-                    Logistic = realization.DeliveryRub,
-                    Title = realization.SubjectName,
-                    Category = order?.Category,
-                    Price = realization.ppvz_for_pay,
-                };
+                    var realization = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub > 0);
+                    var realization2 = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub == 0);
+                    if (realization == null || realization2 == null) continue;
 
-                double profit = 0;
-                if (realization.DeliveryRub > 0)
-                {
-                    salesRow.Price = order.TotalPrice;
-                    profit = (double)order.TotalPrice - ((double)order.TotalPrice / 100 * (double)order.DiscountPercent);
+                    var stock = stocks.FirstOrDefault(o => o.NmId == order.NmId);
+
+
+                    var selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == realization.NmId);
+
+                    var salesRow = new ReturnsReportRow
+                    {
+                        ThumbnailPath = null,
+                        SaleDate = realization.SaleDt,
+                        OrderDate = realization.OrderDt,
+                        DeliveryAddress = realization.OfficeName,
+                        Logistic = realization.DeliveryRub,
+                        Title = realization.SubjectName,
+                        Category = order?.Category,
+                        Price = realization.ppvz_for_pay,
+                        ReturnDate = order.LastChangeDate,
+
+                        Brand = order.Brand,
+                        Article = (long)order.NmId,
+                    };
+
+                    if(stock != null)
+                    {
+                        salesRow.InWayFromClient = (int)stock.InWayFromClient;
+                        salesRow.InWayToClient = (int)stock.InWayToClient;
+                    }
+
+                    double profit = 0;
+
+                    var price = (double)order.TotalPrice - ((double)order.TotalPrice / 100 * (double)order.DiscountPercent);
+
+                    salesRow.Price = price;
+                    profit = price;
                     if (selfCost != null)
                         profit -= selfCost.TotalSelfCost;
-                }
-                else
-                {
-                    profit = (double)realization.ppvz_for_pay;
-                    if (selfCost != null)
-                        profit -= selfCost.TotalSelfCost;
-                }
-                salesRow.Profit = profit;
 
-                report.Rows.Add(salesRow);
+                    salesRow.Profit = profit;
+
+                    report.Rows.Add(salesRow);
+                }
             }
+
+          
             return report;
         }
 
-        public static DashboardReport GenerateDashboardReport(UserData filter)
+        public DashboardReport GenerateDashboardReport(UserModel user)
         {
-            if (filter.SelectedWBAPIToken is null)
+            if (user.UserData.SelectedWBAPITokens.Count == 0)
                 return new DashboardReport();
+
 
             var sharedFilter = new UserData
             {
-                SelectedPeriodFrom = filter.SelectedPeriodFrom,
-                SelectedPeriodTo = filter.SelectedPeriodTo,
-                SelectedWBAPIToken = filter.SelectedWBAPIToken,
+                SelectedPeriodFrom = user.UserData.SelectedPeriodFrom,
+                SelectedPeriodTo = user.UserData.SelectedPeriodTo,
+                SelectedWBAPITokens = user.UserData.SelectedWBAPITokens,
                 SelectedWBCategory = "",
                 SelectedWBBrand = "",
             };
 
-            var allSales = GenerateSalesReport(sharedFilter);
+            var filterUser = new UserModel();
+            filterUser.UserData = sharedFilter;
+           
 
-            var sales = GenerateSalesReport(filter);
-            var cancels =  GenerateRejectsReport(filter);
-            var returns =  GenerateReturnsReport(filter);
-            var orders =  GenerateOrdersReport(filter);
+            var allSales = GenerateSalesReport(filterUser);
+
+
+
+            var sales = GenerateSalesReport(user);
+            var cancels =  GenerateRejectsReport(user);
+            var returns =  GenerateReturnsReport(user);
+            var orders =  GenerateOrdersReport(user);
+
+
+
+
 
             double total = 0;
             double profit = 0;
@@ -281,7 +361,9 @@ namespace MarketWB.Parsing
 
             foreach(var sale in sales.Rows)
             {
-                profit += (double)sale.Profit;
+                if(!sale.IsSelfBuy)
+                    profit += (double)sale.Profit;
+
                 total += (double)sale.Price;
             }
             double percent = total / 100;
@@ -289,8 +371,8 @@ namespace MarketWB.Parsing
 
             DashboardReport report = new DashboardReport()
             {
-                From = filter.SelectedPeriodFrom,
-                To = filter.SelectedPeriodTo,
+                From = user.UserData.SelectedPeriodFrom,
+                To = user.UserData.SelectedPeriodTo,
 
                 CancelsCount = cancels.Rows.Count,
                 CancelsSum = Math.Round((double)cancels.Rows.Sum(o => o.Price),2),
@@ -348,65 +430,99 @@ namespace MarketWB.Parsing
             return report;
         }
 
-        public static List<AvailableWBCategory> GetWBCategories(WBAPITokenModel apikey)
+
+
+
+        public List<AvailableWBCategory> GetWBCategories(WBAPITokenModel apikey)
         {
             if (apikey is null) return new List<AvailableWBCategory>();
             return db.AvailableWBCategories.Where(o => o.APIKey == apikey.APIKey).ToList();
         }
-        public static List<AvailableWBBrand> GetWBBrands(WBAPITokenModel apikey)
+        public List<AvailableWBCategory> GetWBCategories(List<WBAPITokenModel> apikeys)
+        {
+            List<AvailableWBCategory> items = new List<AvailableWBCategory>();
+            foreach (var token in apikeys)
+            {
+                items.AddRange(db.AvailableWBCategories.Where(o => o.APIKey == token.APIKey).ToList());
+            }
+            return items;
+        }
+
+
+
+
+        public List<AvailableWBBrand> GetWBBrands(WBAPITokenModel apikey)
         {
             if (apikey is null) return new List<AvailableWBBrand>();
             return db.AvailableWBBrands.Where(o => o.APIKey == apikey.APIKey).ToList();
         }
-
-
-
-        private static List<WBSaleModel> FilterSales(UserData filter, List<WBSaleModel> sales)
+        public List<AvailableWBBrand> GetWBBrands(List<WBAPITokenModel> apikeys)
         {
-            if (HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey,filter.SelectedWBBrand))
+            List<AvailableWBBrand> items = new List<AvailableWBBrand>();
+            foreach(var token in apikeys)
             {
-                sales = sales.Where(o => o.Brand == filter.SelectedWBBrand).ToList();
+                items.AddRange(db.AvailableWBBrands.Where(o => o.APIKey == token.APIKey).ToList());
             }
-            if (HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
+            return items;
+        }
+
+
+        private List<WBSaleModel> FilterSales(UserData filter, List<WBSaleModel> sales)
+        {
+            foreach(var token in filter.SelectedWBAPITokens)
             {
-                sales = sales.Where(o => o.Subject == filter.SelectedWBCategory).ToList();
+                if (HasAPIKeyBrand(token.APIKey, filter.SelectedWBBrand))
+                {
+                    sales = sales.Where(o => o.Brand == filter.SelectedWBBrand).ToList();
+                }
+                if (HasAPIKeyCategory(token.APIKey, filter.SelectedWBCategory))
+                {
+                    sales = sales.Where(o => o.Subject == filter.SelectedWBCategory).ToList();
+                }
             }
+           
             return sales;
         }
-        private static List<WBOrderModel> FilterOrders(UserData filter, List<WBOrderModel> orders)
+        private List<WBOrderModel> FilterOrders(UserData filter, List<WBOrderModel> orders)
         {
-            if (HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBBrand))
+            foreach (var token in filter.SelectedWBAPITokens)
             {
-                orders = orders.Where(o => o.Brand == filter.SelectedWBBrand).ToList();
-            }
-            if (HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
-            {
-                orders = orders.Where(o => o.Subject == filter.SelectedWBCategory).ToList();
-            }
+                if (HasAPIKeyBrand(token.APIKey, filter.SelectedWBBrand))
+                {
+                    orders = orders.Where(o => o.Brand == filter.SelectedWBBrand).ToList();
+                }
+                if (HasAPIKeyCategory(token.APIKey, filter.SelectedWBCategory))
+                {
+                    orders = orders.Where(o => o.Subject == filter.SelectedWBCategory).ToList();
+                }
+            }         
             return orders;
         }
-        private static List<DetailByPeriodModel> FilterRealizations(UserData filter, List<DetailByPeriodModel> realizations)
+        private List<DetailByPeriodModel> FilterRealizations(UserData filter, List<DetailByPeriodModel> realizations)
         {
-            if (HasAPIKeyBrand(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBBrand))
+            foreach (var token in filter.SelectedWBAPITokens)
             {
-                realizations = realizations.Where(o => o.BrandName == filter.SelectedWBBrand).ToList();
-            }
-            if (HasAPIKeyCategory(filter.SelectedWBAPIToken.APIKey, filter.SelectedWBCategory))
-            {
-                realizations = realizations.Where(o => o.SubjectName == filter.SelectedWBCategory).ToList();
+                if (HasAPIKeyBrand(token.APIKey, filter.SelectedWBBrand))
+                {
+                    realizations = realizations.Where(o => o.BrandName == filter.SelectedWBBrand).ToList();
+                }
+                if (HasAPIKeyCategory(token.APIKey, filter.SelectedWBCategory))
+                {
+                    realizations = realizations.Where(o => o.SubjectName == filter.SelectedWBCategory).ToList();
+                }
             }
             return realizations;
         }
 
 
-        private static bool HasAPIKeyBrand(string apikey,string brand)
+        private bool HasAPIKeyBrand(string apikey,string brand)
         {
             if (string.IsNullOrEmpty(brand)) return false;
             if (string.IsNullOrEmpty(apikey)) return false;
             if (string.IsNullOrEmpty("Все бренды")) return false;
             return db.AvailableWBBrands.Any(o => o.APIKey == apikey && o.Brand == brand);
         }
-        private static bool HasAPIKeyCategory(string apikey, string category)
+        private bool HasAPIKeyCategory(string apikey, string category)
         {
             if (string.IsNullOrEmpty(category)) return false;
             if (string.IsNullOrEmpty(apikey)) return false;

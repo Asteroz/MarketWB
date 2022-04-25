@@ -10,9 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Users = MarketAI.API.Controllers.UsersController;
-using Stats = MarketAI.API.Controllers.StatsController;
+using Users = MarketAI.API.Controllers.UsersModule;
+using Stats = MarketAI.API.Controllers.StatsModule;
+using Subscriptions = MarketAI.API.Controllers.SubscriptionsModule;
 using MarketWB.Web.Helpers;
+using MarketAI.API.Controllers;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MarketWB.Web.Controllers
 {
@@ -21,11 +25,19 @@ namespace MarketWB.Web.Controllers
         private readonly ILogger<UsersController> _logger;
         private readonly Users _api;
         private readonly Stats _stats;
-        public UsersController(ILogger<UsersController> logger, Users api,Stats stats)
+        private readonly Subscriptions _subs;
+        private readonly IWebHostEnvironment _appEnvironment;
+        public UsersController(ILogger<UsersController> logger, 
+                                Users api,
+                                Stats stats,
+                                Subscriptions subs,
+                                IWebHostEnvironment appEnvironment)
         {
             _logger = logger;
             _api = api;
+            _subs = subs;
             _stats = stats;
+            _appEnvironment = appEnvironment;
         }
         [Route("CheckUser")]
         [HttpGet]
@@ -70,7 +82,7 @@ namespace MarketWB.Web.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Register(UserModel model)
+        public async Task<IActionResult> Register([FromForm] UserModel model,[FromForm]string refcode = null)
         {
             var found = _api.GetUserByPhoneOrEmail(model.Phone);
             if(found != null)
@@ -81,6 +93,21 @@ namespace MarketWB.Web.Controllers
                 return RedirectToAction("Registration", "Home");
 
             await _api.CreateUser(model);
+
+            if(!string.IsNullOrEmpty(refcode))
+            {
+                var refUser = _api.GetUserByRefCode(refcode);
+                if(refUser != null)
+                {
+                    await _api.AddRef(refUser,model);
+                    var refSettings = _subs.GetRefSettings();
+                    if(refSettings.NewRefDaysGift > 0)
+                    {
+                        await _api.SetSubscriptionDate(model, DateTime.Now.AddDays(refSettings.NewRefDaysGift));
+                    }
+
+                }
+            }
 
             return RedirectToAction("Dashboard", "Dashboard");
         }
@@ -136,6 +163,35 @@ namespace MarketWB.Web.Controllers
             await _api.ActivatePromocode(user);
         }
 
+
+        [Route("UpdateUser")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser([FromForm] UserModel model)
+        {
+            await SetAttachmentIfHas(model);
+            await _api.UpdatePersonalData(model);
+            return RedirectToAction("Profile", "Cabinet");
+        }
+
+
+
+
+
+        private async Task SetAttachmentIfHas(UserModel user)
+        {
+            var attachment = Request.Form.Files.FirstOrDefault();
+            var filePath = "/uploads/" + Guid.NewGuid().ToString();
+
+            if (attachment != null)
+            {
+                user.AvatarPath = filePath + attachment.FileName;
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + user.AvatarPath, FileMode.Create))
+                {
+                    await attachment.CopyToAsync(fileStream);
+                }
+            }
+        }
+
         private async Task<ClaimsPrincipal> MakeAuth(UserModel user)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -166,5 +222,9 @@ namespace MarketWB.Web.Controllers
                 SubscriptionBefore = DateTime.MaxValue,
             });
         }
+
+
+        
+
     }
 }

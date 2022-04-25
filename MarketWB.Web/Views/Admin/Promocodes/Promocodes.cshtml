@@ -23,7 +23,8 @@
                                 <tr>
                                     <th>Id</th>
                                     <th>Код</th>
-                                    <th>Скидка (%)</th>
+                                    <th>Тип</th>
+                                    <th>Значение</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -34,6 +35,16 @@
                                     <tr>
                                         <td>@item.Id</td>
                                         <td>@item.Code</td>
+                                        <td>
+                                            @if(item.Type == MarketAI.Database.Enums.PromocodeType.Percent)
+                                            {
+                                                <span>Проценты</span>
+                                            }
+                                            @if(item.Type == MarketAI.Database.Enums.PromocodeType.Value)
+                                            {
+                                                <span>Сумма</span>
+                                            }
+                                        </td>
                                         <td>@item.Percent</td>
                                         <td><a asp-action="UpdatePromocode" asp-controller="Promocodes" asp-route-id="@item.Id"><button class="btn btn-warning" style="width:80%">Изменить</button></a></td>
                                         <td><a asp-action="DeletePromocode" asp-controller="Promocodes" asp-route-id="@item.Id"><button class="btn btn-danger" style="width:80%">Удалить</button></a></td>

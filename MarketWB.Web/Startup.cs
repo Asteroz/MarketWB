@@ -1,10 +1,12 @@
 using MarketAI.API.Controllers;
+using MarketAI.API.Core;
 using MarketWB.Parsing;
 using MarketWB.Web.Jobs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,15 +30,22 @@ namespace MarketWB.Web
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSingleton(typeof(PostsController));
-            services.AddSingleton(typeof(PromocodeController));
-            services.AddSingleton(typeof(SubscriptionsController));
-            services.AddSingleton(typeof(TicketController));
-            services.AddSingleton(typeof(UsersController));
-            services.AddSingleton(typeof(StatsController));
-            services.AddSingleton(typeof(SelfCostsController));
-            services.AddSingleton(typeof(WBAPIKeysController));
-            services.AddSingleton(typeof(ExtraExpensesController));
+            services.AddDbContext<APIDBContext>(options =>
+                 options.UseMySql(new MySqlServerVersion(new Version(8, 0, 11))));
+
+            services.AddScoped(typeof(PostsModule));
+            services.AddScoped(typeof(PromocodeModule));
+            services.AddScoped(typeof(SubscriptionsModule));
+            services.AddScoped(typeof(TicketModule));
+            services.AddScoped(typeof(UsersModule));
+            services.AddScoped(typeof(StatsModule));
+            services.AddScoped(typeof(SelfCostsModule));
+            services.AddScoped(typeof(WBAPIKeysModule));
+            services.AddScoped(typeof(ExtraExpensesModule));
+
+            services.AddHostedService<WBParsingJob>();
+
+            services.AddScoped(typeof(MarketWBParser));
 
 
             // установка конфигурации подключени
@@ -62,6 +71,8 @@ namespace MarketWB.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseDefaultFiles();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -77,7 +88,6 @@ namespace MarketWB.Web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            WBParsingJob.StartAsync(new System.Threading.CancellationToken());
         }
     }
 }

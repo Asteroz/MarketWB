@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketAI.API", "MarketAI.API\MarketAI.API.csproj", "{C4A97C84-B6D7-4E2F-8418-A295A7A38BA2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketWB.Web", "MarketWB.Web\MarketWB.Web.csproj", "{EDB51244-99EC-4B5F-B15E-F308D5CDCD6C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmsAero", "SmsAero\SmsAero.csproj", "{58443516-5C7D-4F2E-8DAE-3E3DC29F8999}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WildberriesAPI", "WildberriesAPI\WildberriesAPI.csproj", "{6CB7B5F4-5D41-420A-96D3-D594BADE054B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{2273BCEC-7E86-4013-AA19-5A4C104B112C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{2273BCEC-7E86-4013-AA19-5A4C104B112C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketWB.Parsing", "MarketWB.Parsing\MarketWB.Parsing.csproj", "{A13B0CBC-E020-43F9-93F4-9BE10AF60C8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketWB.Parsing", "MarketWB.Parsing\MarketWB.Parsing.csproj", "{A13B0CBC-E020-43F9-93F4-9BE10AF60C8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketAI.Database", "MarketAI.Database\MarketAI.Database.csproj", "{AE18F543-2C8A-4CB5-A50E-244597828960}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C4A97C84-B6D7-4E2F-8418-A295A7A38BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4A97C84-B6D7-4E2F-8418-A295A7A38BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4A97C84-B6D7-4E2F-8418-A295A7A38BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4A97C84-B6D7-4E2F-8418-A295A7A38BA2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EDB51244-99EC-4B5F-B15E-F308D5CDCD6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EDB51244-99EC-4B5F-B15E-F308D5CDCD6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDB51244-99EC-4B5F-B15E-F308D5CDCD6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{A13B0CBC-E020-43F9-93F4-9BE10AF60C8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A13B0CBC-E020-43F9-93F4-9BE10AF60C8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A13B0CBC-E020-43F9-93F4-9BE10AF60C8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE18F543-2C8A-4CB5-A50E-244597828960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE18F543-2C8A-4CB5-A50E-244597828960}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE18F543-2C8A-4CB5-A50E-244597828960}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE18F543-2C8A-4CB5-A50E-244597828960}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

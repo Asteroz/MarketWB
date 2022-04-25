@@ -6,9 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Subscriptions = MarketAI.API.Controllers.SubscriptionsController;
-using Posts = MarketAI.API.Controllers.PostsController;
+using Subscriptions = MarketAI.API.Controllers.SubscriptionsModule;
+using Posts = MarketAI.API.Controllers.PostsModule;
 using MarketWB.Web.ViewModels.Cabinet;
+using MarketWB.Web.ViewModels.Cabinet.Dashboard;
 
 namespace MarketWB.Web.Controllers
 {
@@ -53,7 +54,11 @@ namespace MarketWB.Web.Controllers
             return View("Views/Cabinet/News.cshtml", vm);
         }
 
-
+        [Route("Cabinet/ApiKeys")]
+        public async Task<IActionResult> ApiKeys()
+        {
+            return View("Views/Cabinet/APIKeys.cshtml");
+        }
         [Route("Cabinet/Profile")]
         public async Task<IActionResult> Profile()
         {
@@ -93,5 +98,6 @@ namespace MarketWB.Web.Controllers
             var subscriptions = _subscriptions.GetSubscriptions();
             return View("Views/Cabinet/NeedToPay.cshtml", subscriptions);
         }
+       
     }
 }

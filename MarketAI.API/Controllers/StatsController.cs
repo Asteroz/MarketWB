@@ -14,32 +14,27 @@ namespace MarketAI.API.Controllers
     [Route("[controller]")]
     public class StatsController : ControllerBase
     {
-        public StatsController()
+        private readonly APIDBContext db;
+        public StatsController(APIDBContext _db)
         {
-
+            db = _db;
         }
 
         [HttpGet]
         public async Task AddAuthStats(UserModel user)
         {
-            using (APIDBContext db = new APIDBContext())
+            var entry = new Models.Stats.AuthStatsModel
             {
-                var entry = new Models.Stats.AuthStatsModel
-                {
-                    Date = DateTime.Now,
-                };
-                user.Auths.Add(entry);
-                db.Users.Update(user);
-                await db.SaveChangesAsync();
-            }
+                Date = DateTime.Now,
+            };
+            user.Auths.Add(entry);
+            db.Users.Update(user);
+            await db.SaveChangesAsync();
         }
         [HttpGet]
         public List<AuthStatsModel> GetVisitors()
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.AuthStatsModels.Include(o => o.User).ToList();
-            }
+            return db.AuthStatsModels.Include(o => o.User).ToList();
         }
 
 
@@ -47,19 +42,13 @@ namespace MarketAI.API.Controllers
         public void SetUserOnline(UserModel user,bool isOnline)
         {
             user.IsOnline = isOnline;
-            using (APIDBContext db = new APIDBContext())
-            {
-                db.Users.Update(user);
-                db.SaveChanges();
-            }
+            db.Users.Update(user);
+            db.SaveChanges();
         }
         [HttpGet]
         public List<UserModel> GetOnlineUsers()
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-              return db.Users.Where(o => o.IsOnline).ToList();
-            }
+            return db.Users.Where(o => o.IsOnline).ToList();
         }
 
 
@@ -68,20 +57,14 @@ namespace MarketAI.API.Controllers
         [HttpGet]
         public List<PaymentModel> GetUserPayments()
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.PaymentModels.Include(o => o.User).ToList();
-            }
+            return db.PaymentModels.Include(o => o.User).ToList();
         }
 
         [HttpPut]
         public void RegisterUserPayment(PaymentModel payment)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                db.PaymentModels.Add(payment);
-                db.SaveChanges();
-            }
+            db.PaymentModels.Add(payment);
+            db.SaveChanges();
         }
 
     }

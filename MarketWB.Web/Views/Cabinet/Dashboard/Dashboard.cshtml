@@ -16,7 +16,7 @@
 }
 
 
-<div id="content">
+
 
     @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
 
@@ -49,7 +49,7 @@
                         <h4>Продаж на сумму</h4>
                       </div>
                       <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>@Model.DashboardReport.SalesSum ₽</h4>
+                        <h4>@Math.Round(Model.DashboardReport.SalesSum,0) ₽</h4>
                       </div>
                    </div>
                 </div>
@@ -73,7 +73,7 @@
                             <h4>Заказов на сумму</h4>
                         </div>
                         <div class="panel-body" style="padding-bottom:10px;">
-                            <h4>@Model.DashboardReport.OrdersSum ₽</h4>
+                            <h4>@Math.Round(@Model.DashboardReport.OrdersSum,0) ₽</h4>
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                             <h4>Возвратов на сумму</h4>
                         </div>
                         <div class="panel-body" style="padding-bottom:10px;">
-                            <h4>@Model.DashboardReport.ReturnsSum ₽</h4>
+                            <h4>@Math.Round(@Model.DashboardReport.ReturnsSum,0) ₽</h4>
                         </div>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                             <h4>Отмен на сумму</h4>
                         </div>
                         <div class="panel-body" style="padding-bottom:10px;">
-                            <h4>@Model.DashboardReport.CancelsSum ₽</h4>
+                            <h4>@Math.Round(@Model.DashboardReport.CancelsSum,0) ₽</h4>
                         </div>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                         <h4>Прибыль</h4>
                     </div>
                     <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>@Model.DashboardReport.Profit ₽</h4>
+                        <h4>@Math.Round(@Model.DashboardReport.Profit,0) ₽</h4>
                     </div>
                 </div>
             </div>
@@ -148,12 +148,12 @@
                         <h4>Маржинальность</h4>
                     </div>
                     <div class="panel-body" style="padding-bottom:10px;">
-                        <h4>@Model.DashboardReport.Marginality%</h4>
+                        <h4>@Math.Round(@Model.DashboardReport.Marginality,1) %</h4>
                     </div>
                 </div>
             </div>
              <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="panel">
+               @* <div class="panel">
                     <div class="panel-heading bg-pink border-none">
                         <h4>Продажи за день</h4>
                     </div>
@@ -161,16 +161,16 @@
                          <h4>@Model.DashboardReport.SalesCountToday шт.</h4>
                          <h4>@Model.DashboardReport.SalesSumToday ₽</h4>
                     </div>
-                </div>
+                </div>*@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="panel">
                     <div class="panel-heading bg-pink border-none">
-                        <h4>Возвраты за день</h4>
+                        <h4>Продажи - возврат</h4>
                     </div>
                     <div class="panel-body" style="padding-bottom:10px;">
-                         <h4>@Model.DashboardReport.ReturnsCountToday шт.</h4>
-                         <h4>@Model.DashboardReport.ReturnsSumToday ₽</h4>
+                  @*       <h4>@(Model.DashboardReport.SalesCount - Model.DashboardReport.ReturnsCount) шт.</h4>*@
+                         <h4>@(Math.Round(Model.DashboardReport.SalesSum - Model.DashboardReport.ReturnsSum,0)) ₽</h4>
                     </div>
                 </div>
             </div>
@@ -248,7 +248,7 @@
             </div>
         </div>*@
 
-        <div class="col-md-12">
+   @*     <div class="col-md-12">
             <div class="panel">
                 <div class="panel-heading-white panel-heading">
                     <h4>Суммарная прибыль на бренд, ₽</h4>
@@ -328,7 +328,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
 
     </div>
-</div>
+

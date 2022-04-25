@@ -35,6 +35,9 @@
                                 <label class="col-sm-2 control-label text-right">Кол-во дней</label>
                                 <div class="col-sm-10"><input type="number" max="999" min="1" required class="form-control" value="@Model.Days" asp-for="Days"></div>
                             </div>
+                            <div class="col-sm-12 padding-0">
+                                <input type="checkbox" style="margin-left:90px;margin-top:15px" asp-for="IsTrial" value="@Model.IsTrial"> Тестовый тарифный план
+                            </div>
                             <input class="submit btn btn-danger" style="margin-top:10px;width:96%;" type="submit" value="Сохранить изменения">
                         </div>
                     </form>

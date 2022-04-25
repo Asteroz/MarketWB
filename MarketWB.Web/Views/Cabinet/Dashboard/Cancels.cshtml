@@ -5,7 +5,7 @@
 @model DashboardCancelsVM
 
 
-<div id="content">
+
     
     @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
 
@@ -27,6 +27,8 @@
                                 <thead>
                                     <tr>
                                         <th>Фото</th>
+                                        <th>Артикул</th>
+                                        <th>Бренд</th>
                                         <th>Название</th>
                                         <th>Цена, ₽</th>
                                         <th>Категория</th>
@@ -34,6 +36,7 @@
                                         <th>Логистика, ₽</th>
                                         <th>Дата заказа</th>
                                         <th>Дата продажи</th>
+                                        <th>Дата отмены</th>
                                         <th>Адрес доставки</th>
                                     </tr>
                                 </thead>
@@ -43,15 +46,20 @@
                                         foreach(var row in Model.Report.Rows)
                                         {
                                              <tr>
-                                                <td></td>
+                                                <td>
+                                                    <img height="45" width="45" src="https://images.wbstatic.net/c246x328/new/@row.Article.ToString().Remove(4)0000/@row.Article-1.jpg" />
+                                                </td>
+                                                <td>@row.Article</td>
+                                                <td>@row.Brand</td>
                                                 <td>@row.Title</td>
-                                                <td>@row.Price</td>
+                                                <td>@Convert.ToInt32(row.Price)</td>
                                                 <td>@row.Category</td>
-                                                <td>@row.LostProfit</td>
-                                                <td>@row.Logistic</td>
-                                                <td>@row.OrderDate</td>
-                                                <td>@row.SaleDate</td>
-                                                <td>@row.DeliveryAddress</td>
+                                                <td>@Convert.ToInt32(row.LostProfit)</td>
+                                                <td>@Convert.ToInt32(row.Logistic)</td>
+                                                <td>@row.OrderDate.ToString("dd MMMM yyyy HH:mm")</td>
+                                                <td>@row.SaleDate?.ToString("dd MMMM yyyy HH:mm")</td>
+                                                <td>@row.CancelDate.ToString("dd MMMM yyyy HH:mm")</td>
+                                                <td>Склад</td>
                                              </tr>
                                         }
                                     }      
@@ -64,4 +72,3 @@
 
         </div>
     </div> 
-</div>

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Promocodes = MarketAI.API.Controllers.PromocodeController;
+using Promocodes = MarketAI.API.Controllers.PromocodeModule;
 
 namespace MarketWB.Web.Controllers.Admin
 {

@@ -36,16 +36,17 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100 p-t-50 p-b-90">
-                <form class="login100-form validate-form flex-sb flex-w" id="form" asp-action="Register" asp-controller="Users" asp-route-model="@Model" method="post">
+                <form class="login100-form validate-form flex-sb flex-w" id="form" asp-action="Register" asp-controller="Users" method="post">
                     <span class="login100-form-title p-b-51">
                         Регистрация
                     </span>
 
+                    <input type="hidden" name="refcode" value="@ViewData["refcode"]">
 
                     <div class="row">
                         <div class="col-md-7">
                             <div class="wrap-input100 validate-input m-b-16" data-validate="Телефон обязателен для заполнения">
-                                <input class="input100" type="tel" id="phone_field" required asp-for="Phone" placeholder="Телефон">
+                                <input class="input100" type="text" id="phone_field" name="Phone" required placeholder="Телефон" >
                                 <span class="focus-input100"></span>
                             </div>
                         </div>
@@ -178,7 +179,7 @@
                         btn.innerHTML = 'Подтверждено';
                         codeField.setAttribute('disabled', 'true');
                         btn.setAttribute('disabled', 'true');
-                        document.getElementById('phone_field').setAttribute('disabled', 'true');
+                        //document.getElementById('phone_field').setAttribute('disabled', 'true');
                         register_btn.removeAttribute('disabled');
                     }
                     else {

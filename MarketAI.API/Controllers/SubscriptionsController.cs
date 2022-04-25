@@ -16,31 +16,27 @@ namespace MarketAI.API.Controllers
     public class SubscriptionsController : ControllerBase
     {
         private readonly ILogger<SubscriptionsController> _logger;
-        public SubscriptionsController(ILogger<SubscriptionsController> logger)
+        private readonly APIDBContext db;
+        public SubscriptionsController(ILogger<SubscriptionsController> logger, APIDBContext _db)
         {
             _logger = logger;
+            db = _db;
         }
         [HttpGet]
         public IEnumerable<SubscriptionModel> GetSubscriptions()
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.Subscriptions.ToList();
-            }
+            return db.Subscriptions.ToList();
         }
 
         #region Админская часть
         [HttpDelete]
         public async Task<RequestStatus> RemoveSubscription(int id)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                var subscription = db.Subscriptions.First(o => o.Id == id);
-                if (subscription == null)
-                    return new RequestStatus("Тарифного плана с таким id не существует", 404);
-                db.Subscriptions.Remove(subscription);
-                await db.SaveChangesAsync();
-            }
+            var subscription = db.Subscriptions.First(o => o.Id == id);
+            if (subscription == null)
+                return new RequestStatus("Тарифного плана с таким id не существует", 404);
+            db.Subscriptions.Remove(subscription);
+            await db.SaveChangesAsync();
             return new RequestStatus("Тарифный план успешно удален");
         }
         [HttpPost]
@@ -48,11 +44,8 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    db.Subscriptions.Add(subscription);
-                    await db.SaveChangesAsync();
-                }
+                db.Subscriptions.Add(subscription);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Тарифный план успешно добавлен");
             }
             catch (Exception ex)
@@ -65,14 +58,11 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    var sub = db.Subscriptions.FirstOrDefault(o => o.Id == id);
-                    sub.Days = subscription.Days;
-                    sub.Price = subscription.Price;
-                    db.Subscriptions.Update(sub);
-                    await db.SaveChangesAsync();
-                }
+                var sub = db.Subscriptions.FirstOrDefault(o => o.Id == id);
+                sub.Days = subscription.Days;
+                sub.Price = subscription.Price;
+                db.Subscriptions.Update(sub);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Тарифный план успешно обновлен");
             }
             catch (Exception ex)
@@ -88,11 +78,7 @@ namespace MarketAI.API.Controllers
         {
             AsyncClient client = new AsyncClient(null);
 
-            PromocodeModel userPromocode = null;
-            using(APIDBContext db = new APIDBContext())
-            {
-                userPromocode = db.Promocodes.FirstOrDefault(o => o.Code == user.ActivatedPromocode);
-            }
+            PromocodeModel userPromocode = db.Promocodes.FirstOrDefault(o => o.Code == user.ActivatedPromocode);
 
             double totalPrice = subscription.Price;
             if(!user.WasPromocodeActivated && userPromocode != null)

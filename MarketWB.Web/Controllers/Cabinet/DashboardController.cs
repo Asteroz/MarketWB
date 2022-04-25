@@ -15,11 +15,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using WildberriesAPI;
 using WildberriesAPI.Models;
-using SelfCostsAPI = MarketAI.API.Controllers.SelfCostsController;
-using ExtraExpensesAPI = MarketAI.API.Controllers.ExtraExpensesController;
-using UsersAPI = MarketAI.API.Controllers.UsersController;
+using SelfCostsAPI = MarketAI.API.Controllers.SelfCostsModule;
+using ExtraExpensesAPI = MarketAI.API.Controllers.ExtraExpensesModule;
+using UsersAPI = MarketAI.API.Controllers.UsersModule;
 using MarketAI.API.Models.WB;
 using MarketWB.Parsing.Models;
+using MarketWB.Web.Jobs;
 
 namespace MarketWB.Web.Controllers.Cabinet
 {
@@ -30,16 +31,18 @@ namespace MarketWB.Web.Controllers.Cabinet
         private readonly SelfCostsAPI _selfCostApi;
         private readonly UsersAPI _usersApi;
         private readonly ExtraExpensesAPI _extraExpensesAPI;
-
+        private readonly MarketWBParser _wbparser;
         public DashboardController(ILogger<DashboardController> logger,
                                                 SelfCostsAPI selfCostApi,
                                                 UsersAPI usersApi,
-                                                ExtraExpensesAPI extraExpensesAPI)
+                                                ExtraExpensesAPI extraExpensesAPI,
+                                                MarketWBParser wbparser)
         {
             _logger = logger;
             _selfCostApi = selfCostApi;
             _usersApi = usersApi;
             _extraExpensesAPI = extraExpensesAPI;
+            _wbparser = wbparser;
         }
         [Route("Cabinet/Dashboard/Analysis")]
         public IActionResult Analysis()
@@ -54,11 +57,10 @@ namespace MarketWB.Web.Controllers.Cabinet
             var user = await UserHelper.GetUser(User);
             if (user.IsSubscriptionEnded)
                 return RedirectToAction("NeedToPay", "Cabinet");
-            await InitSelectedTokenIfNull(user);
 
             var vm = new DashboardVM
             {
-                DashboardReport = MarketWBParser.GenerateDashboardReport(user.UserData),
+                DashboardReport = _wbparser.GenerateDashboardReport(user),
             };
             vm = (DashboardVM)await InitVM(user, vm);
             return View("Views/Cabinet/Dashboard/Dashboard.cshtml", vm);
@@ -71,13 +73,9 @@ namespace MarketWB.Web.Controllers.Cabinet
             if (user.IsSubscriptionEnded)
                 return RedirectToAction("NeedToPay", "Cabinet");
 
-            await InitSelectedTokenIfNull(user);
 
-            ReturnsReport report = null;
-            if (user.UserData.SelectedWBAPIToken != null)
-            {
-                report =  MarketWBParser.GenerateReturnsReport(user.UserData);
-            }
+
+            ReturnsReport report = _wbparser.GenerateReturnsReport(user);
             var vm = new DashboardReturnsVM
             {
                 Report = report,
@@ -91,13 +89,9 @@ namespace MarketWB.Web.Controllers.Cabinet
             var user = await UserHelper.GetUser(User);
             if (user.IsSubscriptionEnded)
                 return RedirectToAction("NeedToPay", "Cabinet");
-            await InitSelectedTokenIfNull(user);
 
-            OrdersReport report = null;
-            if (user.UserData.SelectedWBAPIToken != null)
-            {
-                report =  MarketWBParser.GenerateOrdersReport(user.UserData);
-            }
+
+            OrdersReport report = _wbparser.GenerateOrdersReport(user);
             var vm = new DashboardOrdersVM
             {
                 Report = report,
@@ -111,13 +105,8 @@ namespace MarketWB.Web.Controllers.Cabinet
             var user = await UserHelper.GetUser(User);
             if (user.IsSubscriptionEnded)
                 return RedirectToAction("NeedToPay", "Cabinet");
-            await InitSelectedTokenIfNull(user);
 
-            SalesReport report = null;
-            if(user.UserData.SelectedWBAPIToken != null)
-            {
-                report = MarketWBParser.GenerateSalesReport(user.UserData);
-            }
+            SalesReport report = _wbparser.GenerateSalesReport(user);
             var vm = new DashboardSalesVM
             {
                 Report = report,
@@ -131,35 +120,21 @@ namespace MarketWB.Web.Controllers.Cabinet
             var user = await UserHelper.GetUser(User);
             if (user.IsSubscriptionEnded)
                 return RedirectToAction("NeedToPay", "Cabinet");
-            await InitSelectedTokenIfNull(user);
 
-            RejectsReport report = null;
 
-            if (user.UserData.SelectedWBAPIToken != null)
-            {
-                report = MarketWBParser.GenerateRejectsReport(user.UserData);
-            }
+            RejectsReport report = _wbparser.GenerateRejectsReport(user);
+        
             var vm = new DashboardCancelsVM
             {
                 Report = report,
             };
             vm = (DashboardCancelsVM)await InitVM(user, vm);
+
+
+
             return View("Views/Cabinet/Dashboard/Cancels.cshtml", vm);
         }
 
-        /// <summary>
-        /// Ставим токен, если еще не выбран (null)
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private async Task InitSelectedTokenIfNull(UserModel user)
-        {
-            if (user.UserData.SelectedWBAPIToken is null)
-            {
-                user.UserData.SelectedWBAPIToken = user.WBAPIKeys.FirstOrDefault();
-                await _usersApi.UpdateUser(user); 
-            }
-        }
 
         #region Себестоимости
         [Route("Cabinet/Dashboard/SelfCosts")]
@@ -168,12 +143,10 @@ namespace MarketWB.Web.Controllers.Cabinet
             var user = await UserHelper.GetUser(User);
             if (user.IsSubscriptionEnded)
                 return RedirectToAction("NeedToPay", "Cabinet");
-            await InitSelectedTokenIfNull(user);
 
-            var vm = new DashboardSelfCostsVM
-            {
-                Token = user.UserData.SelectedWBAPIToken,
-            };
+            await WBParsing.RefreshArticles(user);
+
+            var vm = new DashboardSelfCostsVM();
             InitVM(user, vm);
             return View("Views/Cabinet/Dashboard/SelfCosts.cshtml", vm);
         }
@@ -183,20 +156,14 @@ namespace MarketWB.Web.Controllers.Cabinet
         public async Task<IActionResult> AddSelfCost()
         {
             var user = await UserHelper.GetUser(User);
-            var token = user.UserData.SelectedWBAPIToken;
-            if (token == null) return new JsonResult(0);
-            
-            return new JsonResult(await _selfCostApi.CreateSelfCost(token));
+            return new JsonResult(await _selfCostApi.CreateSelfCost(user));
         }
         [HttpDelete]
         [Route("Cabinet/Dashboard/DeleteSelfCost")]
         public async Task DeleteSelfCost(int id)
         {
             var user = await UserHelper.GetUser(User);
-            var token = user.UserData.SelectedWBAPIToken;
-            if (token == null) return;
-
-            await _selfCostApi.RemoveSelfCost(token, id);
+            await _selfCostApi.RemoveSelfCost(user, id);
         }
         [HttpPost]
         [Route("Cabinet/Dashboard/UpdateSelfCost")]
@@ -213,12 +180,8 @@ namespace MarketWB.Web.Controllers.Cabinet
             var user = await UserHelper.GetUser(User);
             if (user.IsSubscriptionEnded)
                 return RedirectToAction("NeedToPay", "Cabinet");
-            await InitSelectedTokenIfNull(user);
 
-            var vm = new DashboardExtraExpensesVM
-            {
-                Token = user.UserData.SelectedWBAPIToken,
-            };
+            var vm = new DashboardExtraExpensesVM();
             vm = (DashboardExtraExpensesVM)await InitVM(user, vm);
             return View("Views/Cabinet/Dashboard/ExtraExpenses.cshtml", vm);
         }
@@ -228,20 +191,13 @@ namespace MarketWB.Web.Controllers.Cabinet
         public async Task<IActionResult> AddExtraExpence()
         {
             var user = await UserHelper.GetUser(User);
-            var token = user.UserData.SelectedWBAPIToken;
-            if (token == null) return new JsonResult(0);
-
-            return new JsonResult(await _extraExpensesAPI.CreateExtraExpense(token));
+            return new JsonResult(await _extraExpensesAPI.CreateExtraExpense(user));
         }
         [HttpDelete]
         [Route("Cabinet/Dashboard/DeleteExtraExpence")]
         public async Task DeleteExtraExpence(int id)
         {
-            var user = await UserHelper.GetUser(User);
-            var token = user.UserData.SelectedWBAPIToken;
-            if (token == null) return;
-
-            await _extraExpensesAPI.RemoveExtraExpense(token, id);
+            await _extraExpensesAPI.RemoveExtraExpense(id);
         }
         [HttpPost]
         [Route("Cabinet/Dashboard/UpdateExtraExpence")]
@@ -251,15 +207,41 @@ namespace MarketWB.Web.Controllers.Cabinet
         }
         #endregion
 
+        [HttpPut]
+        [Route("Cabinet/SetSelfBuyStatus")]
+        public async Task SetSelfBuyStatus(long nmId,bool isSelfBuy)
+        {
+              await WBParsing.SetSelfBuyStatus(nmId, isSelfBuy);
+        }
+
+
+        [Route("Cabinet/WaitForParsing")]
+        public async Task<IActionResult> WaitForParsing()
+        {
+            var user = await UserHelper.GetUser(User);
+            AbsDashboardVM vm = new DashboardVM();
+            vm = await InitVM(user, vm);
+            return View("Views/Cabinet/WaitForParsing.cshtml", vm);
+        }
 
         private async Task<AbsDashboardVM> InitVM(UserModel user,AbsDashboardVM vm)
         {
             vm.User = user;
-            vm.Brands =  MarketWBParser.GetWBBrands(user.UserData.SelectedWBAPIToken);
-            vm.Categories =  MarketWBParser.GetWBCategories(user.UserData.SelectedWBAPIToken);
+            vm.Brands = _wbparser.GetWBBrands(user.UserData.SelectedWBAPITokens);
+            vm.Categories = _wbparser.GetWBCategories(user.UserData.SelectedWBAPITokens);
             vm.Brands.Insert(0,new AvailableWBBrand() { Brand = "Все бренды" });
             vm.Categories.Insert(0,new AvailableWBCategory() { Category = "Все категории" });
             return vm;
+        }
+        private bool CheckTokenForNew(WBAPITokenModel token)
+        {
+            if(token == null) return false;
+            if (token.CreatedFirstTime)
+            {
+                if (token.CreatedAt.AddMinutes(7) >= DateTime.UtcNow)
+                    return true;
+            }
+            return false;
         }
     }
 

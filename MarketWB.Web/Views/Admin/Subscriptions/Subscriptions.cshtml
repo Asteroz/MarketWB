@@ -34,7 +34,11 @@
                                 {
                                 <tr>
                                     <td>@item.Id</td>
-                                    <td>@item.Title</td>
+                                    <td>@item.Title
+                                        @if(item.IsTrial){
+                                            <span style="color: green;"> (тестовый) </span>
+                                        }
+                                    </td>
                                     <td>@item.Price</td>
                                     <td>@item.Days</td>
                                     <td><a asp-action="UpdateSubscription" asp-controller="Subscription" asp-route-id="@item.Id"><button class="btn btn-warning" style="width:80%">Изменить</button></a></td>

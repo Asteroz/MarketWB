@@ -1,0 +1,126 @@
+@using MarketWB.Web.Helpers
+@using MarketWB.Web.ViewModels.Cabinet.Dashboard
+@{
+    Layout = "_Layout";
+}
+@model DashboardSelfCostsVM
+
+<style>
+    .table_input{
+        width: 92%;
+    }
+</style>
+
+
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">API Ключи</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-12 top-20 padding-0">
+            <div class="col-md-12">
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="responsive-table">
+                            <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>API ключ</th>
+                                        <th></th>
+                                         <div style="display:block;">
+                                                <button onclick="CreateRow()" style="btn btn-primary">Добавить API ключ</button>
+                                                <button onclick="SaveRows()" style="btn btn-success">Сохранить</button>
+                                        </div>
+                                    </tr>
+                                </thead>
+                                <tbody id="table_body">
+                                    @{
+                                        var user = await UserHelper.GetUser(User);
+                                    }
+                                    @if(user != null)
+                                    {
+                                        foreach(var apikey in user.WBAPIKeys)
+                                        {
+                                            <tr data-id="@apikey.Id">
+                                                <td><input class="table_input" type="text" value="@apikey.Name"/></td>
+                                                <td><input class="table_input" type="text" value="@apikey.APIKey"/></td>
+                                                <td><a><button onclick="DeleteRow(@apikey.Id)" style="btn btn-danger">Удалить</button></a></td>
+                                            </tr>
+                                        }
+                                    }                                
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+         async function CreateRow(){
+
+               let response = await fetch('/WBKeys/CreateNewWBKey', {
+                   method: 'PUT',
+               });
+
+               let json = await response.json();
+
+               var row = document.createElement('tr');
+               row.setAttribute('data-id',json);
+              
+               let html = '';
+               for (let i =0;i<2;i++){
+                   html += '<td><input class="table_input" type="text"/></td>';
+               }
+               html += ` <td><a><button onclick="DeleteRow(${json})" style="btn btn-danger">Удалить</button></a></td>`;
+
+
+               row.innerHTML = html;
+
+               let table_body = document.getElementById('table_body');
+               table_body.prepend(row);
+         }
+    
+        
+         async function DeleteRow(id){
+
+             let response = await fetch('/WBKeys/DeleteWBKey?id='+id, {
+                 method: 'DELETE',
+             });
+
+             let table_body = document.getElementById('table_body');
+             var row = document.querySelector('tr[data-id="'+id+'"]');
+             table_body.removeChild(row);
+         }
+
+        async function SaveRows(){
+            let table_body = document.getElementById('table_body');
+            let rows = table_body.children;
+
+            for (let i =0;i<rows.length;i++){
+                let row = rows[i];
+                let cells = row.children;
+                let model = {
+                    Id: new Number(row.getAttribute('data-id')),
+                    Name: cells[0].children[0].value,
+                    APIKey: cells[1].children[0].value,
+                }
+        
+        
+                let response = await fetch('/WBKeys/UpdateWBKey', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(model)});
+            }
+        }
+
+
+    </script>

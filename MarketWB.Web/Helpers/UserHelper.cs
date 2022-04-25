@@ -14,7 +14,7 @@ namespace MarketWB.Web.Helpers
     {
         public static async Task<UserModel> GetUser(ClaimsPrincipal principal)
         {
-            UsersController api = new UsersController(null);
+            UsersModule api = new UsersModule(null,new MarketAI.API.Core.APIDBContext());
            return await api.GetUserById(Convert.ToInt32(principal.Identity.Name));
         }
     }

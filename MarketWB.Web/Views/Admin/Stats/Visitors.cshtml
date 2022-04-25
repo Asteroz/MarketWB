@@ -28,7 +28,7 @@
                                 @foreach (var visitorsByDay in Model)
                                 {
                                     <tr>
-                                        <td>@visitorsByDay.Date</td>
+                                        <td>@visitorsByDay.Date.ToString("dd MMMM yyyy HH:mm")</td>
                                         <td>@visitorsByDay.Visitors</td>
                                     </tr>
                                 }

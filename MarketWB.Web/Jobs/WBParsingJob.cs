@@ -15,187 +15,163 @@ using WildberriesAPI.Models;
 namespace MarketWB.Web.Jobs
 {
 
-    public static class WBParsingJob
+    public class WBParsingJob : IHostedService, IDisposable
     {
-        private static Timer _timer = null;
-        static WBParsingJob()
+        private Timer _timer = null;
+        private APIDBContext _db;
+        public WBParsingJob()
         {
-       
+            _db = new APIDBContext();
+            WBParsing._db = _db;
         }
 
-        public static async Task StartAsync(CancellationToken stoppingToken)
+        public async Task StartAsync(CancellationToken stoppingToken)
         {
             _timer = new Timer(DoWork, null, TimeSpan.Zero,
             TimeSpan.FromMinutes(150));
         }
 
-        private static async void DoWork(object state)
+        private async void DoWork(object state)
         {
-            var db = MarketWBParser.db;
-
-            var tokens = await db.WBAPITokens.ToListAsync();
+            var tokens = _db.WBAPITokens.ToList();
             await Task.Delay(3000);
             foreach (var token in tokens)
             {
-                await ParseWBIncomes(token, db);
+                await WBParsing.ParseWBIncomes(token);
             }
+            _db = new APIDBContext();
             await Task.Delay(60000);
             foreach (var token in tokens)
             {
-                await ParseWBOrders(token, db);
+                await WBParsing.ParseWBOrders(token);
             }
+            _db = new APIDBContext();
             await Task.Delay(60000);
             foreach (var token in tokens)
             {
-                await ParseWBSales(token, db);
+                await WBParsing.ParseWBSales(token);
             }
+            _db = new APIDBContext();
             await Task.Delay(60000);
             foreach (var token in tokens)
             {
-                await ParseWBStocks(token, db);
+                await WBParsing.ParseWBStocks(token);
             }
+            _db = new APIDBContext();
             await Task.Delay(60000);
             foreach (var token in tokens)
             {
-                await ParseDetailByPeriodModels(token, db);
+                await WBParsing.ParseDetailByPeriodModels(token);
             }
             foreach (var token in tokens)
             {
-                await ParseBrandAndCategoryTitles(token, db);
+                await WBParsing.ParseBrandAndCategoryTitles(token);
             }
+
         }
 
-        public static async Task ParseImmediatelyIfNewKey(WBAPITokenModel token)
+
+        public Task StopAsync(CancellationToken stoppingToken)
         {
-            var db = MarketWBParser.db;
-
-            token.CreatedFirstTime = true;
-            db.WBAPITokens.Update(token);
-            await db.SaveChangesAsync();
-
-            await ParseWBIncomes(token, db);
-            await Task.Delay(60000);
-            await ParseWBOrders(token, db);
-            await Task.Delay(60000);
-            await ParseWBSales(token, db);
-            await Task.Delay(60000);
-            await ParseWBStocks(token, db);
-            await Task.Delay(60000);
-            await ParseDetailByPeriodModels(token, db);
-            await ParseBrandAndCategoryTitles(token, db);
+            _timer?.Change(Timeout.Infinite, 0);
+            return Task.CompletedTask;
         }
 
+        public void Dispose()
+        {
+            _timer?.Dispose();
+        }
+    }
+
+    public static class WBParsing
+    {
+        public static APIDBContext _db;
 
         #region Парсинг
-        private static async Task ParseWBIncomes(WBAPITokenModel token, APIDBContext db)
+        public static async Task ParseWBIncomes(WBAPITokenModel token)
         {
-            DateTime dateMax = DateTime.Now.AddYears(-3);
-
-            List<WBIncomeModel> data = new List<WBIncomeModel>();
-            data = await db.WBIncomes.Where(o => o.APIKey == token.APIKey).ToListAsync();
-            if (data.Count > 0)
-            {
-                dateMax = data.Max(o => o.Date);
-                data.Clear();
-            }
-
             var wb = new Wildberries(token.APIKey);
 
-            var parsed = await wb.GetIncomes(dateMax);
-            parsed = parsed.Where(o => o.Date > dateMax.AddMinutes(5)).ToList();
+            var lastDate = DateTime.Now.AddYears(-4);
+            if(_db.WBIncomes.Where(o => o.APIKey == token.APIKey).Any())
+                lastDate = _db.WBIncomes.Where(o => o.APIKey == token.APIKey).Max(o => o.Date);
+
+            var parsed = await wb.GetIncomes(lastDate.AddMinutes(5));
             parsed.ForEach(o => o.APIKey = token.APIKey);
 
-            await db.WBIncomes.AddRangeAsync(parsed);
-            await db.SaveChangesAsync();
+
+            _db.WBIncomes.AddRange(parsed);
+            _db.SaveChanges();
+
+
+            GC.Collect();
+
         }
-        private static async Task ParseWBOrders(WBAPITokenModel token, APIDBContext db)
+        public static async Task ParseWBOrders(WBAPITokenModel token)
         {
-            DateTime dateMax = DateTime.Now.AddYears(-3);
-
-            List<WBOrderModel> data = new List<WBOrderModel>();
-             data = await db.WBOrders.Where(o => o.APIKey == token.APIKey).ToListAsync();
-            if (data.Count > 0)
-            {
-                dateMax = data.Max(o => o.Date);
-                data.Clear();
-            }
-
             var wb = new Wildberries(token.APIKey);
 
-            var parsed = await wb.GetOrders(dateMax);
-            parsed = parsed.Where(o => o.Date > dateMax.AddMinutes(5)).ToList();
+            var lastDate = DateTime.Now.AddYears(-4);
+            if (_db.WBOrders.Where(o => o.APIKey == token.APIKey).Any())
+                lastDate = _db.WBOrders.Where(o => o.APIKey == token.APIKey).Max(o => o.Date);
+
+            var parsed = await wb.GetOrders(lastDate.AddMinutes(5));
             parsed.ForEach(o => o.APIKey = token.APIKey);
 
-            await db.WBOrders.AddRangeAsync(parsed);
-            await db.SaveChangesAsync();
+            _db.WBOrders.AddRange(parsed);
+            _db.SaveChanges();
+
+            GC.Collect();
         }
-        private static async Task ParseWBSales(WBAPITokenModel token, APIDBContext db)
+        public static async Task ParseWBSales(WBAPITokenModel token)
         {
-            DateTime dateMax = DateTime.Now.AddYears(-3);
-
-            List<WBSaleModel> data = new List<WBSaleModel>();
-            data = await db.WBSales.Where(o => o.APIKey == token.APIKey).ToListAsync();
-            if (data.Count > 0)
-            {
-                dateMax = data.Max(o => o.Date);
-                data.Clear();
-            }
-
             var wb = new Wildberries(token.APIKey);
 
-            var parsed = await wb.GetSales(dateMax);
-            parsed = parsed.Where(o => o.Date > dateMax.AddMinutes(5)).ToList();
+            var lastDate = DateTime.Now.AddYears(-4);
+            if (_db.WBSales.Where(o => o.APIKey == token.APIKey).Any())
+                lastDate = _db.WBSales.Where(o => o.APIKey == token.APIKey).Max(o => o.Date);
+
+            var parsed = await wb.GetSales(lastDate.AddMinutes(5));
             parsed.ForEach(o => o.APIKey = token.APIKey);
 
-            await db.WBSales.AddRangeAsync(parsed);
-            await db.SaveChangesAsync();
+            _db.WBSales.AddRange(parsed);
+            _db.SaveChanges();
+
+            GC.Collect();
         }
-        private static async Task ParseWBStocks(WBAPITokenModel token, APIDBContext db)
+        public static async Task ParseWBStocks(WBAPITokenModel token)
         {
-            DateTime dateMax = DateTime.Now.AddYears(-3);
-
-            List<WBStockModel> data = new List<WBStockModel>();
-            data = await db.WBStocks.Where(o => o.APIKey == token.APIKey).ToListAsync();
-            if (data.Count > 0)
-            {
-                dateMax = data.Max(o => o.LastChangeDate);
-                data.Clear();
-            }
-
             var wb = new Wildberries(token.APIKey);
 
-            var parsed = await wb.GetStocks(dateMax);
-            parsed = parsed.Where(o => o.LastChangeDate > dateMax.AddMinutes(5)).ToList();
+            var lastDate = DateTime.Now.AddYears(-4);
+
+            var parsed = await wb.GetStocks(lastDate.AddMinutes(5));
             parsed.ForEach(o => o.APIKey = token.APIKey);
 
-            await db.WBStocks.AddRangeAsync(parsed);
-            await db.SaveChangesAsync();
+            _db.WBStocks.RemoveRange(_db.WBStocks.Where(o => o.APIKey == token.APIKey));
+            _db.WBStocks.AddRange(parsed);
+            _db.SaveChanges();
+
+            GC.Collect();
         }
-        private static async Task ParseDetailByPeriodModels(WBAPITokenModel token, APIDBContext db)
-        {
-            DateTime dateMax = DateTime.Now.AddYears(-3);
-
-            List<DetailByPeriodModel> data = new List<DetailByPeriodModel>();
-            data = await db.DetailByPeriodModels.Where(o => o.APIKey == token.APIKey).ToListAsync();
-            if (data.Count > 0)
-            {
-                dateMax = data.Max(o => o.RrDt);
-                data.Clear();
-            }
-
+        public static async Task ParseDetailByPeriodModels(WBAPITokenModel token)
+        {       
             var wb = new Wildberries(token.APIKey);
 
-            var parsed = await wb.GetReportDetailByPeriod(dateMax,DateTime.Now);
-            parsed = parsed.Where(o => o.RrDt > dateMax.AddMinutes(5)).ToList();
+            var lastDate = DateTime.Now.AddYears(-4);
+            if (_db.DetailByPeriodModels.Where(o => o.APIKey == token.APIKey).Any())
+                lastDate = _db.DetailByPeriodModels.Where(o => o.APIKey == token.APIKey).Max(o => o.RrDt);
+
+            var parsed = await wb.GetReportDetailByPeriod(lastDate.AddMinutes(5), DateTime.Now);
             parsed.ForEach(o => o.APIKey = token.APIKey);
 
-            await db.DetailByPeriodModels.AddRangeAsync(parsed);
-            await db.SaveChangesAsync();
+            _db.DetailByPeriodModels.AddRange(parsed);
+            _db.SaveChanges();
         }
 
-        private static async Task ParseBrandAndCategoryTitles(WBAPITokenModel token, APIDBContext db)
+        public static async Task ParseBrandAndCategoryTitles(WBAPITokenModel token)
         {
-            var data = await db.WBSales.Where(o => o.APIKey == token.APIKey).ToListAsync();
+            var data = _db.WBSales.Where(o => o.APIKey == token.APIKey).ToList();
             SortedSet<string> brands = new SortedSet<string>();
             SortedSet<string> categories = new SortedSet<string>();
             foreach (var item in data)
@@ -205,12 +181,12 @@ namespace MarketWB.Web.Jobs
             }
             foreach (var item in brands)
             {
-                var foundBrand = db.AvailableWBBrands
+                var foundBrand = _db.AvailableWBBrands
                     .FirstOrDefault(o => o.Brand == item
                                     && o.APIKey == token.APIKey);
                 if (foundBrand is null)
                 {
-                    db.AvailableWBBrands.Add(new AvailableWBBrand
+                    _db.AvailableWBBrands.Add(new AvailableWBBrand
                     {
                         APIKey = token.APIKey,
                         Brand = item
@@ -219,31 +195,79 @@ namespace MarketWB.Web.Jobs
             }
             foreach (var item in categories)
             {
-                var foundCategory = db.AvailableWBCategories
+                var foundCategory = _db.AvailableWBCategories
                     .FirstOrDefault(o => o.Category == item
                                     && o.APIKey == token.APIKey);
                 if (foundCategory is null)
                 {
-                    db.AvailableWBCategories.Add(new AvailableWBCategory
+                    _db.AvailableWBCategories.Add(new AvailableWBCategory
                     {
                         APIKey = token.APIKey,
                         Category = item
                     });
                 }
             }
-            await db.SaveChangesAsync();
+            _db.SaveChanges();
         }
+
         #endregion
 
-        public static Task StopAsync(CancellationToken stoppingToken)
+
+
+        public static async Task ParseImmediatelyIfNewKey(WBAPITokenModel token)
         {
-            _timer?.Change(Timeout.Infinite, 0);
-            return Task.CompletedTask;
+            try
+            {
+                if (!token.CreatedFirstTime) return;
+
+                await ParseWBIncomes(token);
+                await Task.Delay(60000);
+                await ParseWBOrders(token);
+                await Task.Delay(60000);
+                await ParseWBSales(token);
+                await Task.Delay(60000);
+                await ParseWBStocks(token);
+                await Task.Delay(60000);
+                await ParseDetailByPeriodModels(token);
+                await ParseBrandAndCategoryTitles(token);
+            }
+            catch (Exception ex)
+            {
+
+            }
+           
         }
 
-        public static void Dispose()
+        public static async Task RefreshArticles(UserModel owner)
         {
-            _timer?.Dispose();
+            foreach (var token in owner.WBAPIKeys)
+            {
+                var orders = _db.WBOrders.Where(o => o.APIKey == token.APIKey).ToList();
+                foreach (var item in orders)
+                {
+                    if (!owner.SelfCosts.Any(o => o.ProductId == item.NmId))
+                    {
+                        _db.SelfCosts.Add(new SelfCostModel { ProductId = (long)item.NmId,OwnerId= owner.Id });
+                    }
+                }
+              //   _db.Users.Update(owner);
+                _db.SaveChanges();
+            }
+
+        }
+
+        public static async Task SetSelfBuyStatus(long nmId, bool isSelfBuy)
+        {
+            var orders = _db.WBOrders.Where(o => o.NmId == nmId).ToList();
+            var sales = _db.WBSales.Where(o => o.NmId == nmId).ToList();
+
+            orders.ForEach(o => o.IsSelfBuy = isSelfBuy);
+            sales.ForEach(o => o.IsSelfBuy = isSelfBuy);
+
+            _db.WBOrders.UpdateRange(orders);
+            _db.WBSales.UpdateRange(sales);
+
+            _db.SaveChanges();
         }
     }
 }

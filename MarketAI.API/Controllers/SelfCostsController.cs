@@ -13,59 +13,51 @@ namespace MarketAI.API.Controllers
     public class SelfCostsController : ControllerBase
     {
         private readonly ILogger<SelfCostsController> _logger;
-        public SelfCostsController(ILogger<SelfCostsController> logger)
+        private readonly APIDBContext db;
+        public SelfCostsController(ILogger<SelfCostsController> logger, APIDBContext _db)
         {
             _logger = logger;
+            db = _db;
         }
 
 
         [HttpDelete]
         public async Task<RequestStatus> RemoveSelfCost(WBAPITokenModel token, int selfCostId)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                var selfCost = token.SelfCosts.FirstOrDefault(o => o.Id == selfCostId);
-                token.SelfCosts.Remove(selfCost);
+            var selfCost = token.SelfCosts.FirstOrDefault(o => o.Id == selfCostId);
+            token.SelfCosts.Remove(selfCost);
 
-                db.SelfCosts.Remove(selfCost);
+            db.SelfCosts.Remove(selfCost);
 
-                db.WBAPITokens.Update(token);
-                await db.SaveChangesAsync();
-            }
+            db.WBAPITokens.Update(token);
+            await db.SaveChangesAsync();
             return new RequestStatus("Запись успешно удалена");
         }
         [HttpPut]
         public async Task<int> CreateSelfCost(WBAPITokenModel token)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                var selfCost = new SelfCostModel();
-                selfCost.WBAPITokenId = token.Id;
-                token.SelfCosts.Add(selfCost);
+            var selfCost = new SelfCostModel();
+            selfCost.WBAPITokenId = token.Id;
+            token.SelfCosts.Add(selfCost);
 
-                db.WBAPITokens.Update(token);
-                await db.SaveChangesAsync();
-                return selfCost.Id;
-            }
-     
+            db.WBAPITokens.Update(token);
+            await db.SaveChangesAsync();
+            return selfCost.Id;
         }
         [HttpPut]
         public async Task<RequestStatus> UpdateSelfCost(SelfCostModel model)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                var item = db.SelfCosts.FirstOrDefault(o => o.Id == model.Id);
-                item.PurchaseCost = model.PurchaseCost;
-                item.FFServicesCost = model.FFServicesCost;
-                item.DeliveryToYourStockCost = model.DeliveryToYourStockCost;
-                item.PhotographCost = model.PhotographCost;
-                item.DeliveryToWbStockCost = model.DeliveryToWbStockCost;   
-                item.PackagingCost = model.PackagingCost;
-                item.ProductId = model.ProductId;
+            var item = db.SelfCosts.FirstOrDefault(o => o.Id == model.Id);
+            item.PurchaseCost = model.PurchaseCost;
+            item.FFServicesCost = model.FFServicesCost;
+            item.DeliveryToYourStockCost = model.DeliveryToYourStockCost;
+            item.PhotographCost = model.PhotographCost;
+            item.DeliveryToWbStockCost = model.DeliveryToWbStockCost;
+            item.PackagingCost = model.PackagingCost;
+            item.ProductId = model.ProductId;
 
-                db.SelfCosts.Update(item);
-                await db.SaveChangesAsync();
-            }
+            db.SelfCosts.Update(item);
+            await db.SaveChangesAsync();
             return new RequestStatus("Запись успешно удалена");
         }
     }

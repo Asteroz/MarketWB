@@ -46,8 +46,9 @@ namespace MarketWB.Web.Controllers
 
 
         [Route("Registration")]
-        public IActionResult Registration()
+        public IActionResult Registration(string invite = null)
         {
+            ViewData["refcode"] = invite;
             return View();
         }
         [Route("Restore")]

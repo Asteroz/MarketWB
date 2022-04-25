@@ -4,7 +4,6 @@
 }
 @model DashboardReturnsVM
 
-<div id="content">
 
     @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
 
@@ -26,6 +25,8 @@
                                 <thead>
                                     <tr>
                                         <th>Фото</th>
+                                        <th>Артикул</th>
+                                        <th>Бренд</th>
                                         <th>Название</th>
                                         <th>Цена, ₽</th>
                                         <th>Категория</th>
@@ -33,7 +34,10 @@
                                         <th>Логистика, ₽</th>
                                         <th>Дата заказа</th>
                                         <th>Дата продажи</th>
+                                        <th>Дата возврата</th>
                                         <th>Адрес доставки</th>
+                                        <th>До пункта выдачи»</th>
+                                        <th>Обратно на склад</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -42,15 +46,22 @@
                                         foreach(var row in Model.Report.Rows)
                                         {
                                              <tr>
-                                                <td></td>
+                                                <td>
+                                                    <img height="45" width="45" src="https://images.wbstatic.net/c246x328/new/@row.Article.ToString().Remove(4)0000/@row.Article-1.jpg" />
+                                                </td>
+                                                <td>@row.Article</td>
+                                                <td>@row.Brand</td>
                                                 <td>@row.Title</td>
-                                                <td>@row.Price</td>
+                                                <td>@Convert.ToInt32(row.Price)</td>
                                                 <td>@row.Category</td>
-                                                <td>@row.Profit</td>
-                                                <td>@row.Logistic</td>
-                                                <td>@row.OrderDate</td>
-                                                <td>@row.SaleDate</td>
-                                                <td>@row.DeliveryAddress</td>
+                                                <td>@Convert.ToInt32(row.Profit)</td>
+                                                <td>@Convert.ToInt32(row.Logistic)</td>
+                                                <td>@row.OrderDate.ToString("dd MMMM yyyy HH:mm")</td>
+                                                <td>@row.SaleDate.ToString("dd MMMM yyyy HH:mm")</td>
+                                                <td>@row.ReturnDate.ToString("dd MMMM yyyy HH:mm")</td>
+                                                <td>Склад</td>
+                                                <td>@row.InWayToClient</td>
+                                                <td>@row.InWayFromClient</td>
                                              </tr>
                                         }
                                     }      
@@ -65,4 +76,3 @@
     </div>
     <!-- end: content -->
 
-</div>

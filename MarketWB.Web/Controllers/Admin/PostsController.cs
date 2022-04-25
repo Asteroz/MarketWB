@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Posts = MarketAI.API.Controllers.PostsController;
+using Posts = MarketAI.API.Controllers.PostsModule;
 
 namespace MarketWB.Web.Controllers.Admin
 {

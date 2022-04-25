@@ -44,8 +44,8 @@
                     <b>Администраторская панель</b>
                 </a>
 
-                <ul class="nav navbar-nav navbar-right user-nav">
-                    <li class="user-name"><span>Akihiko Avaron</span></li>
+                <ul class="nav navbar-nav navbar-right user-nav" style="margin-right: 10px;">
+                    <li class="user-name"><span></span></li>
                     <li class="dropdown avatar-dropdown">
                         <img src="~/img/avatar.jpg" class="img-circle avatar" alt="user name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" />
                         <ul class="dropdown-menu user-dropdown">
@@ -103,6 +103,7 @@
                         <ul class="nav nav-list tree">
                             <li><a asp-action="Subscriptions" asp-controller="Subscription">Список тарифных планов</a></li>
                             <li><a asp-action="CreateSubscription" asp-controller="Subscription">Создать тарифный план</a></li>
+                            <li><a asp-action="RefSettings" asp-controller="Subscription">Настройки реферальной программы</a></li>
                         </ul>
                     </li>
                     <li class="active ripple">
@@ -631,7 +632,7 @@
     </div>
 
     <!-- start: Mobile -->
-    <div id="mimin-mobile" class="reverse">
+    @*<div id="mimin-mobile" class="reverse">
         <div class="mimin-mobile-menu-list">
             <div class="col-md-12 sub-mimin-mobile-menu-list animated fadeInLeft">
                 <ul class="nav nav-list">
@@ -768,7 +769,7 @@
     </div>
     <button id="mimin-mobile-menu-opener" class="animated rubberBand btn btn-circle btn-danger">
         <span class="fa fa-bars"></span>
-    </button>
+    </button>*@
     <!-- end: Mobile -->
     <!-- start: Javascript -->
 

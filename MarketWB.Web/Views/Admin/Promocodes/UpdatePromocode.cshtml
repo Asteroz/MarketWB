@@ -26,9 +26,21 @@
                                 <label class="col-sm-2 control-label text-right">Промокод</label>
                                 <div class="col-sm-10"><input type="text" required class="form-control" value="@Model.Code" asp-for="Code"></div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label text-right">%</label>
-                                <div class="col-sm-10"><input type="number" max="50" min="1" required class="form-control" value="@Model.Percent" asp-for="Percent"></div>
+                             <div class="form-group">
+                                <label class="col-sm-2 control-label text-right">Тип</label>
+                                <input style="margin-left: 10px;" type="radio" id="percent_radio" 
+                                                        
+                                                        asp-for="Type" value="1">
+                                <label for="percent_radio">Проценты</label>
+
+                               <input style="margin-left: 10px;" type="radio" id="value_radio" 
+                                                        
+                                                       asp-for="Type" value="2">
+                               <label for="value_radio">Сумма</label>
+                            </div>
+                            <div class="form-group" style="margin-top: -35px;">
+                                <label class="col-sm-2 control-label text-right">Значение</label>
+                                <div class="col-sm-10"><input type="number" max="500000" min="1" required class="form-control" value="@Model.Percent" asp-for="Percent"></div>
                             </div>
                             <input class="submit btn btn-danger" style="margin-top:10px;width:96%;" type="submit" value="Сохранить изменения">
                         </div>

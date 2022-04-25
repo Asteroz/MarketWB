@@ -13,7 +13,7 @@ namespace WildberriesAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string APIKey { get; set; }
-
+        public bool IsSelfBuy { get; set; }
 
         [JsonProperty("number")]
         public long? Number { get; set; }

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Tickets = MarketAI.API.Controllers.TicketController;
+using Tickets = MarketAI.API.Controllers.TicketModule;
 
 namespace MarketWB.Web.Controllers.Cabinet
 {

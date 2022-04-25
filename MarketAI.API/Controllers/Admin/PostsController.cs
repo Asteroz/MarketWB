@@ -15,37 +15,30 @@ namespace MarketAI.API.Controllers
     public class PostsController : ControllerBase
     {
         private readonly ILogger<PostsController> _logger;
-        public PostsController(ILogger<PostsController> logger)
+        private readonly APIDBContext db;
+        public PostsController(ILogger<PostsController> logger, APIDBContext _db)
         {
             _logger = logger;
+            db = _db;
         }
         [HttpGet]
         public PostModel GetPost(int id)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.Posts.FirstOrDefault(o => o.Id == id);
-            }
+            return db.Posts.FirstOrDefault(o => o.Id == id);
         }
         [HttpGet]
         public IEnumerable<PostModel> GetPosts()
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.Posts.ToList();
-            }
+            return db.Posts.ToList();
         }
         [HttpDelete]
         public async Task<RequestStatus> RemovePost(int id)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                var post = db.Posts.First(o => o.Id == id);
-                if(post == null)
-                    return new RequestStatus("Поста с таким id не существует", 404);
-                db.Posts.Remove(post);
-                await db.SaveChangesAsync();
-            }
+            var post = db.Posts.First(o => o.Id == id);
+            if (post == null)
+                return new RequestStatus("Поста с таким id не существует", 404);
+            db.Posts.Remove(post);
+            await db.SaveChangesAsync();
             return new RequestStatus("Пост успешно удален");
         }
         [HttpPost]
@@ -53,11 +46,8 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    db.Posts.Add(post);
-                    await db.SaveChangesAsync();
-                }
+                db.Posts.Add(post);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Пост успешно добавлен");
             }
             catch (Exception ex)
@@ -70,11 +60,8 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    db.Posts.Update(updatedPost);
-                    await db.SaveChangesAsync();
-                }
+                db.Posts.Update(updatedPost);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Пост успешно обновлен");
             }
             catch (Exception ex)

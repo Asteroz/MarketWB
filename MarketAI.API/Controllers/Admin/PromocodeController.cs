@@ -16,38 +16,31 @@ namespace MarketAI.API.Controllers
     public class PromocodeController : ControllerBase
     {
         private readonly ILogger<PromocodeController> _logger;
-        public PromocodeController(ILogger<PromocodeController> logger)
+        private readonly APIDBContext db;
+        public PromocodeController(ILogger<PromocodeController> logger, APIDBContext _db)
         {
             _logger = logger;
+            db = _db;
         }
 
         [HttpGet]
         public IEnumerable<PromocodeModel> GetPromocodes()
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.Promocodes.AsNoTracking().ToList();
-            }
+            return db.Promocodes.AsNoTracking().ToList();
         }
         [HttpGet]
         public PromocodeModel GetPromocode(int id)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                return db.Promocodes.AsNoTracking().FirstOrDefault(o => o.Id == id);
-            }
+            return db.Promocodes.AsNoTracking().FirstOrDefault(o => o.Id == id);
         }
         [HttpDelete]
         public async Task<RequestStatus> RemovePromocode(int id)
         {
-            using (APIDBContext db = new APIDBContext())
-            {
-                var promocode = db.Promocodes.First(o => o.Id == id);
-                if (promocode == null)
-                    return new RequestStatus("Промокода с таким id не существует", 404);
-                db.Promocodes.Remove(promocode);
-                await db.SaveChangesAsync();
-            }
+            var promocode = db.Promocodes.First(o => o.Id == id);
+            if (promocode == null)
+                return new RequestStatus("Промокода с таким id не существует", 404);
+            db.Promocodes.Remove(promocode);
+            await db.SaveChangesAsync();
             return new RequestStatus("Промокод успешно удален");
         }
         [HttpPost]
@@ -55,15 +48,8 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    var existing = db.Promocodes.FirstOrDefault(o => o.Code == promocode.Code);
-                    if(existing != null)
-                        return new RequestStatus("Данный промокод уже существует", 400);
-
-                    db.Promocodes.Add(promocode);
-                    await db.SaveChangesAsync();
-                }
+                db.Promocodes.Add(promocode);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Пост успешно добавлен");
             }
             catch (Exception ex)
@@ -76,15 +62,12 @@ namespace MarketAI.API.Controllers
         {
             try
             {
-                using (APIDBContext db = new APIDBContext())
-                {
-                    var promocode = db.Promocodes.FirstOrDefault(o => o.Id == id);
-                    promocode.Percent = updatedPromocode.Percent;
-                    promocode.Code = updatedPromocode.Code;
+                var promocode = db.Promocodes.FirstOrDefault(o => o.Id == id);
+                promocode.Percent = updatedPromocode.Percent;
+                promocode.Code = updatedPromocode.Code;
 
-                    db.Promocodes.Update(promocode);
-                    await db.SaveChangesAsync();
-                }
+                db.Promocodes.Update(promocode);
+                await db.SaveChangesAsync();
                 return new RequestStatus("Пост успешно обновлен");
             }
             catch (Exception ex)
