@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketWB.Parsing.Models.Misc;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -40,5 +41,14 @@ namespace MarketWB.Parsing.Models.Reports
 
         public Dictionary<string, double> MarginalityByBrands { get; set; } = new Dictionary<string, double>();
         public Dictionary<string, double> ProfitByBrands { get; set; } = new Dictionary<string, double>();
+
+        public double LogisticToClient { get; set; }
+        public double LogisticFromClient { get; set; }
+
+
+
+
+        public List<ChartDay> SalesPriceChartData { get; set; } = new List<ChartDay>();
+        public List<ChartDay> SalesCountChartData { get; set; } = new List<ChartDay>();
     }
 }

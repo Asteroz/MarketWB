@@ -1,7 +1,9 @@
-﻿using MarketAI.API.Models;
+﻿using DrinkitWeb.Models;
+using MarketAI.API.Models;
 using MarketAI.Database.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -53,6 +55,37 @@ namespace MarketWB.Web.Controllers.Admin
             await _api.UpdateSubscription(id, model);
             return Subscriptions();
         }
+        [HttpPost, Route("Admin/SetSubscriptionItems")]
+        public async Task SetProductCategories([FromBody] IdsModel ids)
+        {
+            SubscriptionModel product = null;
+            if (ids.Id != 0)
+            {
+                product = _api.db.Subscriptions.Include(o => o.Descriptions).FirstOrDefault(o => o.Id == ids.Id);
+            }
+            else
+            {
+                product = _api.db.Subscriptions.Include(o => o.Descriptions).OrderByDescending(o => o.Id).FirstOrDefault();
+            }
+
+            product.Descriptions.Clear();
+            foreach (var id in ids.Ids)
+            {
+                var modifier = _api.db.SubscriptionDescriptionItems.FirstOrDefault(o => o.Id == id);
+                product.Descriptions.Add(modifier);
+            }
+            _api.db.SaveChanges();
+        }
+
+
+
+
+
+
+
+
+
+
 
 
         [Route("Admin/DeleteSubscription")]

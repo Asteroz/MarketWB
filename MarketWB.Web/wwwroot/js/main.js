@@ -218,61 +218,61 @@
             if(rippler.find(".ink").length == 0) {
               rippler.append("<div class='ink'></div>");
             }
-            var ink = rippler.find(".ink");
-            ink.removeClass("animate");
-            if(!ink.height() && !ink.width())
-            {
-                var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
-                ink.css({height: d, width: d});
+            //var ink = rippler.find(".ink");
+            //ink.removeClass("animate");
+            //if(!ink.height() && !ink.width())
+            //{
+            //    var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
+            //    ink.css({height: d, width: d});
 
-            }
-            var x = e.pageX - rippler.offset().left - ink.width()/2;
-            var y = e.pageY - rippler.offset().top - ink.height()/2;
-            ink.css({
-              top: y+'px',
-              left:x+'px',
-            }).addClass("animate");
+            //}
+            //var x = e.pageX - rippler.offset().left - ink.width()/2;
+            //var y = e.pageY - rippler.offset().top - ink.height()/2;
+            //ink.css({
+            //  top: y+'px',
+            //  left:x+'px',
+            //}).addClass("animate");
                 
             rippler.css({'z-index':9999});
             rippler.animate({
               backgroundColor: "#FF6656",
               width: '100%'
-            }, 750 );
+            }, 1 );
 
-             $("#mimin-mobile .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
-              function(e){
-                $(".sub-mimin-mobile-menu-list").show();
-                $("#mimin-mobile-menu-opener span").removeClass("fa-bars").addClass("fa-close").css({"font-size":"2em"});
-              });
+             //$("#mimin-mobile .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+             // function(e){
+             //   $(".sub-mimin-mobile-menu-list").show(1);
+             //   $("#mimin-mobile-menu-opener span").removeClass("fa-bars").addClass("fa-close").css({"font-size":"2em"});
+             // });
         }else{
             
                 if(rippler.find(".ink").length == 0) {
                   rippler.append("<div class='ink'></div>");
                 }
-                var ink = rippler.find(".ink");
-                ink.removeClass("animate");
-                if(!ink.height() && !ink.width())
-                {
-                    var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
-                    ink.css({height: d, width: d});
+                //var ink = rippler.find(".ink");
+                //ink.removeClass("animate");
+                //if(!ink.height() && !ink.width())
+                //{
+                //    var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
+                //    ink.css({height: d, width: d});
 
-                }
-                var x = e.pageX - rippler.offset().left - ink.width()/2;
-                var y = e.pageY - rippler.offset().top - ink.height()/2;
-                ink.css({
-                  top: y+'px',
-                  left:x+'px',
-                }).addClass("animate");
+                //}
+                //var x = e.pageX - rippler.offset().left - ink.width()/2;
+                //var y = e.pageY - rippler.offset().top - ink.height()/2;
+                //ink.css({
+                //  top: y+'px',
+                //  left:x+'px',
+                //}).addClass("animate");
                 rippler.animate({
                   backgroundColor: "transparent",
                   'z-index':'-1'
-                }, 750 );
+                }, 1 );
 
-                $("#mimin-mobile .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
-                function(e){
-                  $("#mimin-mobile-menu-opener span").removeClass("fa-close").addClass("fa-bars").css({"font-size":"1em"});
-                  $(".sub-mimin-mobile-menu-list").hide();
-                });
+                //$("#mimin-mobile .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+                //function(e){
+                //  $("#mimin-mobile-menu-opener span").removeClass("fa-close").addClass("fa-bars").css({"font-size":"1em"});
+                //  $(".sub-mimin-mobile-menu-list").hide(1);
+                //});
         }
     });
 

@@ -22,36 +22,6 @@ namespace WildberriesAPI
             _apikey = apikey;
         }
         
-        public async Task<List<string>> GetOurBrands()
-        {
-            SortedSet<string> brands = new SortedSet<string>();
-
-            var stocks = await GetStocks(DateTime.Now.AddYears(-4));
-            foreach(var stock in stocks)
-            {
-                if (!string.IsNullOrEmpty(stock.Brand))
-                {
-                    brands.Add(stock.Brand);
-                }
-            }
-
-            return brands.ToList();
-        }
-        public async Task<List<string>> GetOurSubjects()
-        {
-            SortedSet<string> brands = new SortedSet<string>();
-
-            var stocks = await GetStocks(DateTime.Now.AddYears(-4));
-
-            foreach (var stock in stocks)
-            {
-                if (!string.IsNullOrEmpty(stock.Subject))
-                {
-                    brands.Add(stock.Subject);
-                }
-            }
-            return brands.ToList();
-        }
 
         public async Task<BrandsAndCategories> GetOurBrandsAndCategories()
         {
@@ -96,18 +66,19 @@ namespace WildberriesAPI
                 {
                     sales.Add(JsonConvert.DeserializeObject<WBSaleModel>(item.ToString()));
                 }
-                catch (Exception ex) { }         
+                catch (Exception ex) { 
+                }         
             }       
             return sales;
         }
         public async Task<List<DetailByPeriodModel>> GetReportDetailByPeriod(DateTime from, DateTime to)
         {
             string url = HOST + $"/supplier/reportDetailByPeriod?" +
-                $"dateFrom={from.ToString("yyyy-MM-ddThh:mm:ss.FFFZ")}" +
+                $"dateFrom={from.ToString("yyyy-MM-dd")}" +
                 $"&key={_apikey}" +
                 $"&limit=1000000" +
                 $"&rrdid=0" +
-                $"&dateto={to.ToString("yyyy-MM-ddThh:mm:ss.FFFZ")}";
+                $"&dateTo={to.ToString("yyyy-MM-dd")}";
 
             var response = await RequestHelper.MakeRequest(url);
             dynamic data = JsonConvert.DeserializeObject(response.Content);
@@ -121,7 +92,8 @@ namespace WildberriesAPI
                 {
                     sales.Add(JsonConvert.DeserializeObject<DetailByPeriodModel>(item.ToString()));
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) { 
+                }
             }
             return sales;
         }
@@ -190,7 +162,8 @@ namespace WildberriesAPI
                 {
                     sales.Add(JsonConvert.DeserializeObject<WBIncomeModel>(item.ToString()));
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) {
+                }
             }
             return sales;
         }

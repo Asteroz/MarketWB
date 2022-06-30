@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketWB.Parsing", "MarketWB.Parsing\MarketWB.Parsing.csproj", "{A13B0CBC-E020-43F9-93F4-9BE10AF60C8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketAI.Database", "MarketAI.Database\MarketAI.Database.csproj", "{AE18F543-2C8A-4CB5-A50E-244597828960}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketAI.Database", "MarketAI.Database\MarketAI.Database.csproj", "{AE18F543-2C8A-4CB5-A50E-244597828960}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleParser", "ConsoleParser\ConsoleParser.csproj", "{2A9E918F-1FBD-4A9C-924B-86787C48AB16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{AE18F543-2C8A-4CB5-A50E-244597828960}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE18F543-2C8A-4CB5-A50E-244597828960}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE18F543-2C8A-4CB5-A50E-244597828960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A9E918F-1FBD-4A9C-924B-86787C48AB16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A9E918F-1FBD-4A9C-924B-86787C48AB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A9E918F-1FBD-4A9C-924B-86787C48AB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A9E918F-1FBD-4A9C-924B-86787C48AB16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

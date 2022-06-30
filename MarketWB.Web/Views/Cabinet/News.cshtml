@@ -7,47 +7,65 @@
 
     <!-- start: Content -->
 
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">Новости</h3>
-                  @foreach (var tag in Model.Tags)
-                  {
-                     <a asp-action="News" asp-controller="Cabinet" asp-route-tag="@tag"><button class="btn btn-primary">@tag</button></a>
-                  }
-            </div>
-        </div>
 
-        <div class="col-md-12 top-20 padding-0">
-            @foreach (var post in Model.Posts)
-            {
-                <div class="col-md-12">
-                    <div class="panel">
-                        <div class="panel-heading">
-                            <h3>
-                                @post.Caption
-                                <small>@post.CreatedAt</small>
-                                @foreach (var tag in post.TagsList)
-                                {
-                                    <span class="badge badge-primary">@tag</span>
-                                }
-                            </h3>
+ <div class="container">
+      <div class="row">
+           @foreach (var tag in Model.Tags)
+           {
+               
+                  <div class="col-md-4">
+                      <a asp-action="News" asp-controller="Cabinet" asp-route-tag="@tag">
+                      <div class="d-grid">
+                        <button class="btn btn-secondary btnnews" type="button">
+                          @tag
+                        </button>
+                      </div>
+                        </a>
+                  </div>
+             
+           }
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash"><i class="las la-newspaper"></i> Новости</div>
+        </div>
+      </div>
+
+   
+
+      
+      
+               @foreach (var post in Model.Posts)
+                     { 
+          <div class="row">
+            <div class="col-md-12">
+                <div class="news">
+                    <div class="news-header">
+                    <div class="news-title">@post.Caption</div>
+
+                    <div class="news-time">@post.CreatedAt.ToString("dd/MM/yyyy hh:mm")</div>
+                    <div class="news-category">@post.Tags</div>
+               </div>
+
+               <div class="news-content">
+                    <div class="contentflex">
+                        <div class="newsleft">
+                        <div style="background: url('@post.ImgURL'); background-size: 100%;" class="news-image"></div>
                         </div>
-                        <div class="panel-body">
-                            <div class="col-md-12 list-timeline">
-                                <div class="col-md-12 list-timeline-section bg-light">
-                                    <div class="col-md-5 col-sm-7">
-                                        <img height="300px" width="400px" src="@post.ImgURL" />
-                                    </div>
-                                    <div class="col-md-7 col-sm-5">
-                                        <p class="">
-                                            @post.Description
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="newsright">
+                             <div class="news-text">
+                                       @post.Description
+                             </div>
                         </div>
                     </div>
-                 </div>           
-             }
+                    </div>
+                </div>
+            </div>
         </div>
+        }
+   
 
+    </div>

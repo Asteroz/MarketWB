@@ -2,440 +2,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Feeno - Личный кабинет | API</title>
 
-    <meta charset="utf-8">
-    <meta name="description" content="Miminium Admin Template v.1">
-    <meta name="author" content="Isna Nur Azis">
-    <meta name="keyword" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>WB парсер</title>
+    <!-- META -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- start: Css -->
-    <link rel="stylesheet" type="text/css" href="~/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="~/css/materialize.css">
-    <link href="~/css/style.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/27ca0e606a.js" crossorigin="anonymous"></script>
-
-    <!-- plugins -->
-@*    <link rel="stylesheet" type="text/css" href="~/css/plugins/font-awesome.min.css" />*@
-    <link rel="stylesheet" type="text/css" href="~/css/plugins/datatables.bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="~/css/plugins/handsontable.full.min.css">
-    <link rel="stylesheet" type="text/css" href="~/css/plugins/animate.min.css" />
-    <link href="~/css/style.css" rel="stylesheet">
-
-        <script src="~/js/jquery.min.js"></script>
-
-    <link href="~/css/horizBarChart.css" media="all" rel="stylesheet" type="text/css" />
-     <script src="~/js/jquery.horizBarChart.min.js"></script>
-
-
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/resources/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/resources/css/other.css">
+    <link rel="stylesheet" href="~/resources/css/jquery-ui.css">
 
     @RenderSection("css",false)
-    <!-- end: Css -->
 
 
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mansalva&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Mansalva&display=swap" rel="stylesheet">
 
-    <link rel="shortcut icon" href="~/img/logomi.png">
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-      <![endif]-->
-</head>
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
 
-<style>
-.content_box{
-     min-height: calc(100vh - 70px - 50px);
-     margin-left: 0;
-     margin-top: 50px;
-}
+    <!-- JS -->
+    <script src="~/resources/js/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-footer{
-    width: 100%;
-    height: 70px;
-    background: #2196F3;
-    position: relative;
-}
+    <!-- JS PLUGINS -->
+    <script src="~/resources/js/dataTables.bootstrap5.min.js"></script>
 
-.footer_info{
-    position: relative;
-    margin-left:50px;
-    top:7px;
-}
+    <script src="~/resources/js/jquery.dataTables.min.js"></script>
+    <script src="~/resources/js/jquery-ui.js"></script>
+    <script src="~/resources/js/jquery.datepicker.extension.range.min.js"></script>
+    <script src="~/resources/js/circle-progress.min.js"></script>
 
-.footer_text{
-    color: white;
-}
 
-.footer_info_content{
-    display:inline-block; 
-    width: 260px;
-}
+    <script src="~/resources/js/chart.min.js"></script>
+  </head>
+<body>
 
-.header_menu_button{
-    background: transparent;
-    color: white;
-    border-width: 0;
-    margin-left: 10px;
-}
-</style>
 
-<style>
-    .popup-item{
-        margin-top: 10px;
-        height:30px;
-    }
-    .popup-close{
-        margin-top: -30px !important;
-    }
-    .popup-error{
-       color: red;
-       text-align: center;
+    @{
+        var user = await @UserHelper.GetUser(User);
     }
 
-    .dropdown_item{
-        margin-left: 8px;
-    }
- </style>
 
-
-
-<body id="mimin" class="dashboard">
-    <!-- start: Header -->
-    <nav class="navbar navbar-default header navbar-fixed-top">
-        <div class="col-md-12 nav-wrapper">
-            <div class="navbar-header" style="width:100%;">
-                <a href="#" class="navbar-brand">
-                    <b>LOGO</b>
+    <!-- NAVIGATION BAR -->
+    <header>
+      <nav class="navbar navbar-expand-lg wbnav navdashboard">
+        <div class="container">
+          <a class="navbar-brand" href="#">лого</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="las la-bars"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Личный кабинет
                 </a>
-        
-                 <div style="margin-top: 14px; margin-left: 200px"> 
-                         <div class="dropdown" style="display: inline-block">
-                             <button class="header_menu_button" type="button" id="personal_cabinet" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Личный кабинет 
-                             </button>
-                             <div class="dropdown-menu" aria-labelledby="personal_cabinet">   
-                                  <div class="dropdown_item">
-                                       <a asp-action="Dashboard" asp-controller="Dashboard">Дашборд</a>
-                                  </div> 
-                                  <div class="dropdown_item">
-                                       <a asp-action="Sales" asp-controller="Dashboard">Продажи</a>
-                                  </div> 
-                                  <div class="dropdown_item">
-                                       <a asp-action="Returns" asp-controller="Dashboard">Возвраты</a>
-                                  </div> 
-                                  <div class="dropdown_item">
-                                       <a asp-action="Cancels" asp-controller="Dashboard">Отмены</a>
-                                  </div> 
-                                  <div class="dropdown_item">
-                                       <a asp-action="Orders" asp-controller="Dashboard">Заказы</a>
-                                  </div> 
-                             </div>
-                         </div>
-                         <a asp-action="SelfCosts" asp-controller="Dashboard">
-                            <button class="header_menu_button" type="button">
-                                 Рассчитать себестоимости
-                            </button>
-                         </a>
-                         <a asp-action="ExtraExpenses" asp-controller="Dashboard">
-                            <button class="header_menu_button" type="button">
-                                 Расходы
-                            </button>
-                         </a>
-                           <a asp-action="MyTickets" asp-controller="UserTickets">
-                            <button class="header_menu_button" type="button">
-                                 Поддержка
-                            </button>
-                         </a>
-                          <a  asp-action="News" asp-controller="Cabinet">
-                             <button class="header_menu_button" type="button">
-                             Новости
-                             </button>
-                          </a>  
-                    @{
-                        var user = await @UserHelper.GetUser(User);
-                    }
-                     <ul class="nav navbar-nav navbar-right user-nav" style="margin-right: 10px;margin-top: -10px">
-                        <li class="user-name"><span></span></li>
-                        <li class="dropdown avatar-dropdown">
-                            <img src="@user.AvatarPath" class="img-circle avatar" alt="user name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" />
-                            <ul class="dropdown-menu user-dropdown">
-                                <li class="more" style="height: 60px">
-                                    <ul>
-                                        <li>
-                                            <div>
-                                                 <h6 style="color: black;">@user.Name</h6>
-                                                 <h6 style="color: black;">
-                                                     @if(user.IsSubscriptionEnded){
-                                                         <span>Доступ не оплачен</span>
-                                                     }
-                                                     else{
-                                                         <span>до @user.SubscriptionBefore.ToString("dd.MM.yyyy")</span>
-                                                     }
-
-                                                 </h6>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <ul>
-                                        <li><a asp-action="Profile" asp-controller="Cabinet"><span class="">Аккаунт</span></a></li>
-                                    </ul>
-                                    <ul>
-                                        <li><a asp-action="Subscriptions" asp-controller="Cabinet"><span class="">Тарифы</span></a></li>
-                                    </ul>
-                                    <ul>
-                                        <li><a asp-action="ApiKeys" asp-controller="Cabinet"><span class="">Ключи API</span></a></li>
-                                    </ul>
-                                    <ul>
-                                        <li><a data-toggle="modal" data-target="#changePassword"><span class="">Смена пароля</span></a></li>
-                                    </ul>
-                                    <ul>
-                                        <li><a asp-action="Referrals" asp-controller="Referral"><span class="">Реферальная программа</span></a></li>
-                                    </ul>
-                                    <ul>
-                                        <li><a asp-action="Logout" asp-controller="Users"><span class="">Выйти</span></a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
-                 </div>
-              
-
-               
-            </div>
-        </div>
-    </nav>
-    <!-- end: Header -->
-
-    <div class="container-fluid mimin-wrapper">
-
-        <!-- start:Left Menu -->
-      @*  <div id="left-menu">
-            <div class="sub-left-menu scroll">
-                <ul class="nav nav-list">
-                    <li class="active ripple">
-                        <a class="nav-header" asp-action="News" asp-controller="Cabinet">
-                            <span class="fa-home fa"></span> Новости
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    <li class="active ripple">
-                        <a class="tree-toggle nav-header">
-                            <span class="fa-home fa"></span> Управленка
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                        <ul class="nav nav-list tree">
-                            <li><a asp-action="Dashboard" asp-controller="Dashboard">Дашборд</a></li>
-                            <li><a asp-action="Sales" asp-controller="Dashboard">Продажи</a></li>
-                            <li><a asp-action="Returns" asp-controller="Dashboard">Возвраты</a></li>
-                            <li><a asp-action="Cancels" asp-controller="Dashboard">Отмены</a></li>
-                            <li><a asp-action="Orders" asp-controller="Dashboard">Заказы</a></li>
-                            <li><a asp-action="ExtraExpenses" asp-controller="Dashboard">Дополнительные расходы</a></li>
-                            <li><a asp-action="SelfCosts" asp-controller="Dashboard">Себестоимости</a></li>
-                        </ul>
-                    </li>
-                    <li class="active ripple">
-                        <a class="nav-header" asp-action="Profile" asp-controller="Cabinet">
-                            <span class="fa-home fa"></span> Профиль
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    <li class="active ripple">
-                        <a class="nav-header" asp-action="MyTickets" asp-controller="UserTickets">
-                            <span class="fa-home fa"></span> Поддержка
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    <li class="active ripple">
-                        <a class="nav-header" asp-action="About" asp-controller="Cabinet">
-                            <span class="fa-home fa"></span> О сервисе
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    <li class="active ripple">
-                        <a class="nav-header" asp-action="Logout" asp-controller="Users">
-                            <span class="fa-home fa"></span> Выход
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" asp-action="Dashboard" asp-controller="Dashboard">Дашборд</a></li>
+                  <li><a class="dropdown-item" asp-action="Sales" asp-controller="Dashboard">Продажи</a></li>
+                  <li><a class="dropdown-item" asp-action="Returns" asp-controller="Dashboard">Возвраты</a></li>
+                  <li><a class="dropdown-item" asp-action="Cancels" asp-controller="Dashboard">Отмены</a></li>
+                  <li><a class="dropdown-item" asp-action="Orders" asp-controller="Dashboard">Заказы</a></li>
                 </ul>
+              </li>
+              <li><a asp-action="SelfCosts" asp-controller="Dashboard" class="nav-link px-2 link-dark">Рассчитать себестоимость</a></li>
+              <li><a asp-action="ExtraExpenses" asp-controller="Dashboard" class="nav-link px-2 link-dark">Расходы</a></li>
+              <li><a asp-action="MyTickets" asp-controller="UserTickets" class="nav-link px-2 link-dark">Поддержка</a></li>
+              <li><a asp-action="News" asp-controller="Cabinet" class="nav-link px-2 link-dark">Новости</a></li>
+            </ul>
+            <div class="dropdown text-end">
+              <a href="#" class="d-block nav-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                Аккаунт
+              </a>
+              <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" asp-action="Profile" asp-controller="Cabinet">Аккаунт</a></li>
+                <li><a class="dropdown-item" asp-action="Subscriptions" asp-controller="Cabinet">Тарифы</a></li>
+                <li><a class="dropdown-item" asp-action="ApiKeys" asp-controller="Cabinet">Ключи API</a></li>
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePwd">Смена пароля</a></li>
+                <li><a class="dropdown-item" asp-action="Referrals" asp-controller="Referral">Реферальная программа</a></li>
+                <li><a class="dropdown-item" asp-action="Logout" asp-controller="Users">Выйти</a></li>
+              </ul>
             </div>
-        </div>*@
-        <!-- end: Left Menu -->
-            
-        
-        <div class="content_box">
-              @RenderBody()
+
+            <div class="text-end">
+                <img src="@user.AvatarPath" alt="mdo" width="32" height="32" class="rounded-circle wbavatar">
+            </div>
+          </div>
         </div>
+      </nav>
+    </header>
 
-    </div>
+    <!-- CONTENT -->
+ 
+    @RenderBody()
 
-    <footer>
-        <div class="footer_info">
-            <div>
-                <div class="footer_info_content">
-                    <span class="footer_text">ИП Казакевич Екатерина Александровна‎</span>
+    <!-- FOOTER -->
+    <footer class="dashboard">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="link-footer">ИП Казаревич Екатерина Александровна</div>
+                    <div class="link-footer">ОГРНИП: 321774600287455</div>
                 </div>
-                <div class="footer_info_content" style="margin-left: 100px;">
-                    <span  class="footer_text"><b>ИНН: </b>772154263180</span>
+    
+                <div class="col-md-3">
+                    <div class="link-footer">ИНН: 772154263180</div>
+                    <div class="link-footer">Email: wb.pr0@yandex.ru</div>
                 </div>
             </div>
-             <div>
-                <div class="footer_info_content">
-                    <span  class="footer_text"><b>ОГРНИП: </b>321774600287455</span>
-                </div>
-                <div class="footer_info_content" style="margin-left: 100px;">
-                    <span  class="footer_text"><b>Email: </b>wb.pr0@yandex.ru</span>
-                </div>
-            </div>
-         </div>
-
-         @*<div>
-             <div>
-         </div>*@
+        </div>
     </footer>
 
-    <!-- start: Mobile -->
-    <div id="mimin-mobile" class="reverse">
-        <div class="mimin-mobile-menu-list">
-            <div class="col-md-12 sub-mimin-mobile-menu-list animated fadeInLeft">
-                <ul class="nav nav-list">
-                    <li class="ripple">
-                        <a asp-action="News" asp-controller="Cabinet">
-                            <span class="fa-home fa"></span> Новости
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    <li class="ripple">
-                        <a class="tree-toggle nav-header">
-                            <span class="fa-area-chart fa"></span>Управленка
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                        <ul class="nav nav-list tree">
-                            <li><a asp-action="Dashboard" asp-controller="Dashboard">Дашборд</a></li>
-                            <li><a asp-action="Sales" asp-controller="Dashboard">Продажи</a></li>
-                            <li><a asp-action="Returns" asp-controller="Dashboard">Возвраты</a></li>
-                            <li><a asp-action="Cancels" asp-controller="Dashboard">Отмены</a></li>
-                            <li><a asp-action="Orders" asp-controller="Dashboard">Заказы</a></li>
-                            <li><a asp-action="ExtraExpenses" asp-controller="Dashboard">Дополнительные расходы</a></li>
-                            <li><a asp-action="SelfCosts" asp-controller="Dashboard">Себестоимости</a></li>
-                        </ul>
-                    </li>
-                    <li class="ripple">
-                        <a class="nav-header" asp-action="Profile" asp-controller="Cabinet">
-                            <span class="fa-home fa"></span> Профиль
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    <li class="ripple">
-                        <a asp-action="MyTickets" asp-controller="UserTickets">
-                            <span class="fa-home fa"></span> Поддержка
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                      <li class="ripple">
-                        <a  asp-action="About" asp-controller="Cabinet">
-                            <span class="fa-home fa"></span> О сервисе
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    <li class="ripple">
-                        <a asp-action="Logout" asp-controller="Users">
-                            <span class="fa-home fa"></span> Выход
-                            <span class="fa-angle-right fa right-arrow text-right"></span>
-                        </a>
-                    </li>
-                    
-                </ul>
-            </div>
-        </div>
-    </div>
-    <button id="mimin-mobile-menu-opener" class="animated rubberBand btn btn-circle btn-danger">
-        <span class="fa fa-bars"></span>
-    </button>
 
-
-      <div class="modal" id="changePassword">
-             <div class="modal-dialog">
-                <div class="modal-content">
-                   <!-- Modal Header -->
-                   <div class="modal-header">
-                      <h4 class="modal-title">Изменение пароля</h4>
-                      <button type="button" class="close popup-close" data-dismiss="modal">&times;</button>
-                   </div>
-                   <!-- Modal body -->
-                   <div class="modal-body">
-                     <div class="form-group popup-item">
-                        <label class="col-sm-2 control-label text-right ">Новый пароль</label>
-                        <div class="col-sm-10 popup_item"><input id="new_password" type="password" required class="form-control" name="Name"></div>
-                     </div>
-                     <div class="form-group popup-item">
-                         <label class="col-sm-2 control-label text-right">Повторите пароль</label>
-                         <div  class="col-sm-10 popup_item"><input  id="new_password_repeat" type="password" name="APIKey" required class="form-control"></div>
-                     </div>
-                   </div>
-                   <h4 id="password_validation_error" class="popup-error"></h4>
-                   <!-- Modal footer -->
-                   <div class="modal-footer" >
-                        <button type="button" onclick="changePassword()" class="btn btn-primary popup_item" >Сменить пароль</button>
-                        <button type="button" class="btn btn-light popup_item" data-dismiss="modal">Отмена</button>
-                   </div>
-                </div>
-             </div>
+     <!-- MODAL WINDOW -->
+    <div class="modal fade" id="changePwd" data-id="1" data-product-id="35443163" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Изменение пароля</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
+          <div class="modal-body">
+            <form action="" method="post">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Новый пароль</label>
+                <input id="new_password" required type="text" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Поввторите пароль</label>
+                <input id="repeat_password" required type="text" class="form-lk" placeholder="">
+              </div>
+
+               <h4 id="validation_error" style="color:red;text-align:center;margin-top:10px" class="popup-error"></h4>
+
+              <div class="clickers wbselfcenter">
+                <button type="button" onclick="changePassword()" class="btnprofile wbselfbtn">Сохранить изменения</button>
+                <a href="/" class="btnregister wbselfbtn" data-bs-dismiss="modal">Отменить изменения</a>
+              </div>
+
+              
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 
-
-
-
-
-
-
-    <!-- end: Mobile -->
-    <!-- start: Javascript -->
-
-
-
-    <script src="~/js/jquery.ui.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-
-
-
-    <!-- plugins -->
-    <script src="~/js/plugins/moment.min.js"></script>
-    <script src="~/js/plugins/jquery.datatables.min.js"></script>
-    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
-    <script src="~/js/plugins/jquery.nicescroll.js"></script>
-    
-    <script src="~/js/plugins/morris.min.js"></script>
-    <script src="~/js/plugins/raphael.min.js"></script>
-
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-
-    <script src="~/js/plugins/jquery.knob.js"></script>
-    <script src="~/js/plugins/ion.rangeSlider.min.js"></script>
-    <script src="~/js/plugins/bootstrap-material-datetimepicker.js"></script>
-    <script src="~/js/plugins/jquery.nicescroll.js"></script>
-    <script src="~/js/plugins/jquery.mask.min.js"></script>
-    <script src="~/js/plugins/select2.full.min.js"></script>
-    <script src="~/js/plugins/nouislider.min.js"></script>
-    <script src="~/js/plugins/jquery.validate.min.js"></script>
-
-    <!-- custom -->
-    <script src="~/js/main.js"></script>
-
-
-    <script type="text/javascript">$(document).ready(function () {
-            $('#datatables-example').DataTable();
-        });</script>
-
-    @RenderSection("js",false)
 
     <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
 
+
+
+       <script>
      async function changePassword() {
 
         let new_password = document.getElementById('new_password');
@@ -471,6 +205,8 @@ footer{
 
     </script>
 
-    <!-- end: Javascript -->
+        @RenderSection("js",false)
+
 </body>
 </html>
+

@@ -2,12 +2,19 @@
     Layout = "_Layout";
 }
 
-        @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h1 class="animated fadeInLeft">Токен только что добавлен</h1>
-                <h3 class="animated fadeInLeft">Подождите 5-7 минут, пока не загрузится статистика</h3>
-            </div>
+  <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash"><i class="las la-wallet"></i> Токен только что добавлен</div>
         </div>
+
+        <div class="col-md-12">
+          <div class="wbalert">
+             Подождите 5-7 минут, пока не загрузится статистика
+          </div>
+        </div>
+
+      </div>
+
+
     </div>

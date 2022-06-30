@@ -64,7 +64,7 @@ namespace MarketWB.Web.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Auth(LoginViewModel model)
+        public async Task<IActionResult> Auth([FromForm] LoginViewModel model)
         {
             var found = _api.GetUserByCredintials(model.Login, model.Password);
             if(found != null)

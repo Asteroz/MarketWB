@@ -2,124 +2,109 @@
     Layout = "_Layout";
 }
 @model MarketAI.API.ViewModels.TicketPageVM
-<!-- start: Content -->
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">Тикеты</h3>
-                <p class="animated fadeInDown">
-                    Тикеты <span class="fa-angle-right fa"></span> Тикет
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-12 top-20 padding-0">
-        <div class="col-md-12">
-            <div class="panel">
-                <div class="panel-heading"><h3>@Model.Ticket.Topic</h3></div>
-                <div class="panel-body">
-                    <div class="col-md-12">
-                        <ul class="timeline">
-                             <li>
-                                  <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
-                                     <div class="timeline-panel">
-                                         <div class="timeline-heading">
-                                             <h4 class="timeline-title"></h4>
-                                             <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@Model.Ticket.CreatedAt.ToString("dd MMM yyyy hh:mm")</small></p>
-                                         </div>
-                                         <div class="timeline-body">
-                                             <p>@Model.Ticket.Description</p>
-                                         </div>
-                                         @if (!string.IsNullOrEmpty(Model.Ticket.AttachmentPath))
-                                         {
-                                            <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@Model.Ticket.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
-                                         }
-                                   </div>
-                              </li>
-                            @foreach (var message in Model.Ticket.Messages)
-                            {
-                                if(message.SentById == message.Owner.OpenedById)
-                                {
-                                    <li>
-                                        <div class="timeline-badge"><i class="glyphicon glyphicon-check"></i></div>
-                                        <div class="timeline-panel">
-                                            <div class="timeline-heading">
-                                                <h4 class="timeline-title"></h4>
-                                                <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@message.CreatedAt.ToString("dd MMM yyyy hh:mm")</small></p>
-                                            </div>
-                                            <div class="timeline-body">
-                                                <p>@message.Message</p>
-                                            </div>
-                                            @if (!string.IsNullOrEmpty(message.AttachmentPath))
-                                            {
-                                               <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@message.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
-                                            }
-                                        </div>
-                                    </li>
-                                }
-                                else
-                                {
-                                      <li class="timeline-inverted">
-                                        <div class="timeline-badge warning"><i class="glyphicon glyphicon-credit-card"></i></div>
-                                          <div class="timeline-panel">
-                                            <div class="timeline-heading">
-                                                <h4 class="timeline-title"></h4>
-                                                <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>@message.CreatedAt</small></p>
-                                            </div>
-                                            <div class="timeline-body">
-                                                 <p>@message.Message</p>
-                                            </div>
-                                             @if (!string.IsNullOrEmpty(message.AttachmentPath))
-                                            {
-                                               <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@message.AttachmentPath"><button class="v-btn--active">Вложение</button></a>
-                                            }
-                                        </div>
-                                     </li>
-                                }
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-         @if (!Model.Ticket.IsClosed)
-         {
-                   <div class="form-element">
-            <div class="col-md-12 padding-0">
-                <div class="col-md-12">
-                    <div class="panel form-element-padding">
-                        <div class="panel-heading">
-                            <h4>Написать сообщение</h4>
+    <div class="container">
+      <div class="dashboard-header wbmargin">
+        <div class="titledash"><i class="las la-comment-alt"></i> Тикеты</div>
+      </div>
+
+      <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">Тикеты</li>
+          <li class="breadcrumb-item active" aria-current="page">Тикет</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="ticket">
+
+          <div class="ticket-header">@Model.Ticket.Topic</div>
+
+          <div class="ticket-content">
+
+               <div class="message">
+                            <div class="chat">
+                                <div class="chatinfo">
+                                    <i class="las la-clock"></i>
+                                    >@Model.Ticket.CreatedAt.ToString("dd MMMM yyyy hh:mm") 
+                                </div>
+                                <div class="textmessage">
+                                    @Model.Ticket.Description
+                                </div>
+                                @if (!string.IsNullOrEmpty(@Model.Ticket.AttachmentPath))
+                                {
+                                    <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@Model.Ticket.AttachmentPath">Вложение</a>
+                                }
+                            </div>
+
+                            <div class="avatarwb">
+                                <img src="@Model.Ticket.OpenedBy.AvatarPath" alt="mdo" width="32" height="32" class="rounded-circle wbavatar">
+                            </div>
                         </div>
 
-                        <form asp-action="AddTicketMessage" asp-controller="UserTickets" asp-route-ticketid="@Model.Ticket.Id" asp-route-msg="@Model.NewMessage"
-                                                                method="POST" enctype="multipart/form-data" class="panel-body" style="padding-bottom:30px;">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label text-right">Текст сообщения</label>
-                                    <div class="col-sm-10"><textarea required class="form-control" name="Message"></textarea></div>
+
+
+                @foreach(var msg in Model.Ticket.Messages)
+                {
+                    if(msg.SentById == Model.Ticket.OpenedById)
+                    {
+                         <div class="message">
+                            <div class="chat">
+                                <div class="chatinfo">
+                                    <i class="las la-clock"></i>
+                                    @msg.CreatedAt.ToString("dd MMMM yyyy hh:mm") 
                                 </div>
+                                <div class="textmessage">
+                                    @msg.Message
+                                </div>
+                                @if (!string.IsNullOrEmpty(msg.AttachmentPath))
+                                {
+                                    <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@msg.AttachmentPath">Вложение</a>
+                                }
                             </div>
-                            <div class="input-group fileupload-v1" style="width: 96%;">
-                                <input type="file" name="manualfile" class="fileupload-v1-file hidden" />
-                                <input type="text" class="form-control fileupload-v1-path" placeholder="File Path..." disabled>
-                                <span class="input-group-btn">
-                                    <button class="btn fileupload-v1-btn" type="button"><i class="fa fa-folder"></i>Вложение</button>
-                                </span>
-                            </div>   
-                            <input class="submit btn btn-primary" style="margin-top:10px;width:94%;" type="submit" value="Отправить сообщение">
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>                              
-      }
 
-      
+                            <div class="avatarwb">
+                                <img src="@msg.SentBy.AvatarPath" alt="mdo" width="32" height="32" class="rounded-circle wbavatar">
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="message message-right">
+                            <div class="avatarwb">
+                                <img src="@msg.SentBy.AvatarPath" alt="mdo" width="32" height="32" class="rounded-circle wbavatar">
+                            </div>
+
+                            <div class="chat chat-right">
+                                <div class="chatinfo">
+                                    <i class="las la-clock"></i>
+                                    @msg.CreatedAt.ToString("dd MMMM yyyy hh:mm") 
+                                </div>
+                                <div class="textmessage">
+                                    @msg.Message
+                                </div>
+                                @if (!string.IsNullOrEmpty(msg.AttachmentPath))
+                                {
+                                    <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@msg.AttachmentPath">Вложение</a>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+          </div>
+        </div>
+
+        <div class="ticket-chat">
+            <form asp-action="AddTicketMessage" asp-controller="UserTickets" asp-route-ticketid="@Model.Ticket.Id" class="input-group mb-3">
+                <label class="wblabel"></label>
+                <input type="text" name="message" class="form-control wbchatput" required placeholder="Текст">
+                <button class="btn btnprofile wbselfbtn" id="file-input" type="file" name="file" id="button-addon2" value="loadXml" onclick="document.getElementById('file').click();"><i class="las la-folder-open"></i> Вложения</button>
+                <input type="file" style="display:none;" id="file" name="file"/>
+
+                 
+            </form>
+        </div>
+      </div>
     </div>
-    <!-- end: content -->
-
-
-
-<!-- end: content -->

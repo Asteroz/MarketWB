@@ -6353,35 +6353,35 @@ ul li a:focus {
   .responsive-table th, 
   .responsive-table td, 
   .responsive-table tr { 
-    display: block !important; 
+/*    display: block !important; */
   }
 
   .responsive-table thead tr { 
-    position: absolute !important;
+ /*   position: absolute !important;
     top: -9999px !important;
-    left: -9999px !important;
+    left: -9999px !important;*/
   }
 
   .responsive-table tr { border: 1px solid #ccc !important; }
 
   .responsive-table td { 
-    border: none !important;
+ /*   border: none !important;
     border-bottom: 1px solid #eee !important; 
     position: relative !important;
     padding-left: 10% !important; 
     white-space: normal !important;
-    text-align:left !important;
+    text-align:left !important;*/
   }
 
   .responsive-table td:before { 
-    position: absolute !important;
+   /* position: absolute !important;
     top: 6px !important;
     left: 6px !important;
     width: 45% !important; 
     padding-right: 10px; 
     white-space: nowrap;
     text-align:left;
-    font-weight: bold;
+    font-weight: bold;*/
   }
 
   .responsive-table td:before { content: attr(data-title); }

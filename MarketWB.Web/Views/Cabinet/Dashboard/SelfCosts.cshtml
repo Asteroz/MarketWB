@@ -4,68 +4,289 @@
 }
 @model DashboardSelfCostsVM
 
-<style>
-    .table_input{
-        width: 100%;
-    }
-</style>
+@*    <div class="container">
+      <div class="row">
+          <div class="col-md-4">
+              <div>
+                  <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          Выбраны все ключи API
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">1</a></li>
+                        <li><a class="dropdown-item" href="#">2</a></li>
+                        <li><a class="dropdown-item" href="#">3</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
 
+          <div class="col-md-4">
+              <div>
+                  <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          Все бренды
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">1</a></li>
+                        <li><a class="dropdown-item" href="#">2</a></li>
+                        <li><a class="dropdown-item" href="#">3</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
 
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">Себестоимости</h3>
-            </div>
-        </div>
+          <div class="col-md-4">
+              <div>
+                  <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          Все категории
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">1</a></li>
+                        <li><a class="dropdown-item" href="#">2</a></li>
+                        <li><a class="dropdown-item" href="#">3</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
-    <div class="col-md-12">
-        <div class="col-md-12 top-20 padding-0">
-            <div class="col-md-12">
-                <div class="panel">
-                    <div class="panel-body">
-                        <div class="responsive-table">
-                            <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>ProductId</th>
-                                        <th>Закупка</th>
-                                        <th>Упаковка</th>
-                                        <th>Доставка до вашего склада/до фф</th>
-                                        <th>Доставка до склада WB</th>
-                                        <th>Услуги фф</th>
-                                        <th>Фотограф</th>
-                                       @* <th> </th>*@
-                                         <div style="display:block;">
-                                               @* <button onclick="CreateRow()" style="btn btn-primary">Добавить позицию</button>*@
-                                                <button onclick="SaveRows()" class="btn">Сохранить изменения</button>
-                                        </div>
-                                    </tr>
-                                </thead>
-                                <tbody id="table_body">
-                                     @foreach(var selfCost in Model.User.SelfCosts)
-                                     {
-                                            <tr data-id="@selfCost.Id">
-                                                <td>@selfCost.ProductId</td>
-                                                <td><input class="table_input" type="number" value="@selfCost.PurchaseCost"/></td>
-                                                <td><input class="table_input" type="number" value="@selfCost.PackagingCost"/></td>
-                                                <td><input class="table_input" type="number" value="@selfCost.DeliveryToYourStockCost"/></td>
-                                                <td><input class="table_input" type="number" value="@selfCost.DeliveryToWbStockCost"/></td>
-                                                <td><input class="table_input" type="number" value="@selfCost.FFServicesCost"/></td>
-                                                <td><input class="table_input" type="number" value="@selfCost.PhotographCost"/></td>
-                                                @*<td><a><button onclick="DeleteRow(@selfCost.Id)" style="btn btn-danger">Удалить</button></a></td>*@
-                                            </tr> 
-                                    }                               
-                                </tbody>
-                            </table>
-                        </div>
+*@
+    <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash"><i class="las la-shopping-bag"></i> Себестоимость</div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="wbalert">
+          В себестоимость продукта входит не только товар, но и расходы по его первоначальной
+            логистике, упаковке и т.д. Посчитайте общую себестоимость для каждого продукта, она
+            сохраниться в сервисе и будет учтена в расчетах для дальнейшей аналитики. �
+          </div>
+        </div>
+
+        <script>
+          $(document).ready(function () {
+              $('#buytable').DataTable();
+          });
+        </script>
+
+        <div class="panel panel-default">
+          <table id="buytable" class="table table-striped" style="width:100%">
+            <thead class="wbtableheader">
+              <tr  class="wbtableborder">
+                  <th>
+                  </th>
+                  <th>
+                    Фото
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Фото продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
                     </div>
-                </div>
-            </div>
+                  </th>
+                  <th>
+                    Артикул
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Артикул продукта присвоенный Wildberries" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Цена
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Цена продажи продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Себестоимость
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая себестоимость продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Закупка
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Стоимость приобретения одной единицы продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Упаковка
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая стоимость упаковки одной единицы продукта (штрихкод, пакет, подарок и т.д) " class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Доставка до вашего склада
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Укажите стоимость доставки одной единицы продукта до вашего склада или до фулфилмента после закупки" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Доставка до склада WB
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Укажите стоимость доставки одной единицы продукта до склада Wildberries " class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Услуги фулфилмента
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Укажите стоимость услуг фулфилмента на одну единицу продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Стоимость контента
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Укажите стоимость услуг контента на одну единицу продукта (съемка, видесъемка,инфографика)" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+              </tr>
+            </thead>
+            <tbody>
+                    @foreach(var selfcost in Model.User.SelfCosts)
+                    {
+                         <tr>
+                            <td>
+                              <button onclick="setUpdateSelfCostPopupData(@selfcost.Id,@selfcost.ProductId)" style="background:transparent;border-width:0;" class="wbtablelink" data-bs-toggle="modal" data-bs-target="#edit"><i class="las la-edit"></i></button>
+                            </td>
+                            <td>
+                                 <img height="45" width="45" src="https://images.wbstatic.net/c246x328/new/@selfcost.ProductId.ToString().Remove(4)0000/@selfcost.ProductId-1.jpg" />
+                            </td>
+                            <td>@selfcost.ProductId</td>
+                            <td>@Math.Round(selfcost.CurrentPrice)</td>
+                            <td id="self_@selfcost.Id">@Math.Round(selfcost.TotalSelfCost)</td>
+                            <td><input disabled id="self_@selfcost.Id-purchase" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.PurchaseCost"/></td>
+                            <td><input disabled id="self_@selfcost.Id-package" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.PackagingCost"/></td>
+                            <td><input disabled id="self_@selfcost.Id-delivery" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.DeliveryToYourStockCost"/></td>
+                            <td><input disabled id="self_@selfcost.Id-delivery_wb" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.DeliveryToWbStockCost"/></td>
+                            <td><input disabled id="self_@selfcost.Id-ff" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.FFServicesCost"/></td>
+                            <td><input disabled id="self_@selfcost.Id-content" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.PhotographCost"/></td>
+                        </tr>
+                    }
 
+             </tbody>
+          </table>
         </div>
+      </div>
+
+
     </div>
+
+    <!-- MODAL WINDOW -->
+    <div class="modal fade" id="edit" data-id="1" data-product-id="35443163" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Изменение себестоимости</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="post">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Закупка</label>
+                <input id="zakupka" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Упаковка</label>
+                <input id="upakovka" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Доставка до Вашего склада</label>
+                <input id="stock_ff" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Доставка до склада WB</label>
+                <input id="wb_stock" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Услуги фулфилмента</label>
+                <input id="ff" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Стоимость контента</label>
+                <input id="content_cost" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="clickers wbselfcenter">
+                <button type="button" onclick="updateSelfCost()" class="btnprofile wbselfbtn">Сохранить изменения</button>
+                <a href="/" class="btnregister wbselfbtn" data-bs-dismiss="modal">Отменить изменения</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <script>
+
+        async function setUpdateSelfCostPopupData(id,productID){
+            document.getElementById('edit').setAttribute('data-id',id);
+            document.getElementById('edit').setAttribute('data-product-id',productID);
+
+            document.getElementById('zakupka').value = document.getElementById(`self_${id}-purchase`).value ;
+            document.getElementById('upakovka').value =  document.getElementById(`self_${id}-package`).value ;
+            document.getElementById('stock_ff').value = document.getElementById(`self_${id}-delivery`).value ;
+            document.getElementById('wb_stock').value = document.getElementById(`self_${id}-delivery_wb`).value ;
+            document.getElementById('ff').value = document.getElementById(`self_${id}-ff`).value ;
+            document.getElementById('content_cost').value = document.getElementById(`self_${id}-content`).value ;
+        }
+
+        async function updateSelfCost(){
+              let model = {
+                    Id: new Number(document.getElementById('edit').getAttribute('data-id')),
+                    ProductId: new Number(document.getElementById('edit').getAttribute('data-product-id')),
+                    PurchaseCost: new Number(document.getElementById('zakupka').value),
+                    PackagingCost: new Number(document.getElementById('upakovka').value),
+                    DeliveryToYourStockCost: new Number(document.getElementById('stock_ff').value),
+                    DeliveryToWbStockCost:new Number(document.getElementById('wb_stock').value),
+                    FFServicesCost: new Number(document.getElementById('ff').value),
+                    PhotographCost:  new Number(document.getElementById('content_cost').value),
+                };
+        
+                let response = await fetch('/Cabinet/Dashboard/UpdateSelfCost', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(model)});
+                   
+               document.location.reload();
+        }
+
+
+         async function onFieldChange(e){
+             const input = e.target;
+             const id = input.getAttribute('data-id');
+
+             const fields = document.querySelectorAll('input[data-id="'+id+'"]');
+         
+             const selfCostTotalField = document.getElementById('self_'+id);
+
+             let total = 0;
+             for (let i=0;i<fields.length;i++){
+                 total += new Number(fields[i].value);
+             }
+             selfCostTotalField.innerHTML = total;
+
+         }
+
+
+
          async function CreateRow(){
 
                let response = await fetch('/Cabinet/Dashboard/AddSelfCost', {
@@ -78,7 +299,7 @@
                row.setAttribute('data-id',json);
               
                let html = '';
-               for (let i =0;i<7;i++){
+               for (let i =4;i<11;i++){
                    html += '<td><input class="table_input" type="number" value="0"/></td>';
                }
                html += ` <td><a><button onclick="DeleteRow(${json})" style="btn btn-danger">Удалить</button></a></td>`;
@@ -111,13 +332,13 @@
                 let cells = row.children;
                 let model = {
                     Id: new Number(row.getAttribute('data-id')),
-                    ProductId: new Number(cells[0].innerHTML),
-                    PurchaseCost: new Number(cells[1].children[0].value),
-                    PackagingCost: new Number(cells[2].children[0].value),
-                    DeliveryToYourStockCost: new Number(cells[3].children[0].value),
-                    DeliveryToWbStockCost: new Number(cells[4].children[0].value),
-                    FFServicesCost: new Number(cells[5].children[0].value),
-                    PhotographCost: new Number(cells[6].children[0].value),
+                    ProductId: new Number(cells[2].innerHTML),
+                    PurchaseCost: new Number(cells[5].children[0].value),
+                    PackagingCost: new Number(cells[6].children[0].value),
+                    DeliveryToYourStockCost: new Number(cells[7].children[0].value),
+                    DeliveryToWbStockCost: new Number(cells[8].children[0].value),
+                    FFServicesCost: new Number(cells[9].children[0].value),
+                    PhotographCost: new Number(cells[10].children[0].value),
                 }
         
         

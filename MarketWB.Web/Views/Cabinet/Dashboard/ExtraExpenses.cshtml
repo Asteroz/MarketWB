@@ -4,72 +4,309 @@
 }
 @model DashboardExtraExpensesVM
 
-<style>
-    .table_input{
-        width: 97%;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-</style>
 
 
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">Дополнительные расходы</h3>
-            </div>
+  <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash"><i class="las la-wallet"></i> Дополнительные расходы</div>
         </div>
-    </div>
-    <div class="col-md-12">
-        <div class="col-md-12 top-20 padding-0">
-            <div class="col-md-12">
-                <div class="panel">
-                    <div class="panel-body">
-                        <div class="responsive-table">
-                            <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Дата платежа</th>
-                                        <th>Расчетный центр</th>
-                                        <th>Статья</th>
-                                        <th>Период</th>
-                                        <th>Сумма</th>
-                                        <th>Кому платим</th>
-                                        <th>За что платим</th>
-                                        <th>Комментарий</th>
-                                        <th> </th>
-                                         <div style="display:block;">
-                                                <button onclick="CreateRow()" style="btn btn-primary">Добавить позицию</button>
-                                                <button onclick="SaveRows()" style="btn btn-success">Сохранить</button>
-                                        </div>
-                                    </tr>
-                                </thead>
-                                <tbody id="table_body">
-                                    @foreach(var selfCost in Model.User.ExtraExpenses)
-                                    {
-                                            <tr data-id="@selfCost.Id">
-                                                <td><input class="table_input" type="datetime-local" style="padding:0;"  value="@selfCost.PaymentDate.ToString("yyyy-MM-ddThh:mm")"/></td>
-                                                <td><input class="table_input" type="text"  style="padding:0;" value="@selfCost.ClearingCentre"/></td>
-                                                <td><input class="table_input" type="text" style="padding:0;"  value="@selfCost.Category"/></td>
-                                                <td><input class="table_input" type="datetime-local" style="padding:0;" value="@selfCost.Period.ToString("yyyy-MM-ddThh:mm")"/></td>
-                                                <td><input class="table_input" type="number" style="padding:0;"  value="@selfCost.Sum"/></td>
-                                                <td><input class="table_input" type="text" style="padding:0;"  value="@selfCost.PaymentReceiver"/></td>
-                                                <td><input class="table_input" type="text" style="padding:0;" value="@selfCost.PaymentDescription"/></td>
-                                                <td><input class="table_input" type="text" style="padding:0;" value="@selfCost.Comment"/></td>
-                                                <td><a><button onclick="DeleteRow(@selfCost.Id)"  style="width:85%">Удалить</button></a></td>
-                                            </tr> 
-                                    }                                
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
+        <div class="col-md-12">
+          <div class="wbalert">
+            Заполняйте таблицу с дополнительными тратами, подсчитывайте все ваши расходы,
+            которые не учитывает Wildberries. �
+          </div>
         </div>
+
+        <script>
+          $(document).ready(function () {
+              $('#buytable').DataTable();
+          });
+        </script>
+
+        <div class="panel panel-default">
+          <table id="buytable" class="table table-striped" style="width:100%">
+            <thead class="wbtableheader">
+                <tr>
+                    <th>
+                       <button data-bs-toggle="modal" data-bs-target="#createExtraExpense" style="background:transparent;color:white;border-width:0;font-size:25px;" class="wbtablelink"><i class="las la-plus"></i></button>
+                    </th>
+                    <th>
+                      Дата платежа
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Выберите дату совершенной операции" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Расчетный центр
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Пропишите откуда был произведен платеж. Пример: наличные / личная карта / расчётный счет и т.д." class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Категория
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Пропишите категорию расходов. Пример: самовыкуп / фотосессия / дизайн / сервис и т.д" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                 @*   <th>
+                      Период
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Информация при наведении" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>*@
+                    <th>
+                      Сумма
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сумма произведенной операции" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Кому
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Припишите детально кому был произведен платеж. Пример: название сервиса / название студии / имя исполнителя и т.д." class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      За что
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Пропишите детально за что был произведен платеж. Пример: самовыкуп футболки /инфографика новой карточки / аналитика на месяц и т.д." class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Комментарий
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Свободное поле для ввода" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                    @foreach(var extra in Model.User.ExtraExpenses)
+                    {
+                        <tr data-id="@extra.Id">
+                            <td>
+                              <button onclick="setUpdatePopupId(@extra.Id)" style="background:transparent;border-width:0;" class="wbtablelink" data-bs-toggle="modal" data-bs-target="#updateExtraExpense"><i class="las la-edit"></i></button>
+                            </td>
+                            <td><input disabled id="extra_@extra.Id-payDate" style="height:25px;border-width:0px;background:transparent;" type="datetime-local" value="@extra.PaymentDate.ToString("yyyy-MM-ddThh:mm")"/></td>
+                            <td><input disabled id="extra_@extra.Id-centre" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.ClearingCentre"/></td>
+                            <td><input disabled id="extra_@extra.Id-category" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.Category"/></td>
+                          @*  <td><input disabled id="extra_@extra.Id-period" style="height:25px;border-width:0px;background:transparent;" type="datetime-local" value="@extra.Period.ToString("yyyy-MM-ddThh:mm")"/></td>*@
+                            <td><input disabled id="extra_@extra.Id-sum" style="height:25px;border-width:0px;background:transparent;" type="number" value="@extra.Sum"/></td>
+                            <td><input disabled id="extra_@extra.Id-receiver" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.PaymentReceiver"/></td>
+                            <td><input disabled id="extra_@extra.Id-desc" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.PaymentDescription"/></td>
+                            <td><input disabled id="extra_@extra.Id-comment" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.Comment"/></td>
+                            <td>
+                               <button onclick="DeleteRow(@extra.Id)" style="background:transparent;color:red;border-width:0;font-size:20px;" class="wbtablelink"><i class="las la-trash"></i></button>
+                            </td>
+                        </tr>
+                    }
+                    
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
     </div>
+
+
+
+
+
+
+     <div class="modal fade"  id="createExtraExpense" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Добавление статьи расходов</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="post">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Дата платежа</label>
+                <input id="add_payment_date" required type="datetime-local" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Расчетный центр</label>
+                <input id="add_account_center" required type="text" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Статья</label>
+                <input id="add_article" required type="text" class="form-lk" placeholder="">
+              </div>
+
+            @*  <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Период</label>
+                <input id="add_period" required type="datetime-local" class="form-lk" placeholder="">
+              </div>*@
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Сумма</label>
+                <input id="add_sum" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Кому</label>
+                <input id="add_to_pay" required type="text" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">За что</label>
+                <input id="add_for_what" required type="text" class="form-lk" placeholder="">
+              </div>
+
+             <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Комментарий</label>
+                <input id="add_comment" required type="text" class="form-lk" placeholder="">
+              </div>
+
+               <h4 id="password_validation_error" class="popup-error"></h4>
+
+              <div class="clickers wbselfcenter">
+                <button type="button" onclick="CreateExtraExpense()" class="btnprofile wbselfbtn">Создать</button>
+                <a href="/" class="btnregister wbselfbtn" data-bs-dismiss="modal">Отмена</a>
+              </div>   
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade"  id="updateExtraExpense" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Изменение данных</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="post">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Дата платежа</label>
+                <input id="upd_payment_date" required type="datetime-local" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Расчетный центр</label>
+                <input id="upd_account_center" required type="text" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Статья</label>
+                <input id="upd_article" required type="text" class="form-lk" placeholder="">
+              </div>
+
+            @*  <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Период</label>
+                <input id="upd_period" required type="datetime-local" class="form-lk" placeholder="">
+              </div>*@
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Сумма</label>
+                <input id="upd_sum" required type="number" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Кому</label>
+                <input id="upd_to_pay" required type="text" class="form-lk" placeholder="">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">За что</label>
+                <input id="upd_for_what" required type="text" class="form-lk" placeholder="">
+              </div>
+
+             <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Комментарий</label>
+                <input id="upd_comment" required type="text" class="form-lk" placeholder="">
+              </div>
+
+               <h4 id="password_validation_error" class="popup-error"></h4>
+
+              <div class="clickers wbselfcenter">
+                <button type="button" onclick="UpdateExtraExpense()" class="btnprofile wbselfbtn">Изменить</button>
+                <a href="/" class="btnregister wbselfbtn" data-bs-dismiss="modal">Отмена</a>
+              </div>   
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
     <script>
+        async function CreateExtraExpense(){
+                 let model = {    
+                          PaymentDate: new Date(document.getElementById('add_payment_date').value),
+                          ClearingCentre: document.getElementById('add_account_center').value,
+                          Category: document.getElementById('add_article').value,
+                          //Period: new Date(document.getElementById('add_period').value),
+                          Sum: new Number(document.getElementById('add_sum').value),
+                          PaymentReceiver: document.getElementById('add_to_pay').value,
+                          PaymentDescription: document.getElementById('add_for_what').value,
+                          Comment: document.getElementById('add_comment').value,
+                };
+                let response = await fetch('/Cabinet/Dashboard/CreateExtraExpence', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                      },
+                      body: JSON.stringify(model),
+                 });
+                 document.location.reload();
+        }
+
+       async function UpdateExtraExpense(){
+                 let model = {    
+                          Id: new Number(document.getElementById('updateExtraExpense').getAttribute('data-id')),
+                          PaymentDate: new Date(document.getElementById('upd_payment_date').value),
+                          ClearingCentre: document.getElementById('upd_account_center').value,
+                          Category: document.getElementById('upd_article').value,
+                          //Period: new Date(document.getElementById('upd_period').value),
+                          Sum: new Number(document.getElementById('upd_sum').value),
+                          PaymentReceiver: document.getElementById('upd_to_pay').value,
+                          PaymentDescription: document.getElementById('upd_for_what').value,
+                          Comment: document.getElementById('upd_comment').value,
+                };
+                let response = await fetch('/Cabinet/Dashboard/UpdateExtraExpence', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                      },
+                      body: JSON.stringify(model),
+                 });
+               document.location.reload();
+        }
+        async function setUpdatePopupId(id){
+            document.getElementById('updateExtraExpense').setAttribute('data-id',id);
+
+            document.getElementById('upd_payment_date').value = document.getElementById(`extra_${id}-payDate`).value;
+            document.getElementById('upd_account_center').value = document.getElementById(`extra_${id}-centre`).value;
+            document.getElementById('upd_article').value = document.getElementById(`extra_${id}-category`).value;
+            //document.getElementById('upd_period').value = document.getElementById(`extra_${id}-period`).value;
+            document.getElementById('upd_sum').value = document.getElementById(`extra_${id}-sum`).value;
+            document.getElementById('upd_to_pay').value = document.getElementById(`extra_${id}-receiver`).value;
+            document.getElementById('upd_for_what').value = document.getElementById(`extra_${id}-desc`).value;
+            document.getElementById('upd_comment').value = document.getElementById(`extra_${id}-comment`).value;
+        }
+
+
+
          async function CreateRow(){
 
                let response = await fetch('/Cabinet/Dashboard/AddExtraExpence', {
@@ -80,11 +317,15 @@
                var row = document.createElement('tr');
                row.setAttribute('data-id',json);
               
-               let html = '';
-               html += ` <td><input class="table_input" style="padding:0;" type="datetime-local"/></td>
+               let html = `  <td style="width:15px">
+                                   <button data-toggle="modal" data-target="#updateExtraExpense">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                   </button>
+                              </td>`;
+               html += ` <td><input class="table_input" style="padding:0;" type="date"/></td>
                          <td><input class="table_input" style="padding:0;" type="text"/></td>
                          <td><input class="table_input" style="padding:0;" type="text"/></td>
-                         <td><input class="table_input" style="padding:0;" type="datetime-local"/></td>
+                         <td><input class="table_input" style="padding:0;" type="date"/></td>
                          <td><input class="table_input" style="padding:0;" type="number"/></td>
                          <td><input class="table_input" style="padding:0;" type="text"/></td>
                          <td><input class="table_input" style="padding:0;" type="text"/></td>
@@ -107,23 +348,22 @@
 
                  let model = {
                           Id: new Number(row.getAttribute('data-id')),
-                          PaymentDate: cells[0].children[0].value,
+                          PaymentDate: new Date(cells[0].children[0].value),
                           ClearingCentre: cells[1].children[0].value,
                           Category: cells[2].children[0].value,
-                          Period: cells[3].children[0].value,
+                          Period: new Date(cells[3].children[0].value),
                           Sum: new Number(cells[4].children[0].value),
                           PaymentReceiver: cells[5].children[0].value,
                           PaymentDescription: cells[6].children[0].value,
                           Comment: cells[7].children[0].value,
                 };
-
                 let response = await fetch('/Cabinet/Dashboard/UpdateExtraExpence', {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json;charset=utf-8'
                       },
                       body: JSON.stringify(model),
-              });
+                 });
 
             }
          }

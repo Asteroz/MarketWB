@@ -8,6 +8,13 @@ namespace SmsAero
 {
     public class SMSAero
     {
+        public SMSAero() { }
+        public SMSAero(string email,string apikey) 
+        {
+            Email = email;
+            ApiKey = apikey;
+        }
+
         public string Email { get; set; } = "wb.pr0@yandex.ru";
         public string ApiKey { get; set; } = "XKhmj42CPORGnZrFWSmGKsvjEtc6";
 

@@ -70,7 +70,7 @@
 
  </style>
 
-  <div class="col-md-12 header-wb">
+@*  <div class="col-md-12 header-wb">
         <div class="col-md-4 header-col">
             <h6 class="header-h6">Ключи API</h6>
               <div class="dropdown">
@@ -154,11 +154,11 @@
              </div>
           </div>
         </div>
-          <div class="col-md-12 header-col" style="background: white;height: 30px">
+          <div class="col-md-12 header-col" style="background: white;height: 30px">*@
           @*    <span>Сводка</span>*@
-              <div style="display:inline-block; position: absolute; right: 10px;">
+@*              <div style="display:inline-block; position: absolute; right: 10px;">
                    <button onclick="setChangedPeriodFromDays(0)" class="v-btn period-button">Сегодня</button>
-                   <button onclick="setChangedPeriodFromDays(1)" class="v-btn period-button">Вчера</button>
+                   <button onclick="setChangedYesterdayPeriod()" class="v-btn period-button">Вчера</button>
                    <button onclick="setChangedWeekPeriod()" class="v-btn period-button">Неделя</button>
                    <button onclick="setChangedMonthPeriod()" class="v-btn period-button">Месяц</button>
                    <div class="dropdown" style="display:inline-block;">
@@ -167,14 +167,14 @@
                      </button>
                      <div class="dropdown-menu" style="width: 130%;margin-left: -25px" aria-labelledby="dropdownDateButton">   
                         <div>
-                             <input name="from" class="header_datepicker" type="datetime-local" onchange="setChangedPeriodFrom(event)" value="@Model.User.UserData.SelectedPeriodFrom.ToString("yyyy-MM-ddThh:mm")" />
+                             <input name="from" class="header_datepicker" type="date" onchange="setChangedPeriodFrom(event)" value="@Model.User.UserData.SelectedPeriodFrom.ToString("yyyy-MM-dd")" />
                         </div>
                            <div>
-                             <input name="to" class="header_datepicker" type="datetime-local"  onchange="setChangedPeriodTo(event)" value="@Model.User.UserData.SelectedPeriodTo.ToString("yyyy-MM-ddThh:mm")" />
+                             <input name="to" class="header_datepicker" type="date"  onchange="setChangedPeriodTo(event)" value="@Model.User.UserData.SelectedPeriodTo.ToString("yyyy-MM-dd")" />
                         </div>
                      </div>
                </div>
-              </div>
+              </div>*@
            
            @* <div style="display:inline-block; width:85%;">
                 <div style="display:block;">
@@ -195,8 +195,101 @@
             
 
          
+@*        </div>
+    </div>*@
+
+       <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if(Model.User.UserData.SelectedWBAPITokens.Count == 0)
+                            {
+                                <span>Ключ не выбран</span>
+                            }
+                            else if(Model.User.UserData.SelectedWBAPITokens.Count == Model.User.WBAPIKeys.Count)
+                            {
+                                <span>Выбраны все ключи</span>
+                            }
+                            else
+                            {
+                                <span>Выбрано ключей : @Model.User.UserData.SelectedWBAPITokens.Count </span>
+                            }
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            @foreach (var token in Model.User.WBAPIKeys)
+                            {
+                              <li>
+                                  <div style="display:inline;">
+                                  <input type="checkbox" data-id="@token.Id" onchange="setKeySelected(event)" @if(token.IsSelected){ @("checked") } style="position:absolute;right: 10px;">
+                                      <div style="margin-left: 8px;">
+                                          <h5 class="dropdown-item">@token.Name 
+                                                 &emsp;&emsp;&emsp;&emsp;&emsp; 
+                                                @if(token.CreatedFirstTime && token.CreatedAt.AddMinutes(7) > DateTime.UtcNow)
+                                                {
+                                                     <span style="color: #2196F3;">(подготавливается)</span>
+                                                }
+                                          </h5> 
+                                          @*<h6 class="dropdown-item">@token.APIKey</h6>*@
+                                     </div>
+                                </div> 
+                              </li>
+                            } 
+                        </ul>
+                    </div>
+                </div>
+            </div>
+  
+            <div class="col-md-4">
+                <div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if(Model.User.UserData.SelectedWBBrand == null)
+                            {
+                                <span>Все бренды</span>
+                            }
+                            else
+                            {
+                               <span>@Model.User.UserData.SelectedWBBrand</span>
+                            }
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            @foreach(var brand in Model.Brands)
+                            {
+                               <li onclick="setBrandSelected('@brand.Brand')"><a class="dropdown-item" href="#">@brand.Brand</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+  
+            <div class="col-md-4">
+                <div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if(Model.User.UserData.SelectedWBCategory == null)
+                            {
+                                <span>Все категории</span>
+                            }
+                            else
+                            {
+                               <span>@Model.User.UserData.SelectedWBCategory</span>
+                            }
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                         @* <li><a class="dropdown-item" href="#">Все категории</a></li>*@
+                           @foreach(var category in Model.Categories)
+                           {
+                              <li  onclick="setCategorySelected('@category.Category')"><a class="dropdown-item" href="#">@category.Category</a></li>
+                           }
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 
     
 
@@ -258,6 +351,13 @@
              });
              document.location.reload();
         }
+          async function setChangedYesterdayPeriod(){
+             let response = await fetch('/WBKeys/SetYesterdayPeriod', {
+                  method: 'PUT',
+             });
+             document.location.reload();
+        }
+
          async function setChangedWeekPeriod(){
              let response = await fetch('/WBKeys/SetWeekPeriod', {
                   method: 'PUT',

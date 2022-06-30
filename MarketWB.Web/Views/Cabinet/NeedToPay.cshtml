@@ -3,31 +3,56 @@
 }
 @model List<MarketAI.API.Models.SubscriptionModel>
 
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h1 class="animated fadeInLeft">Приобретите подписку, чтобы пользоваться сервисом</h1>
-                <h3 class="animated fadeInLeft">Доступные тарифные планы</h3>
+     <div class="container">
+      <div class="dashboard-header">
+        <div class="titledash">Приобретите подписку, чтобы пользоваться сервисом</div>
+      </div>
+
+      <div class="col-md-12">
+          <div class="wbalert">
+             Ниже вы можете выбрать подходящий вам тариф
+          </div>
+      </div>
+
+      <div class="row">
+
+        @foreach(var sub in @Model)
+        {
+         <div class="col-md-4">
+            <div class="tarif">
+                <div class="tarif-gradient">
+                    <div class="tarif-title">@sub.Title</div>
+                    <div class="tarif-cost">@Math.Round(sub.Price,2) ₽</div>
+                    <div class="tarif-time">Срок: @sub.Days дней</div>
+                </div>
+
+                <div class="tarif-list">
+                    <div class="tarif-name">Описание:</div>
+                        @foreach(var item in sub.Descriptions)
+                        {
+                            <div class="tarif-text">    
+                                @switch (item.Sign)
+                                {
+                                    case MarketAI.Database.Enums.SubscriptionSign.CheckMark:
+                                        <div class="icontf"><i class="las la-check"></i></div>
+                                        break;
+                                   case MarketAI.Database.Enums.SubscriptionSign.Cross:
+                                        <div class="icontf"><i class="las la-times"></i></div>
+                                        break;
+                                }
+                                <div class="texttf">@item.Text</div>
+                            </div>
+                        }
+                </div>
+
+                <div class="tarif-footer">
+                    <a href="/" class="payment">Приобрести</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-12">
+        }
 
-        <div class="col-md-12 padding-0">
-            @foreach (var sub in Model)
-            {
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="panel">
-                        <div class="panel-heading bg-cyan border-none">
-                            <h4>@sub.Title</h4>
-                        </div>
-                        <div class="panel-body" style="padding-bottom:10px;">
-                            <h4>Цена : @sub.Price руб</h4>
-                            <h4>Срок : @sub.Days дней</h4>
-                            <button class="btn btn-primary">Приобрести</button>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+       
+
+      </div>
     </div>

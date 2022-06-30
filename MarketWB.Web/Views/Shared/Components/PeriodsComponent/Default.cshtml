@@ -1,0 +1,129 @@
+﻿@using MarketWB.Web.ViewModels.Cabinet.Dashboard
+@model AbsDashboardVM
+
+ <ul class="nav justify-content-end">
+                <li class="nav-item" onclick="setChangedPeriodFromDays(0)">
+                  <a class="nav-dash d-none d-md-block" href="#">Сегодня</a>
+                </li>
+                <li class="nav-item d-none d-md-block" onclick="setChangedYesterdayPeriod()">
+                  <a class="nav-dash" href="#">Вчера</a>
+                </li>
+                <li class="nav-item d-none d-lg-block" onclick="setChangedWeekPeriod()">
+                    <a class="nav-dash" href="#">1 неделя</a>
+                </li>
+                <li class="nav-item d-none d-lg-block" onclick="setChangedMonthPeriod()">
+                    <a class="nav-dash" href="#">1 месяц</a>
+                </li>
+                <li class="nav-item">
+                    <input type="text" placeholder="Диапазон дат"  value="@Model.User.UserData.SelectedPeriodFrom.ToString("dd.MM.yyyy") - @Model.User.UserData.SelectedPeriodTo.ToString("dd.MM.yyyy")" class="nav-dash nav-date" id="daterange" name="daterange" autocomplete="off">
+                    <script>
+                    $(function() {
+                        $('#daterange').datepicker({
+                        range: 'period', // режим - выбор периода
+                        numberOfMonths: 1,
+                        onSelect: async function(dateText, inst, extensionRange) {
+                            
+                            $('#daterange').val(extensionRange.startDateText + ' - ' + extensionRange.endDateText);
+                           
+                            if (extensionRange.step == 0) {
+                                 let response = await fetch('/WBKeys/SetChangedPeriodTo?period='+extensionRange.endDateText, {
+                                      method: 'PUT',
+                                 });
+                                 let response2 = await fetch('/WBKeys/SetChangedPeriodFrom?period='+extensionRange.startDateText, {
+                                      method: 'PUT',
+                                 });
+                                 document.location.reload();
+                            }
+
+                            }
+                        });
+                    });
+                    </script>
+                </li> 
+            </ul>
+
+    <script>
+     
+
+
+        async function setKeySelected(e){
+             let checkbox = e.target;
+             let response = await fetch('/WBKeys/SelectWBKey?keyId=' +checkbox.getAttribute("data-id")+ '&isChecked=' +checkbox.checked, {
+                 method: 'PUT',
+             });
+             document.location.reload();
+        }
+
+        async function setBrandSelected(value){
+             let response = await fetch('/WBKeys/SelectWBBrand?brand='+value, {
+                 method: 'PUT',
+             });
+             document.location.reload();
+        }
+        async function setCategorySelected(value){
+             let response = await fetch('/WBKeys/SelectWBCategory?category='+value, {
+                  method: 'PUT',
+              });
+             document.location.reload();
+        }
+
+        async function onPeriodChanged(event){
+             var selectElement = event.target;
+             var value = selectElement.value;
+             alert(value);
+        }
+
+
+        async function setChangedPeriodFrom(event){
+             var selectElement = event.target;
+             var value = selectElement.value;
+             let response = await fetch('/WBKeys/SetChangedPeriodFrom?period='+value, {
+                 method: 'PUT',
+              });
+             document.location.reload();
+        }
+        async function setChangedPeriodTo(event){
+             var selectElement = event.target;
+             var value = selectElement.value;
+             let response = await fetch('/WBKeys/SetChangedPeriodTo?period='+value, {
+                  method: 'PUT',
+             });
+             document.location.reload();
+        }
+
+
+        //async function setChangedPeriodFromDays(days){
+        //      var rightNow = new Date();
+        //      var to = rightNow.toISOString();
+        //      rightNow.setDate(rightNow.getDate() - days);
+        //      var from = rightNow.toISOString();
+
+        //     let response = await fetch('/WBKeys/SetChangedPeriodTo?period='+to, {
+        //          method: 'PUT',
+        //     });
+        //     let response2 = await fetch('/WBKeys/SetChangedPeriodFrom?period='+from, {
+        //          method: 'PUT',
+        //     });
+        //     document.location.reload();
+        //}
+          async function setChangedYesterdayPeriod(){
+             let response = await fetch('/WBKeys/SetYesterdayPeriod', {
+                  method: 'PUT',
+             });
+             document.location.reload();
+        }
+
+         async function setChangedWeekPeriod(){
+             let response = await fetch('/WBKeys/SetWeekPeriod', {
+                  method: 'PUT',
+             });
+             document.location.reload();
+        }
+           async function setChangedMonthPeriod(){
+             let response = await fetch('/WBKeys/SetMonthPeriod', {
+                  method: 'PUT',
+             });
+             document.location.reload();
+        }
+    </script>
+   

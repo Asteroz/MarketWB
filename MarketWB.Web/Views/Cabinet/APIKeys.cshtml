@@ -1,91 +1,118 @@
+@using MarketAI.API.Models
 @using MarketWB.Web.Helpers
 @using MarketWB.Web.ViewModels.Cabinet.Dashboard
 @{
     Layout = "_Layout";
 }
-@model DashboardSelfCostsVM
+@model UserModel
 
-<style>
-    .table_input{
-        width: 92%;
-    }
-</style>
-
-
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">API Ключи</h3>
-            </div>
-        </div>
+   <div class="container">
     </div>
-    <div class="col-md-12">
-        <div class="col-md-12 top-20 padding-0">
-            <div class="col-md-12">
-                <div class="panel">
-                    <div class="panel-body">
-                        <div class="responsive-table">
-                            <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Название</th>
-                                        <th>API ключ</th>
-                                        <th></th>
-                                         <div style="display:block;">
-                                                <button onclick="CreateRow()" style="btn btn-primary">Добавить API ключ</button>
-                                                <button onclick="SaveRows()" style="btn btn-success">Сохранить</button>
-                                        </div>
-                                    </tr>
-                                </thead>
-                                <tbody id="table_body">
-                                    @{
-                                        var user = await UserHelper.GetUser(User);
-                                    }
-                                    @if(user != null)
-                                    {
-                                        foreach(var apikey in user.WBAPIKeys)
-                                        {
-                                            <tr data-id="@apikey.Id">
-                                                <td><input class="table_input" type="text" value="@apikey.Name"/></td>
-                                                <td><input class="table_input" type="text" value="@apikey.APIKey"/></td>
-                                                <td><a><button onclick="DeleteRow(@apikey.Id)" style="btn btn-danger">Удалить</button></a></td>
-                                            </tr>
-                                        }
-                                    }                                
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash"><i class="las la-shopping-bag"></i> API ключи</div>
+             <div class="control-elements">
+                <div class="elements-content">
+                    <a data-bs-toggle="modal" data-bs-target="#createApiKey" class="create-ticket">Добавить API ключ</a>
                 </div>
             </div>
-
         </div>
+
+        <div class="col-md-12">
+          <div class="wbalert">
+              Для начало работы с сервисом вам нужно добавить свое API. ☝ API — ваш уникальный
+              цифровой идентификатор, с его помощью данные аналитики Wildberries поступают на
+              сервер FEENO. На портале в разделе «Профиль» - «Настройки» - «Доступ к Api» вы
+              самостоятельно можете сгенерировать API ключ для получения этих данных. Далее
+              назовите ваш ключ в форме ниже и введите API x64, подождите, скоро данные обновятся.
+              �
+          </div>
+        </div>
+
+        <script>
+          $(document).ready(function () {
+              $('#buytable').DataTable();
+          });
+        </script>
+
+        <div class="panel panel-default">
+          <table id="buytable" class="table table-striped" style="width:100%">
+            <thead class="wbtableheader">
+                <tr>
+                    <th>
+                      Название
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Информация при наведении" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      API ключ
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Информация при наведении" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                    @foreach(var token in Model.WBAPIKeys)
+                    {
+                         <tr data-id="@token.Id">
+                            <td>@token.Name</td>
+                            <td>@token.APIKey</td>
+                            <td><button style="border-width:0;background:transparent;" onclick="DeleteRow(@token.Id)" class="wbdelete">Удалить</button></td>
+                         </tr>
+                    }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
     </div>
 
-    <script>
-         async function CreateRow(){
 
-               let response = await fetch('/WBKeys/CreateNewWBKey', {
-                   method: 'PUT',
-               });
+    <!-- MODAL WINDOW -->
+    <div class="modal fade" id="createApiKey" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Добавление API ключа</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form asp-action="CreateWBKey" asp-controller="WBKeys" method="POST">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Название</label>
+                <input name="Name" required type="text" class="form-lk" placeholder="">
+              </div>
 
-               let json = await response.json();
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">x64 API ключ</label>
+                <input name="APIKey" required type="text" class="form-lk" placeholder="">
+              </div>
 
-               var row = document.createElement('tr');
-               row.setAttribute('data-id',json);
+               <h4 id="validation_error" style="color:red;text-align:center;margin-top:10px" class="popup-error"></h4>
+
+              <div class="clickers wbselfcenter">
+                <button type="submit" class="btnprofile wbselfbtn">Сохранить изменения</button>
+                <a href="/" class="btnregister wbselfbtn" data-bs-dismiss="modal">Отменить изменения</a>
+              </div>
+
               
-               let html = '';
-               for (let i =0;i<2;i++){
-                   html += '<td><input class="table_input" type="text"/></td>';
-               }
-               html += ` <td><a><button onclick="DeleteRow(${json})" style="btn btn-danger">Удалить</button></a></td>`;
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
-               row.innerHTML = html;
-
-               let table_body = document.getElementById('table_body');
-               table_body.prepend(row);
-         }
+    <script>
     
         
          async function DeleteRow(id){
@@ -99,28 +126,6 @@
              table_body.removeChild(row);
          }
 
-        async function SaveRows(){
-            let table_body = document.getElementById('table_body');
-            let rows = table_body.children;
-
-            for (let i =0;i<rows.length;i++){
-                let row = rows[i];
-                let cells = row.children;
-                let model = {
-                    Id: new Number(row.getAttribute('data-id')),
-                    Name: cells[0].children[0].value,
-                    APIKey: cells[1].children[0].value,
-                }
-        
-        
-                let response = await fetch('/WBKeys/UpdateWBKey', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json;charset=utf-8'
-                    },
-                    body: JSON.stringify(model)});
-            }
-        }
 
 
     </script>

@@ -5,70 +5,151 @@
 @model DashboardOrdersVM
 
 
-    @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
 
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">Заказы</h3>
-            </div>
+     @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
+
+    <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash"><i class="las la-shopping-bag"></i> Заказы</div>
+             @await Component.InvokeAsync("PeriodsComponent",new {vm = Model})
         </div>
-    </div>
-    <div class="col-md-12">
 
-        <div class="col-md-12 top-20 padding-0">
-            <div class="col-md-12">
-                <div class="panel">
-                    <div class="panel-body">
-                        <div class="responsive-table">
-                            <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Самовыкуп</th>
-                                        <th>фото</th>
-                                        <th>Артикул</th>
-                                        <th>Бренд</th>
-                                        <th>Название</th>
-                                        <th>Цена, ₽</th>
-                                        <th>Себестоимость, ₽</th>
-                                        <th>Категория</th>
-                                        <th>Логистика, ₽</th>
-                                        <th>Дата заказа</th>
-                                        <th>Адрес доставки</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(Model.Report != null)
-                                    {
-                                        foreach(var row in Model.Report.Rows)
-                                        {
-                                             <tr>
-                                                 <td>
-                                                     <input type="checkbox" @if(row.IsSelfBuy){@("checked")}/>
-                                                 </td>
-                                                 <td>
-                                                    <img height="45" width="45" src="https://images.wbstatic.net/c246x328/new/@row.Article.ToString().Remove(4)0000/@row.Article-1.jpg" />
-                                                 </td>
-                                                <td>@row.Article</td>
-                                                <td>@row.Brand</td>
-                                                <td>@row.Title</td>
-                                                <td>@Convert.ToInt32(row.Price)</td>
-                                                <td>@Convert.ToInt32(row.SelfCost)</td>
-                                                <td>@row.Category</td>
-                                                <td>@Convert.ToInt32(row.Logistic)</td>
-                                                <td>@row.OrderDate.ToString("dd MMMM yyyy HH:mm")</td>
-                                                <td>Склад</td>
-                                             </tr>
-                                        }
-                                    }      
-                                </tbody>
-                            </table>
-                        </div>
+        <div class="col-md-12">
+          <div class="wbalert">
+            В таблице представлена детальная аналитика заказов за выбранный период. Для удобства
+            вы можете отсортировать товары по бренду или категории. �
+          </div>
+        </div>
+
+        <script>
+          $(document).ready(function () {
+              $('#buytable').DataTable();
+          });
+        </script>
+
+        <div class="panel panel-default">
+        <table id="buytable" class="table table-striped" style="width:100%">
+          <thead class="wbtableheader">
+              <tr>
+                  <th>
+                    Самовыкуп
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Поставьте галочку, если это был самовыкуп и сервис не будет учитывать его в прибыли" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
                     </div>
-                </div>
-            </div>
+                  </th>
+                  <th>
+                    Фото
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Фото продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Артикул
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Артикул продукта присвоенный Wildberries" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Бренд
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Бренд продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Название
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Основное название продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Цена, ₽
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Цена продажи продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Себестоимость, ₽
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Себестоимость продукта заполняется в разделе «Рассчитать себестоимость»" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Категория
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Основная категория продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Логистика, ₽
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Стоимость доставки продукта до пункта выдачи" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Дата заказа
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Точное время и дата заказа продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+                  <th>
+                    Склад
+                    <div class="wbtcont">
+                      <i data-bs-toggle="tooltip" data-bs-placement="top" title="Основной склад доставки продукта" class="las la-info-circle wbinfot"></i>
+                      <i class="las la-sort wbsort"></i>
+                    </div>
+                  </th>
+              </tr>
+          </thead>
+          <tbody>
+              @foreach(var row in Model.Report.Rows)
+              {
+                  <tr>
+                      <td>
+                        <div class="form-check wbtablepos">
+                          <input class="form-check-input" data-nmid="@row.Article" onchange="onSelfBuyCheckboxChanged(event)" type="checkbox" @if(row.IsSelfBuy){@("checked")}>
+                        </div>
+                      </td>
+                      <td>
+                           <img height="45" width="45" src="https://images.wbstatic.net/c246x328/new/@row.Article.ToString().Remove(4)0000/@row.Article-1.jpg" />
+                      </td>
+                      <td>@row.Article</td>
+                      <td>@row.Brand</td>
+                      <td>@row.Title</td>
+                      <td>@Convert.ToInt32(row.Price)</td>
+                      <td>@Convert.ToInt32(row.SelfCost)</td>
+                      <td>@row.Category</td>
+                      <td>@Convert.ToInt32(row.Logistic)</td>
+                      <td>@row.OrderDate.ToString("dd MMM yyyy hh:mm")</td>
+                      <td>@row.DeliveryAddress</td>
+                  </tr>  
+              }
+          </tbody>
+        </table>
+       </div>
 
-        </div>
+
+      </div>
+
+
     </div>
-    <!-- end: content -->
 
+    <script>
+               async function onSelfBuyCheckboxChanged(e){
+                   const id = e.target.getAttribute('data-nmid');
+                   let response = await fetch('/Cabinet/SetSelfBuyStatus?nmId='+id+'&isSelfBuy='+e.target.checked, {
+                           method: 'PUT',
+                   });
+
+               }
+        </script>

@@ -16,7 +16,15 @@ namespace MarketAI.API.Core
     {
         public DbSet<PostModel> Posts { get; set; }
         public DbSet<PromocodeModel> Promocodes { get; set; }
+
+
+
         public DbSet<SubscriptionModel> Subscriptions { get; set; }
+        public DbSet<SubscriptionDescriptionItem> SubscriptionDescriptionItems { get; set; }
+
+
+
+
         public DbSet<TagModel> Tags { get; set; }
         public DbSet<TicketMessage> TicketMessages { get; set; }
         public DbSet<TicketModel> Tickets { get; set; }
@@ -102,7 +110,9 @@ namespace MarketAI.API.Core
                        new MySqlServerVersion(new Version(8, 0, 11)),
                        o =>
                        {
-                           o.EnableRetryOnFailure(100);
+                           o.SetSqlModeOnOpen();
+                           o.CommandTimeout(int.MaxValue);
+                         //  o.EnableRetryOnFailure(100);
                        });
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -117,6 +127,9 @@ namespace MarketAI.API.Core
             modelBuilder.Entity<UserModel>().HasMany(c => c.Auths).WithOne(e => e.User);
             modelBuilder.Entity<UserModel>().HasMany(c => c.Tickets).WithOne(e => e.OpenedBy);
             modelBuilder.Entity<UserModel>().HasMany(c => c.Referrals).WithOne(e => e.Owner);
+
+
+            modelBuilder.Entity<SubscriptionModel>().HasMany(c => c.Descriptions);
 
             //modelBuilder.Entity<TicketMessage>().HasOne(o => o.SentBy);
 

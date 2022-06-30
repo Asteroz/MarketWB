@@ -15,7 +15,13 @@ namespace MarketWB.Parsing.Models.Reports.Rejects
         public double? Price { get; set; }
         public string Category { get; set; }
         public double? LostProfit { get; set; }
+
+
         public double? Logistic { get; set; }
+        public double? LogisticFromClient { get; set; }
+        public double? LogisticToClient { get; set; }
+
+
 
         public DateTime OrderDate { get; set; }
         public DateTime? SaleDate { get; set; }

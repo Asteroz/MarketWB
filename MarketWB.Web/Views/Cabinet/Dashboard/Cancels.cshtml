@@ -9,66 +9,133 @@
     
     @await Component.InvokeAsync("DashboardHeaderComponent",new {vm = Model})
 
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">Отмены</h3>
-            </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash"><i class="las la-shopping-bag"></i> Отмены</div>
+               @await Component.InvokeAsync("PeriodsComponent",new {vm = Model})
         </div>
+
+        <div class="col-md-12">
+          <div class="wbalert">
+            В таблице представлена детальная аналитика отмен за выбранный период. Для удобства
+            вы можете отсортировать товары по бренду или категории. �
+          </div>
+        </div>
+
+        <script>
+          $(document).ready(function () {
+              $('#buytable').DataTable();
+          });
+        </script>
+
+        <div class="panel panel-default">
+          <table id="buytable" class="table table-striped" style="width:100%">
+            <thead class="wbtableheader">
+                <tr>
+                    <th>
+                      Фото
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Фото продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Артикул
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Артикул продукта присвоенный Wildberries" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Бренд
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Бренд продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Название
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Основное название продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Цена, ₽
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Цена продажи продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Категория
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Основная категория продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Утерянная прибыль, ₽
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Прибыль, которую вы могли бы заработать, если бы покупатель выкупил товар" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Логистика, ₽
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Стоимость доставки продукта до пункта выдачи + обратно на склад" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Дата заказа
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Точное время и дата заказа продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Дата отмены
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Точное время и дата отказа от продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Склад
+                      <div class="wbtcont">
+                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Основной склад доставки продукта" class="las la-info-circle wbinfot"></i>
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                  @foreach(var row in Model.Report.Rows)
+                  {
+                      <tr>
+                          <td>
+                               <img height="45" width="45" src="https://images.wbstatic.net/c246x328/new/@row.Article.ToString().Remove(4)0000/@row.Article-1.jpg" />
+                          </td>
+                          <td>@row.Article</td>
+                          <td>@row.Brand</td>
+                          <td>@row.Title</td>
+                          <td>@Convert.ToInt32(row.Price)</td>
+                          <td>@row.Category</td>
+                          <td>@Convert.ToInt32(row.LostProfit)</td>
+                          <td>@Convert.ToInt32(row.Logistic)</td>
+                          <td>@row.OrderDate.ToString("dd MMM yyyy hh:mm")</td>
+                          <td>@row.CancelDate.ToString("dd MMM yyyy hh:mm")</td>
+                          <td>@row.DeliveryAddress</td>
+                      </tr>  
+                  }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
     </div>
-    <div class="col-md-12">
-
-        <div class="col-md-12 top-20 padding-0">
-            <div class="col-md-12">
-                <div class="panel">
-                    <div class="panel-body">
-                        <div class="responsive-table">
-                            <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Фото</th>
-                                        <th>Артикул</th>
-                                        <th>Бренд</th>
-                                        <th>Название</th>
-                                        <th>Цена, ₽</th>
-                                        <th>Категория</th>
-                                        <th>Утерянная прибыль, ₽</th>
-                                        <th>Логистика, ₽</th>
-                                        <th>Дата заказа</th>
-                                        <th>Дата продажи</th>
-                                        <th>Дата отмены</th>
-                                        <th>Адрес доставки</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(Model.Report != null)
-                                    {
-                                        foreach(var row in Model.Report.Rows)
-                                        {
-                                             <tr>
-                                                <td>
-                                                    <img height="45" width="45" src="https://images.wbstatic.net/c246x328/new/@row.Article.ToString().Remove(4)0000/@row.Article-1.jpg" />
-                                                </td>
-                                                <td>@row.Article</td>
-                                                <td>@row.Brand</td>
-                                                <td>@row.Title</td>
-                                                <td>@Convert.ToInt32(row.Price)</td>
-                                                <td>@row.Category</td>
-                                                <td>@Convert.ToInt32(row.LostProfit)</td>
-                                                <td>@Convert.ToInt32(row.Logistic)</td>
-                                                <td>@row.OrderDate.ToString("dd MMMM yyyy HH:mm")</td>
-                                                <td>@row.SaleDate?.ToString("dd MMMM yyyy HH:mm")</td>
-                                                <td>@row.CancelDate.ToString("dd MMMM yyyy HH:mm")</td>
-                                                <td>Склад</td>
-                                             </tr>
-                                        }
-                                    }      
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div> 

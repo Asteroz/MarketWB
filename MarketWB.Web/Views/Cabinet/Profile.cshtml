@@ -17,86 +17,79 @@
  </style>
 
 
+     <div class="container">
+        <div class="row">
+            <div class="dashboard-header">
+                <div class="titledash"><i class="las la-user-circle"></i> Профиль</div>
+            </div>
 
-    <div class="panel-body">
-        <div class="col-md-12">
-            <h3 class="animated fadeInLeft">Профиль</h3>
-        </div>
-    </div>
-
-    <style>
-        .custom_button {
-            width: 370px;
-            margin-top: 10px;
-        }
-        .button_header{
-            color:black;
-        }
-        .form_item{
-            margin-top: 10px;
-        }
-        .form_label{
-            margin-left: -10px;
-        }
-    </style>
-
-    <div class="col-md-12 top-20 padding-0">
-        <div class="col-md-12">
-            <div class="panel">
-                <div class="panel-body">
-                    <div class="col-md-12 list-timeline">
-                       
-                             <form class="panel-body" style="padding-bottom:30px;" asp-action="UpdateUser" asp-controller="Users" asp-route-model="@Model" enctype="multipart/form-data"  method="POST">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                       <input type="hidden" asp-for="Id"  value="@Model.Id" />
-                                       <div class="col-sm-6">
-                                            <label class="col-sm-1 form_label" for="Name"> Имя</label>
-                                            <input type="text"  asp-for="Name"  value="@Model.Name" required class="form-control">
-                                       </div>
-                                       <div class="col-sm-6">
-                                            <label class="col-sm-1 form_label" for="Surname"> Фамилия</label>
-                                            <input type="text" asp-for="Surname" value="@Model.Surname" required class="form-control">
-                                       </div>
-
-                                        <div class="col-sm-6 form_item">
-                                            <label class="col-sm-1 form_label" for="Email"> Email</label>
-                                            <input type="email"  asp-for="Email"  value="@Model.Email" required class="form-control">
-                                       </div>
-                                       <div class="col-sm-6 form_item">
-                                            <label class="col-sm-1 form_label" for="Phone"> Телефон</label>
-                                            <input type="tel"  asp-for="Phone"  value="@Model.Phone" required class="form-control">
-                                       </div>
-
-                                       <div class="col-sm-12 form_item">
-                                            <label class="col-sm-1 form_label" for="Activity">Ниша</label>
-                                            <input type="text" asp-for="Activity" value="@Model.Activity" required class="form-control">
-                                       </div>
-
-                                        <div class="input-group fileupload-v1 form_item" style="width: 97%; top: 10px; margin-left: 14px">
-                                            <input type="file" name="manualfile" class="fileupload-v1-file hidden" />
-                                            <input type="text" class="form-control fileupload-v1-path" placeholder="File Path..." disabled>
-                                            <span class="input-group-btn">
-                                                <button class="btn fileupload-v1-btn" type="button"><i class="fa fa-folder"></i>Загрузить аватар</button>
-                                            </span>
-                                        </div>
-                                        <input class="submit btn btn-primary" style="width: 97%; margin-top: 20px; margin-left: 14px" type="submit" value="Сохранить изменения">
-                                    </div>  
-                                </div>
-                              </form>
-
-                    </div>
+            <div class="col-md-12">
+                <div class="wbalert">
+                    Давайте познакомимся чуть ближе, заполните короткую форму о себе. �
                 </div>
             </div>
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8">
+                <div class="profileedit">
+                    <form asp-action="UpdateUser" asp-controller="Users" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label lbwhite">Имя</label>
+                                    <input type="text" asp-for="Name" value="@Model.Name" class="form-control form1" placeholder="Имя">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label lbwhite">Email</label>
+                                    <input type="email" asp-for="Email" value="@Model.Email" class="form-control form1" placeholder="Email">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label lbwhite">Ниша</label>
+                                    <input type="text" asp-for="Activity" value="@Model.Activity" class="form-control form1" placeholder="Ниша">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label lbwhite">Фамилия</label>
+                                    <input type="text" asp-for="Surname"  value="@Model.Surname" class="form-control form1" placeholder="Фамилия">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label lbwhite">Телефон</label>
+                                    <input type="tel" asp-for="Phone" value="@Model.Phone" class="form-control form1" placeholder="Телефон">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="wbfileupload" class="wbfileupload">
+                                        <i class="las la-folder"></i> Загрузить аватар
+                                    </label>
+                                    <input id="wbfileupload" name="file" type="file"/>
+                                </div>
+                            </div>
+
+                            <!-- SAVE -->
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6">
+                                <button class="saveprofile">Сохранить изминения</button>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-2"></div>
         </div>
     </div>
-
 
 
    <!-- Popups -->
 
         
-
+@*
           <div class="modal" id="activatePromocode">
              <div class="modal-dialog">
                 <div class="modal-content">
@@ -148,7 +141,7 @@
                    </div>
                 </div>
              </div>
-          </div>
+          </div>*@
 
 
 

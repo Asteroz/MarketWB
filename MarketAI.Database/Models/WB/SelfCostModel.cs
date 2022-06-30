@@ -13,6 +13,9 @@ namespace MarketAI.API.Models
         public UserModel Owner { get; set; }
         public int OwnerId { get; set; }
 
+        [NotMapped]
+        public double CurrentPrice { get; set; }
+
 
         public double PurchaseCost { get; set; }
         public double PackagingCost { get; set; }

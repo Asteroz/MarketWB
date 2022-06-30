@@ -1,4 +1,5 @@
-﻿using MarketAI.API.Models;
+﻿using MarketAI.API.Core;
+using MarketAI.API.Models;
 using MarketWB.Web.Helpers;
 using MarketWB.Web.Jobs;
 using Microsoft.AspNetCore.Mvc;
@@ -13,23 +14,36 @@ namespace MarketWB.Web.Controllers.Cabinet
     {
         private readonly ILogger<DashboardController> _logger;
         private readonly WBKeysAPI _wbKeysApi;
-
+        private readonly APIDBContext _db;
         public WBKeysController(ILogger<DashboardController> logger, 
-                                WBKeysAPI wbKeysApi)
+                                WBKeysAPI wbKeysApi,
+                                APIDBContext db)
         {
             _logger = logger;
             _wbKeysApi = wbKeysApi;
+            _db = db;
         }
 
         [HttpPut]
         [Route("WBKeys/CreateNewWBKey")]
-        public async Task<IActionResult> CreateWBKey()
+        public async Task<IActionResult> CreateNewWBKey()
         {
             var user = await UserHelper.GetUser(User);
             var key = new WBAPITokenModel();
             await _wbKeysApi.CreateToken(user.Id, key);
             return new JsonResult(key.Id);
         }
+        [HttpPost]
+        [Route("WBKeys/CreateWBKey")]
+        public async Task<IActionResult> CreateWBKey( [FromForm]WBAPITokenModel model)
+        {
+            var user = await UserHelper.GetUser(User);
+            await _wbKeysApi.CreateToken(user.Id, model);
+            WBParsing.ParseImmediatelyIfNewKey(model, _db);
+            return RedirectToAction("ApiKeys", "Cabinet");
+        }
+
+
 
         [HttpDelete]
         [Route("WBKeys/DeleteWBKey")]
@@ -43,7 +57,7 @@ namespace MarketWB.Web.Controllers.Cabinet
         public async Task UpdateWBKey([FromBody] WBAPITokenModel model)
         {
             await _wbKeysApi.UpdateToken(model);
-            WBParsing.ParseImmediatelyIfNewKey(model);
+            WBParsing.ParseImmediatelyIfNewKey(model, _db);
         }
 
 
@@ -92,6 +106,17 @@ namespace MarketWB.Web.Controllers.Cabinet
         }
 
 
+
+        [HttpPut]
+        [Route("WBKeys/SetYesterdayPeriod")]
+        public async Task SetYesterdayPeriod()
+        {
+            var user = await UserHelper.GetUser(User);
+            await _wbKeysApi.SetChangedPeriodFrom(user.Id, DateTime.Now.AddHours(12).Date.AddDays(-1));
+            await _wbKeysApi.SetChangedPeriodTo(user.Id, DateTime.Now.AddHours(12).Date.AddDays(-1).AddHours(23).AddMinutes(59));
+        }
+
+
         [HttpPut]
         [Route("WBKeys/SetWeekPeriod")]
         public async Task SetWeekPeriod()
@@ -102,17 +127,16 @@ namespace MarketWB.Web.Controllers.Cabinet
             while (firstDayInWeek.DayOfWeek != DayOfWeek.Monday)
                 firstDayInWeek = firstDayInWeek.AddDays(-1);
 
-            await _wbKeysApi.SetChangedPeriodTo(user.Id, DateTime.Now.Date.AddHours(23).AddMinutes(59));
             await _wbKeysApi.SetChangedPeriodFrom(user.Id, firstDayInWeek);
+            await _wbKeysApi.SetChangedPeriodTo(user.Id, DateTime.Now.AddHours(12).Date.AddHours(23).AddMinutes(59));
         }
         [HttpPut]
         [Route("WBKeys/SetMonthPeriod")]
         public async Task SetMonthPeriod()
         {
             var user = await UserHelper.GetUser(User);
-            await _wbKeysApi.SetChangedPeriodTo(user.Id, DateTime.Now.Date.AddHours(23).AddMinutes(59));
-            await _wbKeysApi.SetChangedPeriodFrom(user.Id, DateTime.Now.AddDays(-DateTime.Now.Day+1));
-
+            await _wbKeysApi.SetChangedPeriodTo(user.Id, DateTime.Now.AddHours(12).Date.AddHours(23).AddMinutes(59));
+            await _wbKeysApi.SetChangedPeriodFrom(user.Id, DateTime.Now.AddHours(12).AddDays(-DateTime.Now.Day+1));
         }
     }
 }

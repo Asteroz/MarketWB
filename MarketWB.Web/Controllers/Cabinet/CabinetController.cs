@@ -57,7 +57,8 @@ namespace MarketWB.Web.Controllers
         [Route("Cabinet/ApiKeys")]
         public async Task<IActionResult> ApiKeys()
         {
-            return View("Views/Cabinet/APIKeys.cshtml");
+            var user = await UserHelper.GetUser(User);
+            return View("Views/Cabinet/APIKeys.cshtml", user);
         }
         [Route("Cabinet/Profile")]
         public async Task<IActionResult> Profile()

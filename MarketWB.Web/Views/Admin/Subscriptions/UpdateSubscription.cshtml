@@ -16,12 +16,13 @@
     </div>
     <div class="form-element">
         <div class="col-md-12 padding-0">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="panel form-element-padding">
                     <div class="panel-heading">
                         <h4>>Тарифный план</h4>
                     </div>
-                    <form class="panel-body"  asp-action="UpdateSubscriptionPOST" asp-controller="Subscription" asp-route-id="@Model.Id" asp-route-subscription="@Model" method="POST" style="padding-bottom:30px;">
+                    <form class="panel-body" onsubmit="SetProductCategories()"  asp-action="UpdateSubscriptionPOST" asp-controller="Subscription" asp-route-id="@Model.Id" asp-route-subscription="@Model" method="POST" style="padding-bottom:30px;">
+                        <input type="hidden" id="productID" value="@Model.Id"/>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-right">Название</label>
@@ -38,6 +39,52 @@
                             <div class="col-sm-12 padding-0">
                                 <input type="checkbox" style="margin-left:90px;margin-top:15px" asp-for="IsTrial" value="@Model.IsTrial"> Тестовый тарифный план
                             </div>
+
+                             <div class="col-md-12">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <h5 class="card-header">Пункты тарифа
+                                             <button onclick="CreateMeasureRow()" type="button" style="margin-left:100px" class="btn btn-space btn-secondary">Добавить</button>
+                                        </h5>
+                                    <div class="panel-body">
+                                        <div class="responsive-table">
+                                            <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Значок</th>
+                                                        <th>Описание</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tableBody">
+                                                    @{
+                                                        int counter = 0;
+                                                    }
+                                                    @foreach(var item in Model.Descriptions)
+                                                    {                                                  
+                                                        <tr data-id="@item.Id">
+                                                           <input type="hidden" name="Descriptions[@counter].Id" value="@item.Id">
+                                                          <td style="padding:0">
+                                                              <select style="height:15px;margin-top:2px;width:90%" name="Descriptions[@counter].Sign">
+                                                                  <option value="1">Галочка</option>
+                                                                  <option value="2">Крестик</option>
+                                                              </select>
+                                                          </td>
+                                                          <td>
+                                                               <input type="text"  name="Descriptions[@counter].Text" style="height:15px;width:90%" value="@item.Text"  data-parsley-trigger="change" required="" placeholder="Введите название" autocomplete="off" class="form-control">
+                                                          </td>
+                                                          <td><button onclick="RemoveRow(event)"  type="button"  style="width:70%" class="btn btn-danger">Удалить</button></td>
+                                                      </tr>
+                                                      counter++;
+                                                    }
+                                                   
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <input class="submit btn btn-danger" style="margin-top:10px;width:96%;" type="submit" value="Сохранить изменения">
                         </div>
                     </form>
@@ -46,3 +93,73 @@
         </div>
     </div>
 </div>
+
+
+     <script>
+
+                            let rowsCounter =@Model.Descriptions.Count-1;
+
+                        async function CreateMeasureRow(){
+                             const tableBody = document.getElementById('tableBody');
+
+                             rowsCounter++;
+
+                             let row = document.createElement('tr');
+                            row.setAttribute('data-id', '0');
+                             
+                             let html = `<td>
+                                            <select style="height:15px;margin-top:2px;width:90%" name="Descriptions[${rowsCounter}].Sign">
+                                                <option value="1">Галочка</option>
+                                                <option value="2">Крестик</option>
+                                           </select>
+                                         </td>`;
+                             html += `  <td>
+                                             <input type="text"  name="Descriptions[${rowsCounter}].Text" style="height:15px;width:90%"   data-parsley-trigger="change" required="" placeholder="Введите название" autocomplete="off" class="form-control">
+                                        </td>`;
+                              html += ` <td><button onclick="RemoveRow(event)"  type="button" style="width:70%" class="btn btn-danger">Удалить</button></td>`;
+
+                             row.innerHTML = html;
+
+                             tableBody.appendChild(row);
+                         }
+
+                         async function RemoveRow(e){
+                             rowsCounter--;
+                             const tableBody = document.getElementById('tableBody');
+                             var row = e.target.parentNode.parentNode;
+                             tableBody.removeChild(row);
+
+                         }
+                      </script>
+
+                               <script>
+
+                        async function SetProductCategories(){
+
+                                 let selectionBox = document.getElementById("tableBody");
+                              
+                                 let ids = [];
+                                 for(let i=0;i<selectionBox.children.length;i++){
+
+                                     let tr = selectionBox.children[i];
+                                     let id = tr.getAttribute("data-id");
+                                     ids.push(new Number(id));
+                                 }
+
+                                 let data = {
+                                     Ids : ids,
+                                     Id : new Number(document.getElementById('productID').value)
+                                 }
+
+                            
+
+                                 await fetch("/Admin/SetSubscriptionItems",{
+                                     method : 'POST',
+                                     headers: {
+                                        'Content-Type': 'application/json;charset=utf-8'
+                                      },
+                                     body: JSON.stringify(data)
+                                 });
+                             }
+
+                         </script>

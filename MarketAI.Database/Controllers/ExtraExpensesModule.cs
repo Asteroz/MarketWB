@@ -36,6 +36,16 @@ namespace MarketAI.API.Controllers
             await db.SaveChangesAsync();
             return expense.Id;
         }
+        public async Task<int> CreateExtraExpense(UserModel user, ExtraExpenseModel expense)
+        {
+            expense.OwnerId = user.Id;
+            user.ExtraExpenses.Add(expense);
+
+            db.Users.Update(user);
+
+            await db.SaveChangesAsync();
+            return expense.Id;
+        }
         public async Task<RequestStatus> UpdateExtraExpense(ExtraExpenseModel model)
         {
             var item = db.ExtraExpenses.FirstOrDefault(o => o.Id == model.Id);
@@ -44,7 +54,7 @@ namespace MarketAI.API.Controllers
             item.Category = model.Category;
             item.Sum = model.Sum;
             item.Comment = model.Comment;
-            item.PaymentDate = item.PaymentDate;
+            item.PaymentDate = model.PaymentDate;
             item.PaymentDescription = model.PaymentDescription;
             item.PaymentReceiver = model.PaymentReceiver;
 

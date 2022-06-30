@@ -173,6 +173,13 @@ namespace MarketWB.Web.Controllers.Cabinet
         }
         #endregion
 
+        [HttpPut]
+        [Route("Cabinet/SetSelfBuyStatus")]
+        public async Task SetSelfBuyStatus(long nmId, bool isSelfBuy)
+        {
+            await WBParsing.SetSelfBuyStatus(nmId, isSelfBuy);
+        }
+
         #region Дополнительные расходы
         [Route("Cabinet/Dashboard/ExtraExpenses")]
         public async Task<IActionResult> ExtraExpenses()
@@ -193,6 +200,13 @@ namespace MarketWB.Web.Controllers.Cabinet
             var user = await UserHelper.GetUser(User);
             return new JsonResult(await _extraExpensesAPI.CreateExtraExpense(user));
         }
+        [HttpPost]
+        [Route("Cabinet/Dashboard/CreateExtraExpence")]
+        public async Task<int> CreateExtraExpence([FromBody] ExtraExpenseModel model)
+        {
+            var user = await UserHelper.GetUser(User);
+            return await _extraExpensesAPI.CreateExtraExpense(user,model);
+        }
         [HttpDelete]
         [Route("Cabinet/Dashboard/DeleteExtraExpence")]
         public async Task DeleteExtraExpence(int id)
@@ -207,12 +221,7 @@ namespace MarketWB.Web.Controllers.Cabinet
         }
         #endregion
 
-        [HttpPut]
-        [Route("Cabinet/SetSelfBuyStatus")]
-        public async Task SetSelfBuyStatus(long nmId,bool isSelfBuy)
-        {
-              await WBParsing.SetSelfBuyStatus(nmId, isSelfBuy);
-        }
+      
 
 
         [Route("Cabinet/WaitForParsing")]

@@ -2,7 +2,528 @@
     Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Feeno</title>
+
+    <!-- META -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Помогаем нашим клиентам сосать хуи ахуенно" />
+    <meta name="author" content="Кто юзает фино, тот хуй сосет ахуенно" />
+    <meta name="keywords" content="Гей порно, минет, анастасия шлюха, жесткое порево, анал, снежки, bareback, бордель, golden rain" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/resources/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/resources/css/other.css">
+    <link rel="stylesheet" href="~/resources/css/jquery-ui.css">
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mansalva&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Mansalva&display=swap" rel="stylesheet">
+
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+
+    <!-- JS -->
+    <script src="~/resources/js/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- JS PLUGINS -->
+    <script src="~/resources/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/resources/js/jquery.dataTables.min.js"></script>
+    <script src="~/resources/js/jquery-ui.js"></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="welcome">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navwb">
+                <div class="container-fluid">
+                <a class="logotype" href="#">Лого</a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                </ul>
+
+                <a asp-action="Login" asp-controller="Home" class="logingo">Вход</a>
+                </div>
+            </nav>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <main class="info">
+                        <div class="title">Сервис оцифровки вашего бизнеса на Wildberries</div>
+                        <div class="desc">Следите за своими основными показателями от продажи до позиции на одной странице</div>
+                        <div class="content">
+                            <form  asp-action="Registration" asp-controller="Home" method="get" class="row g-3">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-email" name="email" placeholder="Введите свой email" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <button class="buttonwb" type="submit" id="button-addon2">Попробовать бесплатно</button>
+                                </div>
+                            </form>
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="displaym">
+                                    <div class="headbasic">195k+</div>
+                                    <p class="headesc">пользователей</p>
+                                </div>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <div class="displaym">
+                                    <div class="headbasic">185%</div>
+                                    <p class="headesc">продаж</p>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="splines"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SERVICE -->
+    <section class="section-service">
+        <div class="container">
+            <div class="row">
+                <div class="head-title">
+                    <div class="subtitle">Что может FEENO?</div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="boxe">
+                        <div class="boxe-content">
+                            <div class="iconwb iconwb-cash"></div>
+                            <div class="titlebox">Рассчитывать чистую прибыль</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="boxe">
+                        <div class="boxe-content">
+                            <div class="iconwb iconwb-analytics"></div>
+                            <div class="titlebox">Строить отчет автоматически с помощью API</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="boxe">
+                        <div class="boxe-content">
+                            <div class="iconwb iconwb-cart"></div>
+                            <div class="titlebox">Учитывать самовыкупы по заказам</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="boxe">
+                        <div class="boxe-content">
+                            <div class="iconwb iconwb-dashcoin"></div>
+                            <div class="titlebox">Формировать основные показатели на одной странице</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="boxe">
+                        <div class="boxe-content">
+                            <div class="iconwb iconwb-bag"></div>
+                            <div class="titlebox">Рассчитывать себестоимость товара</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="boxe">
+                        <div class="boxe-content">
+                            <div class="iconwb iconwb-wallet"></div>
+                            <div class="titlebox">Учитывать дополнительные расходы</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="boxe gradient">
+                        <div class="boxe-content">
+                            <div class="iconwb iconwb-dashboard"></div>
+                            <div class="titlebox gradient">Показывать детализацию по всем данным</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container-white">
+        <!-- TIME -->
+        <section class="section-time">
+            <div class="container">
+                <div class="row">
+                    <div class="head-title">
+                        <div class="main-title2">Что удобно:</div>
+                    </div>
+
+                    <div class="col-md-4 marginb-service">
+                        <div class="figure-curl">
+                            <div class="figure-number">1</div>
+                            <div class="figure-icon figure-icon-mobile"></div>
+                        </div>
+
+                        <div class="time-title">Оптимизация</div>
+                        <div class="time-subtitle">Следите за детальной статистикой даже с мобильных устройств из любой точки</div>
+                    </div>
+
+                    <div class="col-md-4 marginb-service">
+                        <div class="figure-curl figure-pic">
+                            <div class="figure-number">2</div>
+                            <div class="figure-icon figure-icon-puzzle"></div>
+                        </div>
+
+                        <div class="time-title">Важные показатели</div>
+                        <div class="time-subtitle">Нет лишнего функционала, каждое значение важно</div>
+                    </div>
+
+                    <div class="col-md-4 marginb-service">
+                        <div class="figure-curl figure-pic">
+                            <div class="figure-number">3</div>
+                            <div class="figure-icon figure-icon-clock"></div>
+                        </div>
+
+                        <div class="time-title">Экономь время</div>
+                        <div class="time-subtitle">Наши отчёты наглядны и понятны, вся аналитика автоматизована и не надо ничего дополнительно скачивать</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TARIF 470 MOBILE -->
+        <section class="section-tarif mobile470b" id="hidden320">
+            <div class="container">
+                <div class="row">
+                    <div class="head-title">
+                        <div class="main-title2">Тарифы</div>
+                        <div class="sub-title2">Выберите подходящий тариф для скорейшего исследования Вашего бизнеса</div>
+                    </div>
+
+                    <div class="mobile470">
+                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
+                            <div class="carousel-indicators">
+                              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            </div>
+                            <div class="carousel-inner">
+                              <div class="carousel-item active">
+                                <div class="tarif">
+                                    <div class="tarif-gradient">
+                                        <div class="tarif-title">Тариф «Ещё 2 недели»</div>
+                                        <div class="tarif-cost">280₽</div>
+                                        <div class="tarif-time">Срок: 14 дней</div>
+                                    </div>
+        
+                                    <div class="tarif-list">
+                                        <div class="tarif-name">Описание:</div>
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf">Когда не хватило пробного тарифа и хочется ещё</div>
+                                        </div>
+        
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf">Весь функционал</div>
+                                        </div>
+        
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf">Стоимость дня: 20₽</div>
+                                        </div>
+                                    </div>
+        
+                                    <div class="tarif-footer">
+                                        <a asp-action="Login" asp-controller="Home" class="payment">Приобрести</a>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="carousel-item">
+                                <div class="tarif gradient">
+                                    <div class="label-tarif">Лучший выбор!</div>
+                                    <div class="tarif-gradient white">
+                                        <div class="tarif-title">Тариф «Мы надолго»</div>
+                                        <div class="tarif-cost">1280₽</div>
+                                        <div class="tarif-time">Срок: 3 дней</div>
+                                    </div>
+        
+                                    <div class="tarif-list">
+                                        <div class="tarif-name white">Описание:</div>
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf white">Когда точно нашел, что хотел</div>
+                                        </div>
+        
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf white">Весь функционал</div>
+                                        </div>
+        
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf white">Стоимость дня: 14₽</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="liketarif"></div>
+        
+                                    <div class="tarif-footer">
+                                        <a asp-action="Login" asp-controller="Home" class="payment white">Приобрести</a>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="carousel-item">
+                                <div class="tarif">
+                                    <div class="tarif-gradient">
+                                        <div class="tarif-title">Тариф «Месяц»</div>
+                                        <div class="tarif-cost">490₽</div>
+                                        <div class="tarif-time">Срок: 30 дней</div>
+                                    </div>
+        
+                                    <div class="tarif-list">
+                                        <div class="tarif-name">Описание:</div>
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf">Когда нашел, что хотел</div>
+                                        </div>
+        
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf">Весь функционал</div>
+                                        </div>
+        
+                                        <div class="tarif-text">
+                                            <div class="icontf"><i class="las la-check"></i></div>
+                                            <div class="texttf">Стоимость дня: 16₽</div>
+                                        </div>
+                                    </div>
+        
+                                    <div class="tarif-footer">
+                                        <a asp-action="Login" asp-controller="Home" class="payment marginmin">Приобрести</a>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TARIF -->
+        <section class="section-tarif desktop" id="view-all">
+            <div class="container">
+                <div class="row">
+                    <div class="head-title">
+                        <div class="main-title2">Тарифы</div>
+                        <div class="sub-title2">Выберите подходящий тариф для скорейшего исследования Вашего бизнеса</div>
+                    </div>
+                      
+                    <div class="col-md-4 col-mg">
+                        <div class="tarif">
+                            <div class="tarif-gradient">
+                                <div class="tarif-title">Тариф «Ещё 2 недели»</div>
+                                <div class="tarif-cost">280₽</div>
+                                <div class="tarif-time">Срок: 14 дней</div>
+                            </div>
+
+                            <div class="tarif-list">
+                                <div class="tarif-name">Описание:</div>
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf">Когда не хватило пробного тарифа и хочется ещё</div>
+                                </div>
+
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf">Весь функционал</div>
+                                </div>
+
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf">Стоимость дня: 20₽</div>
+                                </div>
+                            </div>
+
+                            <div class="tarif-footer">
+                                <a asp-action="Login" asp-controller="Home" class="payment">Приобрести</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-mg">
+                        <div class="tarif gradient">
+                            <div class="label-tarif">Лучший выбор!</div>
+                            <div class="tarif-gradient white">
+                                <div class="tarif-title">Тариф «Мы надолго»</div>
+                                <div class="tarif-cost">1280₽</div>
+                                <div class="tarif-time">Срок: 3 дней</div>
+                            </div>
+
+                            <div class="tarif-list">
+                                <div class="tarif-name white">Описание:</div>
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf white">Когда точно нашел, что хотел</div>
+                                </div>
+
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf white">Весь функционал</div>
+                                </div>
+
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf white">Стоимость дня: 14₽</div>
+                                </div>
+                            </div>
+
+                            <div class="liketarif"></div>
+
+                            <div class="tarif-footer">
+                                <a asp-action="Login" asp-controller="Home" class="payment white">Приобрести</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-mg">
+                        <div class="tarif">
+                            <div class="tarif-gradient">
+                                <div class="tarif-title">Тариф «Месяц»</div>
+                                <div class="tarif-cost">490₽</div>
+                                <div class="tarif-time">Срок: 30 дней</div>
+                            </div>
+
+                            <div class="tarif-list">
+                                <div class="tarif-name">Описание:</div>
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf">Когда нашел, что хотел</div>
+                                </div>
+
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf">Весь функционал</div>
+                                </div>
+
+                                <div class="tarif-text">
+                                    <div class="icontf"><i class="las la-check"></i></div>
+                                    <div class="texttf">Стоимость дня: 16₽</div>
+                                </div>
+                            </div>
+
+                            <div class="tarif-footer">
+                                <a asp-action="Login" asp-controller="Home" class="payment marginmin">Приобрести</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SCREEN -->
+    <section class="section-screen">
+        <div class="container">
+            <div class="row">
+                <div class="head-title">
+                    <div class="main-title2">Посмотрите, как выглядит FEENO изнутри</div>
+                    <div class="sub-title2">Удобный и наглядный дашборд поможет отслеживать аналитику с любого устройства</div>
+                </div>
+
+                <div class="contentwb">
+                    <div class="screenwb"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="freetest">
+        <div class="container">
+            <div class="contentfree">
+                <div class="title">Попробуйте FEENO бесплатно</div>
+                <div class="desc">
+                    Регистрируйтесь и получите 5 дней полного доступа ко всему функционалу бесплатно
+                </div>
+
+                <a asp-action="Login" asp-controller="Home"  class="gofreebtn">Зарегистрироваться</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="prefooter">
+        <div class="container">
+            <div class="namecompany">FEENO</div>
+        </div>
+        <div class="container">
+            <div class="content-elements">
+                <div class="left">
+                    ИП Казаревич Екатерина Александровна</br>
+                    ОГРНИП: 321774600287455</br>
+                    ИНН: 772154263180
+                </div>
+    
+                <div class="right">
+                    Социальные сети
+                    <div class="social">
+                        <a href="/" class="social-vk"></a>
+                        <a href="/" class="social-telegram"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FREE -->
+    <section class="freeperiod">
+        <div class="container flex-container">
+            <div class="textfree">
+                Регистрируйтесь и получите 5 дней полного доступа ко всему функционалу бесплатно.
+            </div>
+
+            <div class="buttonfree">
+                <a asp-action="Login" asp-controller="Home"  class="buttonlets">Попробуйте бесплатно</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="links">
+                    <a href="/" class="link-footer">Политика приватности</a>
+                    <a href="/" class="link-footer">Условия использования</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

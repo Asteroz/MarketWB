@@ -2,6 +2,7 @@
 using MarketAI.API.Models;
 using MarketAI.API.Models.Statuses;
 using MarketAI.Database.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace MarketAI.API.Controllers
     public class SubscriptionsModule 
     {
         private readonly ILogger<SubscriptionsModule> _logger;
-        private readonly APIDBContext db;
+        public readonly APIDBContext db;
         public SubscriptionsModule(ILogger<SubscriptionsModule> logger, APIDBContext _db)
         {
             _logger = logger;
@@ -23,7 +24,7 @@ namespace MarketAI.API.Controllers
         }
         public IEnumerable<SubscriptionModel> GetSubscriptions()
         {
-            return db.Subscriptions.ToList();
+            return db.Subscriptions.Include(o => o.Descriptions).ToList();
         }
 
         #region Админская часть
@@ -56,7 +57,9 @@ namespace MarketAI.API.Controllers
                 var sub = db.Subscriptions.FirstOrDefault(o => o.Id == id);
                 sub.Days = subscription.Days;
                 sub.Price = subscription.Price;
+                sub.Descriptions = subscription.Descriptions;
                 db.Subscriptions.Update(sub);
+               
                 await db.SaveChangesAsync();
                 return new RequestStatus("Тарифный план успешно обновлен");
             }
@@ -65,6 +68,11 @@ namespace MarketAI.API.Controllers
                 return new RequestStatus(ex.Message + ex.StackTrace, 500);
             }
         }
+
+
+
+
+
 
 
         public GlobalSettings GetRefSettings()

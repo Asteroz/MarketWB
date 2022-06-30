@@ -2,6 +2,7 @@
 using MarketAI.API.Models;
 using MarketAI.API.Models.WB;
 using MarketWB.Parsing.Models;
+using MarketWB.Parsing.Models.Misc;
 using MarketWB.Parsing.Models.Reports;
 using MarketWB.Parsing.Models.Reports.Orders;
 using MarketWB.Parsing.Models.Reports.Rejects;
@@ -13,12 +14,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WildberriesAPI;
+using WildberriesAPI.Comparers;
 using WildberriesAPI.Models;
 
 namespace MarketWB.Parsing
 {
     public class MarketWBParser
     {
+
+        private readonly DateTimeComparer dateTimeComparer = new DateTimeComparer();
         private readonly APIDBContext db;
         public MarketWBParser(APIDBContext _db)
         {
@@ -42,9 +46,11 @@ namespace MarketWB.Parsing
                     .Where(o => o.FinishedPrice > 0)
                     .ToList();
 
-                realizations = db.DetailByPeriodModels
-                    .Where(o => o.RrDt >= user.UserData.SelectedPeriodFrom).
-                     Where(o => o.RrDt <= user.UserData.SelectedPeriodTo).
+                var orders = db.WBOrders
+                 .Where(o => o.APIKey == token.APIKey)
+                 .ToList();
+
+                realizations = db.DetailByPeriodModels.
                      Where(o => o.APIKey == token.APIKey)
                     .ToList();
 
@@ -54,11 +60,12 @@ namespace MarketWB.Parsing
                 foreach (var sale in sales)
                 {
                     var selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == sale.NmId);
-                    var realization = realizations.FirstOrDefault(o => o.NmId == sale.NmId && o.DeliveryRub > 0);
-                    var realization2 = realizations.FirstOrDefault(o => o.NmId == sale.NmId && o.DeliveryRub == 0);
-                    if (realization == null || realization2 == null) continue;
+                    var realization = realizations.LastOrDefault(o => o.NmId == sale.NmId && o.DeliveryRub > 0 && o.ReturnAmount == 0);
+                    var realization2 = realizations.LastOrDefault(o => o.NmId == sale.NmId && o.DeliveryRub == 0/* && o.ReturnAmount == 0*/);
+                    if (realization == null && realization2 == null) 
+                        continue;
 
-
+                    var order = orders.FirstOrDefault(o => o.GNumber == sale.GNumber);
 
                     var salesRow = new SalesReportRow
                     {
@@ -66,12 +73,12 @@ namespace MarketWB.Parsing
                         SaleDate = sale.Date,
                         Category = sale.Category,
                         Title = sale.Subject,
-                        DeliveryAddress = realization.OfficeName,
-                        OrderDate = realization.OrderDt,
+                        DeliveryAddress = realization?.OfficeName,
+                        OrderDate = order?.Date,
 
                         SelfCost = selfCost?.TotalSelfCost,
 
-                        Logistic = realization.DeliveryRub,
+                        Logistic = realization?.DeliveryRub,
 
                         Brand = sale.Brand,
                         Article = (long)sale.NmId,
@@ -81,15 +88,26 @@ namespace MarketWB.Parsing
 
                     double profit = 0;
                     salesRow.Price = Math.Abs((double)sale.FinishedPrice);
-                    salesRow.Comission = salesRow.Price / 100 * realization2.CommissionPercent;
+                    salesRow.Comission = realization2?.ppvz_sales_commission;
+
+
 
                     if (!sale.IsSelfBuy)
-                        profit = (double)sale.ForPay;
+                        profit = Math.Abs((double)sale.FinishedPrice);
 
                     if (selfCost != null)
                         profit -= selfCost.TotalSelfCost;
 
+                    if (salesRow.Comission == null) salesRow.Comission = 0;
+                    if (salesRow.Logistic == null) salesRow.Logistic = 0;
+
+                    profit -= (double)salesRow.Comission;
+                    profit -= (double)salesRow.Logistic;
+
                     salesRow.Profit = profit;
+
+                    if (report.Rows.Any(o => o.SaleDate == sale.Date)) continue;
+                    if (report.Rows.Any(o => o.OrderDate == salesRow.OrderDate)) continue;
 
                     report.Rows.Add(salesRow);
                 }
@@ -114,11 +132,9 @@ namespace MarketWB.Parsing
                            && o.APIKey == token.APIKey)
                             .ToList();
 
-                realizations = db.DetailByPeriodModels.Where(o =>
-                      o.RrDt >= user.UserData.SelectedPeriodFrom
-                      && o.RrDt <= user.UserData.SelectedPeriodTo
-                      && o.APIKey == token.APIKey)
-                       .ToList();
+                realizations = db.DetailByPeriodModels
+                        .Where(o => o.APIKey == token.APIKey)
+                        .ToList();
 
                 orders = FilterOrders(user.UserData, orders);
                 realizations = FilterRealizations(user.UserData, realizations);
@@ -128,7 +144,7 @@ namespace MarketWB.Parsing
 
                 foreach (var order in orders)
                 {
-                    var realization = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub > 0);
+                    var realization = realizations.LastOrDefault(o => o.NmId == order.NmId && o.DeliveryRub > 0 && o.ReturnAmount == 0);
                     var selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == order.NmId);
 
                     var salesRow = new OrdersReportRow
@@ -154,11 +170,15 @@ namespace MarketWB.Parsing
 
                     salesRow.Price = order.TotalPrice - (order.TotalPrice / 100 * order.DiscountPercent);
 
+                    if (report.Rows.Any(o => o.OrderDate == order.Date)) continue;
+
                     report.Rows.Add(salesRow);
                 }
             }
             return report;
         }
+
+
         public RejectsReport GenerateRejectsReport(UserModel user)
         {           
             var report = new RejectsReport();
@@ -166,20 +186,19 @@ namespace MarketWB.Parsing
 
             foreach (var token in user.UserData.SelectedWBAPITokens)
             {
-        
+                var sales = db.WBSales.Where(o => o.APIKey == token.APIKey)
+                       .ToList();
 
                 List<WBOrderModel> orders = db.WBOrders.Where(o => 
-                o.Date >= user.UserData.SelectedPeriodFrom 
-                && o.Date <= user.UserData.SelectedPeriodTo
-                && o.APIKey == token.APIKey
-                && o.IsCancel)
+                o.CancelDT >= user.UserData.SelectedPeriodFrom 
+                && o.CancelDT <= user.UserData.SelectedPeriodTo
+                && o.IsCancel
+                && o.APIKey == token.APIKey)
                 .ToList();
 
                 List<DetailByPeriodModel> realizations = db.DetailByPeriodModels
                        .Where(o =>
-                       o.RrDt >= user.UserData.SelectedPeriodFrom
-                       && o.RrDt <= user.UserData.SelectedPeriodTo
-                       && o.APIKey == token.APIKey)
+                        o.APIKey == token.APIKey)
                        .ToList();
 
                 orders = FilterOrders(user.UserData, orders).ToList();
@@ -190,14 +209,13 @@ namespace MarketWB.Parsing
 
                 foreach (var order in orders)
                 {
-                    var realization = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub == 0);
-                    var realization2 = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub > 0);
-              
+                    var realization = realizations.LastOrDefault(o => o.SaName == order.SupplierArticle && o.DeliveryRub == 0);
+                    var realization2 = realizations.LastOrDefault(o => o.SaName == order.SupplierArticle && o.DeliveryRub != 0 && o.ReturnAmount == 0);
+                    var realizationBack = realizations.LastOrDefault(o => o.SaName == order.SupplierArticle && o.DeliveryRub != 0 && o.ReturnAmount > 0);
 
-                
+                    if (realizationBack == null || realization2 == null) continue;
 
-                 //   if (realization == null) continue;
-
+                    var sale = sales.FirstOrDefault(o => o.GNumber == order.GNumber);
 
                     SelfCostModel selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == order.NmId);
 
@@ -205,12 +223,16 @@ namespace MarketWB.Parsing
                     {
                         ThumbnailPath = null,
                         Category = order.Category,
-                        SaleDate = realization2?.SaleDt,
+                        SaleDate = sale?.Date,
                         OrderDate = order.Date,
                         Title = order.Subject,
                         CancelDate = order.CancelDT,
 
-                        Logistic = realization2?.DeliveryRub,
+                        Logistic = (double)realization2?.DeliveryRub + (double)realizationBack?.DeliveryRub,
+                        LogisticFromClient = (double)realization2?.DeliveryRub,
+                        LogisticToClient = (double)realizationBack?.DeliveryRub,
+
+                        DeliveryAddress = realization2?.OfficeName,
 
                         Brand = order.Brand,
                         Article = (long)order.NmId
@@ -227,16 +249,12 @@ namespace MarketWB.Parsing
                     if (selfCost != null)
                         profit -= selfCost.TotalSelfCost;
 
-
+                    salesRow.LostProfit = profit - salesRow.Logistic;
                     if (realization != null)
-                    {
-                        salesRow.LostProfit = profit - realization2.DeliveryRub - (salesRow.Price / 100 * realization.CommissionPercent);
-                    }
-                    else
-                    {
-                        salesRow.LostProfit = profit;
-                    }
+                        salesRow.LostProfit -= realization.ppvz_sales_commission;
 
+                  //  if (report.Rows.Any(o => o.OrderDate == salesRow.OrderDate)) continue;
+                    if (report.Rows.Any(o => o.CancelDate == order.CancelDT)) continue;
 
                     report.Rows.Add(salesRow);
                 }
@@ -253,67 +271,88 @@ namespace MarketWB.Parsing
 
                 var stocks = db.WBStocks.Where(o => o.APIKey == token.APIKey).ToList();
 
-                var orders = db.WBSales.Where(o => 
-                o.Date >= user.UserData.SelectedPeriodFrom 
-                && o.Date <= user.UserData.SelectedPeriodTo                                             
-                && o.APIKey == token.APIKey
-                && o.FinishedPrice < 0
-                && o.SaleID.StartsWith("R")).ToList();
+               var notReturnedSales = db.WBSales.Where(o =>
+                   o.APIKey == token.APIKey
+                   && o.FinishedPrice > 0).ToList();
 
-               var realizations = db.DetailByPeriodModels
-                    .Where(o =>
-                    o.RrDt >= user.UserData.SelectedPeriodFrom
-                    && o.RrDt <= user.UserData.SelectedPeriodTo
-                    && o.APIKey == token.APIKey)
+                var orders = db.WBOrders.Where(o => o.APIKey == token.APIKey).ToList();
+
+                var sales = db.WBSales.Where(o => 
+                    o.Date >= user.UserData.SelectedPeriodFrom.Date 
+                    && o.Date <= user.UserData.SelectedPeriodTo                                             
+                    && o.APIKey == token.APIKey
+                    && o.FinishedPrice < 0
+                    /*&& o.SaleID.StartsWith("R")*/).ToList();
+
+           
+
+
+                var realizations = db.DetailByPeriodModels
+                    .Where(o =>  o.APIKey == token.APIKey)
                     .ToList();
-                orders = FilterSales(user.UserData, orders);
+                sales = FilterSales(user.UserData, sales);
 
 
                 realizations = FilterRealizations(user.UserData, realizations);
 
-                foreach (var order in orders)
+                foreach (var sale in sales)
                 {
-                    var realization = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub > 0);
-                    var realization2 = realizations.FirstOrDefault(o => o.NmId == order.NmId && o.DeliveryRub == 0);
-                    if (realization == null || realization2 == null) continue;
+                    var realization = realizations.LastOrDefault(o => o.SaName == sale.SupplierArticle && o.DeliveryRub > 0);
+                    var realization2 = realizations.LastOrDefault(o => o.SaName == sale.SupplierArticle && o.DeliveryRub > 0 && o.ReturnAmount == 0);
+                    var realizationBack = realizations.LastOrDefault(o => o.SaName == sale.SupplierArticle && o.DeliveryRub > 0 && o.ReturnAmount > 0);
+                    var realizationComission = realizations.LastOrDefault(o => o.SaName == sale.SupplierArticle && o.DeliveryRub == 0);
 
-                    var stock = stocks.FirstOrDefault(o => o.NmId == order.NmId);
+                    if (realization == null || realization2 == null || realizationBack is null || realizationComission is null)
+                        continue;
 
+                   
+
+                    var baseSale = notReturnedSales.FirstOrDefault(o => o.GNumber == sale.GNumber);
+
+                    var order = orders.FirstOrDefault(o => o.GNumber == sale.GNumber);
+                    if (order is null) continue;
 
                     var selfCost = user.SelfCosts.FirstOrDefault(o => o.ProductId == realization.NmId);
 
                     var salesRow = new ReturnsReportRow
                     {
                         ThumbnailPath = null,
-                        SaleDate = realization.SaleDt,
-                        OrderDate = realization.OrderDt,
+                        SaleDate = baseSale?.Date,
+                        OrderDate = order.Date,
                         DeliveryAddress = realization.OfficeName,
-                        Logistic = realization.DeliveryRub,
-                        Title = realization.SubjectName,
-                        Category = order?.Category,
-                        Price = realization.ppvz_for_pay,
-                        ReturnDate = order.LastChangeDate,
 
-                        Brand = order.Brand,
-                        Article = (long)order.NmId,
+                        Logistic = (double)realization2.DeliveryRub + (double)realizationBack.DeliveryRub,
+                        LogisticFromClient = (double)realization2.DeliveryRub,
+                        LogisticToClient = (double)realizationBack.DeliveryRub,
+
+                        Title = realization.SubjectName,
+                        Category = sale?.Category,
+                        Price = realization.ppvz_for_pay,
+                        ReturnDate = sale.Date,
+
+                        Brand = sale.Brand,
+                        Article = (long)sale.NmId,
                     };
 
-                    if(stock != null)
-                    {
-                        salesRow.InWayFromClient = (int)stock.InWayFromClient;
-                        salesRow.InWayToClient = (int)stock.InWayToClient;
-                    }
+                    salesRow.InWayFromClient = (int)realizationBack.DeliveryRub;
+                    salesRow.InWayToClient = (int)realization2.DeliveryRub;
 
-                    double profit = 0;
 
-                    var price = (double)order.TotalPrice - ((double)order.TotalPrice / 100 * (double)order.DiscountPercent);
-
+                    var price = (double)sale.TotalPrice - ((double)sale.TotalPrice / 100 * (double)sale.DiscountPercent);
+                    price = Math.Abs(price);
                     salesRow.Price = price;
-                    profit = price;
+
+                    double profit = price;
+
                     if (selfCost != null)
                         profit -= selfCost.TotalSelfCost;
 
+                    profit -= (double)salesRow.Logistic;
+                    profit -= (double)realizationComission.ppvz_sales_commission;
+
                     salesRow.Profit = profit;
+
+                    if (report.Rows.Any(o => o.SaleDate == salesRow.SaleDate)) continue;
 
                     report.Rows.Add(salesRow);
                 }
@@ -427,6 +466,36 @@ namespace MarketWB.Parsing
                 report.MarginalityByBrands.Add(grouping.Key, Math.Round(marginalityInGroup,2));
                 report.ProfitByBrands.Add(grouping.Key, Math.Round(profitInGroup,2));
             }
+
+
+            //report.LogisticFromClient += (double)sales.Rows.Sum(o => o.Logistic);
+            //report.LogisticFromClient += (double)orders.Rows.Sum(o => o.Logistic);
+            //report.LogisticFromClient += (double)returns.Rows.Sum(o => o.LogisticFromClient);
+            //report.LogisticFromClient += (double)cancels.Rows.Sum(o => o.LogisticFromClient);
+
+            //report.LogisticToClient += (double)returns.Rows.Sum(o => o.LogisticToClient);
+            //report.LogisticToClient += (double)cancels.Rows.Sum(o => o.LogisticToClient);
+
+
+            var logistic = GetLogistic(user);
+            report.LogisticFromClient = logistic.FromClient;
+            report.LogisticToClient = logistic.ToClient;
+
+
+            foreach(var saleGroup in sales.Rows.GroupBy(o => o.SaleDate.Date))
+            {
+                report.SalesCountChartData.Add(new ChartDay
+                {
+                    Value = saleGroup.Count(),
+                    Date = saleGroup.Key
+                });
+                report.SalesPriceChartData.Add(new ChartDay
+                {
+                    Value = (int)saleGroup.Sum(o => o.Price),
+                    Date = saleGroup.Key
+                });
+            }
+
             return report;
         }
 
@@ -528,6 +597,24 @@ namespace MarketWB.Parsing
             if (string.IsNullOrEmpty(apikey)) return false;
             if (string.IsNullOrEmpty("Все категории")) return false;
             return db.AvailableWBCategories.Any(o => o.APIKey == apikey && o.Category == category);
+        }
+
+
+        private LogisticInfo GetLogistic(UserModel user)
+        {
+            var info = new LogisticInfo();
+            foreach(var token in user.UserData.SelectedWBAPITokens)
+            {
+                var realizations = db.DetailByPeriodModels
+                      .Where(o => o.APIKey == token.APIKey 
+                      && o.RrDt >= user.UserData.SelectedPeriodFrom
+                      && o.RrDt <= user.UserData.SelectedPeriodTo)
+                      .ToList();
+
+                info.FromClient += (double)realizations.Where(o => o.DeliveryAmount > 0 && o.DeliveryRub > 0).Sum(o => o.DeliveryRub);
+                info.ToClient += (double)realizations.Where(o => o.ReturnAmount > 0 && o.DeliveryRub > 0).Sum(o => o.DeliveryRub);
+            }
+            return info;
         }
     }
 }

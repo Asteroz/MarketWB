@@ -16,6 +16,9 @@ namespace MarketAI.API.Models
         public string Code { get; set; }
         public double Percent { get; set; }
 
+        //public DateTime ValidBefore { get; set; }
+        //public int DaysToUse { get; set; }
+
         public PromocodeType Type { get; set; }
 
         public PromocodeModel Clone()

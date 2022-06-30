@@ -9,122 +9,98 @@
         var user = await UserHelper.GetUser(User);
     }
 
- <style>
-    .popup-item{
-        margin-top: 10px;
-        height:30px;
-    }
-    .popup-close{
-        margin-top: -30px !important;
-    }
-    .popup-error{
-       color: red;
-       text-align: center;
-    }
+ <div class="container">
+      <div class="dashboard-header">
+        <div class="titledash">Реферальная программа</div>
+      </div>
 
-    .dropdown_item{
-        margin-left: 8px;
-    }
- </style>
-
-    <div class="panel box-shadow-none content-header">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <h3 class="animated fadeInLeft">Реферальная программа</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-12">
-
-        <div class="col-md-12 padding-0">
-            <a>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div class="panel">
-                        <div class="panel-heading bg-cyan border-none">
-                            <h4>Реферальная ссылка</h4>
-                        </div>
-                        <div class="panel-body" style="padding-bottom:10px;">
-                            <h4>@user.GetRefferalLink()</h4>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                   <div class="panel">
-                      <div class="panel-heading bg-red border-none">
-                        <h4>На счету</h4>
-                      </div>
-                      <div class="panel-body" style="padding-bottom:10px;">
-                        <button data-toggle="modal" data-target="#withdraw" class="btn btn-primary" style="position: absolute; right: 25px">Вывести</button>
-                        <h4>@Math.Round(user.ReferralBalance,0)</h4>
-                      </div>
-                   </div>
-                </div>
-             </a>
-
-              
-
-            <a>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div class="panel">
-                        <div class="panel-heading bg-blue border-none">
-                            <h4>Приглашено людей</h4>
-                        </div>
-                        <div class="panel-body" style="padding-bottom:10px;">
-                            <h4>@user.Referrals.Count </h4>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div class="panel">
-                        <div class="panel-heading bg-gray-600 border-none">
-                            <h4>Оплативших подписку</h4>
-                        </div>
-                        <div class="panel-body" style="padding-bottom:10px;">
-                            <h4>@user.GetPaidRefferalsCount()</h4>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-
-
-
-       <!-- Popups -->
-
-
-      <div class="modal" id="withdraw">
-             <div class="modal-dialog">
-                <div class="modal-content">
-                   <!-- Modal Header -->
-                   <div class="modal-header">
-                      <h4 class="modal-title">Вывод средств</h4>
-                      <button type="button" class="close popup-close" data-dismiss="modal">&times;</button>
-                   </div>
-                   <!-- Modal body -->
-                   <div class="modal-body">
-                     <div class="form-group popup-item">
-                        <label class="col-sm-2 control-label text-right ">Сумма</label>
-                        <div class="col-sm-10 popup_item"><input id="promocode" type="number" required class="form-control" name="Name"></div>
-                     </div>
-                        <div class="form-group popup-item">
-                        <label class="col-sm-2 control-label text-right ">Номер карты</label>
-                        <div class="col-sm-10 popup_item"><input id="promocode" type="text" required class="form-control" name="Name"></div>
-                     </div>
-                   </div>
-                   <!-- Modal footer -->
-                   <div class="modal-footer" >
-                        <button type="button" onclick="activatePromocode()" class="btn btn-primary popup_item" data-dismiss="modal">Вывести</button>
-                        <button type="button" class="btn btn-light popup_item" data-dismiss="modal">Назад</button>
-                   </div>
-                </div>
-             </div>
+      <div class="col-md-12">
+          <div class="wbalert">
+            Описание для главного блока - описание
+            С помощью реферальной программы FEENO вы можете приглашать своих друзей с
+            помощью вашей индивидуальной ссылки и зарабатывать 300 рублей � за каждого нового
+            пользователя, оплатившего доступ от месяца. �
           </div>
+      </div>
 
+      <div class="row">
+        <div class="col-md-6">
+          <div class="refblock">
+            <div class="refhead">
+              <div class="reftitle">Реферальная ссылка</div>
+              <div class="pngicon pngicon-url"></div>
+            </div>
 
-     <!--end Popups -->
+            <a class="refurl">@user.GetRefferalLink()</a>
+            <div class="refinfo"><i alt="Ваша индивидуальная ссылка, с помощью нее вы можете приглашать новых пользователей и получать бонусы, которые можете вывести на свою карту." class="las la-info-circle"></i></div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="refblock">
+            <div class="refhead">
+              <div class="reftitle">На счету</div>
+              <div class="pngicon pngicon-money"></div>
+            </div>
+
+            <div class="refh1">@Convert.ToInt32(user.ReferralBalance) ₽</div>
+           @* <div class="refinfo"><i alt="Количество заработанных вами средств. Вывод возможен от 2000 рублей." class="las la-info-circle"></i></div>*@
+            <div class="refinfo"><button class="buttonwb refbtn" data-bs-toggle="modal" data-bs-target="#payment">Вывести</button></div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="refblock">
+            <div class="refhead">
+              <div class="reftitle">Приглашено людей</div>
+              <div class="pngicon pngicon-user"></div>
+            </div>
+
+            <div class="refh1">@user.Referrals.Count</div>
+            <div class="refinfo"><i alt="Количество новых пользователей, которые перешли на сайт FEENO по вашей индивидуальной ссылке и зарегистрировались" class="las la-info-circle"></i></div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="refblock">
+            <div class="refhead">
+              <div class="reftitle">Оплативших подписку</div>
+              <div class="pngicon pngicon-cash"></div>
+            </div>
+
+            <div class="refh1">@user.GetPaidRefferalsCount()</div>
+            <div class="refinfo"><i alt="Количество новых пользователей, которые перешли на сайт FEENO по вашей индивидуальной ссылке, зарегистрировались и оплатили доступ от месяца." class="las la-info-circle"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL WINDOW -->
+    <div class="modal fade" id="payment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Вывод средств</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="post">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Сумма</label>
+                <input type="number" class="form-lk" placeholder="Текст">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Реквизиты</label>
+                <input type="text" class="form-lk" placeholder="Текст">
+              </div>
+
+              <div class="clickers wbselfcenter">
+                <button class="btnprofile wbselfbtn">Продолжить</button>
+                <a href="/" class="btnregister wbselfbtn" data-bs-dismiss="modal">Назад</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>

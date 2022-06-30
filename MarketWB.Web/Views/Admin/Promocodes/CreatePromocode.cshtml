@@ -38,6 +38,14 @@
                                 <label class="col-sm-2 control-label text-right">Значение</label>
                                 <div class="col-sm-10"><input type="number" max="500000" min="1" required class="form-control" asp-for="Percent"></div>
                             </div>
+@*                            <div class="form-group" style="margin-top: -35px;">
+                                <label class="col-sm-2 control-label text-right">Действителен до:</label>
+                                <div class="col-sm-10"><input type="date" required class="form-control" value="@DateTime.Now.AddDays(30).ToString("yyyy-MM-dd")" asp-for="ValidBefore"></div>
+                            </div>
+                            <div class="form-group" style="margin-top: -35px;">
+                                <label class="col-sm-2 control-label text-right">Действителен до:</label>
+                                <div class="col-sm-10"><input type="date" required class="form-control" value="@DateTime.Now.AddDays(30).ToString("yyyy-MM-dd")" asp-for="ValidBefore"></div>
+                            </div>*@
                             <input class="submit btn btn-danger" style="margin-top:10px;width:96%;" type="submit" value="Создать промокод">
                         </div>
                     </form>

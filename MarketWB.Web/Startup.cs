@@ -43,7 +43,7 @@ namespace MarketWB.Web
             services.AddScoped(typeof(WBAPIKeysModule));
             services.AddScoped(typeof(ExtraExpensesModule));
 
-            services.AddHostedService<WBParsingJob>();
+        //    services.AddHostedService<WBParsingJob>();
 
             services.AddScoped(typeof(MarketWBParser));
 
