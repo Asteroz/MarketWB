@@ -10,6 +10,9 @@ namespace MarketWB.Parsing.Models.Reports.Sales
 
         public bool IsSelfBuy { get; set; }
 
+        public long? Odid { get; set; }
+
+
         public string Brand { get; set; }
         public long Article { get; set; }
 

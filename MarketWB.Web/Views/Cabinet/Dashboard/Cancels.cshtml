@@ -13,14 +13,14 @@
     <div class="container">
       <div class="row">
         <div class="dashboard-header wbmargin">
-            <div class="titledash"><i class="las la-shopping-bag"></i> Отмены</div>
+              <div class="titledash"><div class="dbicon bagdeny"></div> Отмены</div>
                @await Component.InvokeAsync("PeriodsComponent",new {vm = Model})
         </div>
 
         <div class="col-md-12">
           <div class="wbalert">
             В таблице представлена детальная аналитика отмен за выбранный период. Для удобства
-            вы можете отсортировать товары по бренду или категории. �
+            вы можете отсортировать товары по бренду или категории. 
           </div>
         </div>
 
@@ -38,7 +38,7 @@
                       Фото
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Фото продукта" class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                    @*    <i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th>
@@ -127,8 +127,8 @@
                           <td>@row.Category</td>
                           <td>@Convert.ToInt32(row.LostProfit)</td>
                           <td>@Convert.ToInt32(row.Logistic)</td>
-                          <td>@row.OrderDate.ToString("dd MMM yyyy hh:mm")</td>
-                          <td>@row.CancelDate.ToString("dd MMM yyyy hh:mm")</td>
+                          <td>@row.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                          <td>@row.CancelDate.ToString("dd.MM.yyyy HH:mm")</td>
                           <td>@row.DeliveryAddress</td>
                       </tr>  
                   }

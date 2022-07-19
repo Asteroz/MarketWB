@@ -3,9 +3,9 @@
 }
 @model MarketAI.API.ViewModels.TicketPageVM
 
-    <div class="container">
+      <div class="container">
       <div class="dashboard-header wbmargin">
-        <div class="titledash"><i class="las la-comment-alt"></i> Тикеты</div>
+        <div class="titledash"><div class="dbicon contact"></div> Тикеты</div>
       </div>
 
       <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -21,6 +21,7 @@
         <div class="ticket">
 
           <div class="ticket-header">@Model.Ticket.Topic</div>
+          <div class="ticketicon2"></div>
 
           <div class="ticket-content">
 
@@ -28,12 +29,12 @@
                             <div class="chat">
                                 <div class="chatinfo">
                                     <i class="las la-clock"></i>
-                                    >@Model.Ticket.CreatedAt.ToString("dd MMMM yyyy hh:mm") 
+                                    >@Model.Ticket.CreatedAt.ToString("dd MMMM yyyy HH:mm") 
                                 </div>
                                 <div class="textmessage">
                                     @Model.Ticket.Description
                                 </div>
-                                @if (!string.IsNullOrEmpty(@Model.Ticket.AttachmentPath))
+                                @if (!string.IsNullOrEmpty(Model.Ticket.AttachmentPath))
                                 {
                                     <a asp-action="GetAttachment" asp-controller="UserTickets" asp-route-path="@Model.Ticket.AttachmentPath">Вложение</a>
                                 }
@@ -54,7 +55,7 @@
                             <div class="chat">
                                 <div class="chatinfo">
                                     <i class="las la-clock"></i>
-                                    @msg.CreatedAt.ToString("dd MMMM yyyy hh:mm") 
+                                    @msg.CreatedAt.ToString("dd MMMM yyyy HH:mm") 
                                 </div>
                                 <div class="textmessage">
                                     @msg.Message
@@ -80,7 +81,7 @@
                             <div class="chat chat-right">
                                 <div class="chatinfo">
                                     <i class="las la-clock"></i>
-                                    @msg.CreatedAt.ToString("dd MMMM yyyy hh:mm") 
+                                    @msg.CreatedAt.ToString("dd MMMM yyyy HH:mm") 
                                 </div>
                                 <div class="textmessage">
                                     @msg.Message
@@ -96,15 +97,33 @@
           </div>
         </div>
 
-        <div class="ticket-chat">
+      @*  <div class="ticket-chat">
             <form asp-action="AddTicketMessage" asp-controller="UserTickets" asp-route-ticketid="@Model.Ticket.Id" class="input-group mb-3">
                 <label class="wblabel"></label>
-                <input type="text" name="message" class="form-control wbchatput" required placeholder="Текст">
-                <button class="btn btnprofile wbselfbtn" id="file-input" type="file" name="file" id="button-addon2" value="loadXml" onclick="document.getElementById('file').click();"><i class="las la-folder-open"></i> Вложения</button>
+                <input type="text" name="message" class="form-control wbchatput" readonly placeholder="Текст">
+
+                <button class="btn btnprofile wbselfbtn" id="file-input" type="button" value="loadXml" onclick="document.getElementById('file').click();"><div class="dbicon folder"></div> Вложения</button>
+
                 <input type="file" style="display:none;" id="file" name="file"/>
 
                  
             </form>
         </div>
+*@
+        <form asp-action="AddTicketMessage" asp-controller="UserTickets" asp-route-ticketid="@Model.Ticket.Id" class="ticket-chat">
+            <div class="chat-title">Написать сообщение</div>
+
+            <div class="input-group mb-3">
+                <label class="wblabel"></label>
+                <input type="text" name="message" class="form-control wbchatput" placeholder="Текст">
+                <button class="btn btnprofile wbselfbtn" id="file-input" type="button" id="button-addon2" value="loadXml" onclick="document.getElementById('file').click();"><div class="dbicon folder"></div> Вложения</button>
+                <input type="file" style="display:none;" id="file" name="file"/>
+            </div>
+
+            <div class="groupsend">
+              <button class="wbsender">Отправить сообщение</button>
+            </div>
+        </form>
+
       </div>
     </div>

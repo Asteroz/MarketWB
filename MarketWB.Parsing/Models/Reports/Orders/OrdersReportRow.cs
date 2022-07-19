@@ -8,6 +8,7 @@ namespace MarketWB.Parsing.Models.Reports.Orders
     {
         public string ThumbnailPath { get; set; }
 
+        public long? Odid { get; set; }
 
         public bool IsSelfBuy { get; set; }
 

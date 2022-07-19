@@ -47,6 +47,13 @@ namespace MarketWB.Web
 
             services.AddScoped(typeof(MarketWBParser));
 
+            // If using IIS:
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+
 
             // установка конфигурации подключени
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -54,6 +61,8 @@ namespace MarketWB.Web
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Login");
                 });
+
+
 
             services.AddControllersWithViews();
         }
@@ -80,6 +89,26 @@ namespace MarketWB.Web
 
             app.UseAuthentication();    // аутентификация
             app.UseAuthorization();     // авторизация
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/Error/NotFound";
+                    await next();
+                }
+            });
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 500)
+                {
+                    context.Request.Path = "/Cabinet/Dashboard";
+                    await next();
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {

@@ -14,26 +14,23 @@
     <div class="container wbcontent">
         <div class="row">
             <div class="dashboard-header">
-                <div class="titledash"><i class="las la-columns"></i> Дашборд</div>
+                <div class="titledash"><div class="dbicon dashboard"></div> Дашборд</div>
                 @await Component.InvokeAsync("PeriodsComponent",new {vm = Model})
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
+          <!-- ЕБАНАЯ ХУЙНЯ-КОНТЕЙНЕР НА ЕБУЧИЙ КАМПУХТЕР -->
+         <div class="row main-adapt-desktop">
+            <div class="col-md-6 flexcol">
                 <div class="row">
                     <div class="col-md-6">
-                        <a asp-action="Sales" asp-controller="Dashboard"  class="panelwb">
+                        <a asp-action="Sales" asp-controller="Dashboard" class="panelwb">
                             <div class="panelwb-head">
                                 <div class="head-panel">
                                     <div class="name">Продажи</div>
-                                   @* <div class="upgreen"></div>
-                                    <div class="procent">
-                                        1,3%
-                                    </div>*@
                                 </div>
 
-                                <div class="panel-cost">@Convert.ToInt32(Model.DashboardReport.SalesSum) ₽</div>
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.SalesSum,0) ₽</div>
                                 <div class="footer-panel">
                                     <div class="panel-pcs">@Model.DashboardReport.SalesCount шт.</div>
                                     <div class="panel-info">
@@ -41,22 +38,17 @@
                                     </div>
                                 </div>
                             </div>
-                         </a>
+                        </a>
                     </div>
                     
                     <div class="col-md-6">
-                        <a asp-action="Orders" asp-controller="Dashboard">
-                        <div class="panelwb active">
+                        <a asp-action="Orders" asp-controller="Dashboard" class="panelwb active">
                             <div class="panelwb-head">
                                 <div class="head-panel">
                                     <div class="name">Заказы</div>
-                                    @*<div class="upgreen"></div>
-                                    <div class="procent">
-                                        1,3%
-                                    </div>*@
                                 </div>
 
-                                <div class="panel-cost">@Convert.ToInt32(Model.DashboardReport.OrdersSum) ₽</div>
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.OrdersSum,0) ₽</div>
                                 <div class="footer-panel">
                                     <div class="panel-pcs">@Model.DashboardReport.OrdersCount шт.</div>
                                     <div class="panel-info">
@@ -64,48 +56,35 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                         </a>
+                        </a>
                     </div>
 
                     <div class="col-md-6">
-                        <a asp-action="Returns" asp-controller="Dashboard">
-                        <div class="panelwb active">
+                        <a asp-action="Returns" asp-controller="Dashboard" class="panelwb">
                             <div class="panelwb-head">
                                 <div class="head-panel">
                                     <div class="name">Возвраты</div>
-                                   @* <div class="upgreen"></div>
-                                    <div class="procent">
-                                        2,3%
-                                    </div>*@
                                 </div>
 
-                                <div class="panel-cost">-@Convert.ToInt32(Model.DashboardReport.ReturnsSum) ₽</div>
+                                <div class="panel-cost">-@Math.Round(Model.DashboardReport.ReturnsSum,0) ₽</div>
                                 <div class="footer-panel">
-                                    <div class="panel-pcs">-@Model.DashboardReport.ReturnsCount шт.</div>
+                                    <div class="panel-pcs">@Model.DashboardReport.ReturnsCount шт.</div>
                                     <div class="panel-info">
                                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму были возвращены за выбранный период" class="las la-info-circle"></i>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                         </a>
+                        </a>
                     </div>
 
-                 
                     <div class="col-md-6">
-                        <a asp-action="Cancels" asp-controller="Dashboard">
-                        <div class="panelwb active">
+                        <a asp-action="Cancels" asp-controller="Dashboard" class="panelwb">
                             <div class="panelwb-head">
                                 <div class="head-panel">
-                                    <div class="name">Отмены</div>
-                                   @* <div class="upgreen"></div>
-                                    <div class="procent">
-                                        1,3%
-                                    </div>*@
+                                    <div class="name">Отмены</div>  
                                 </div>
 
-                                <div class="panel-cost">-@Convert.ToInt32(Model.DashboardReport.CancelsSum) ₽</div>
+                                <div class="panel-cost">-@Math.Round(Model.DashboardReport.CancelsSum,0) ₽</div>
                                 <div class="footer-panel">
                                     <div class="panel-pcs">@Model.DashboardReport.CancelsCount шт.</div>
                                     <div class="panel-info">
@@ -113,12 +92,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         </a>
                     </div>
                     
                     <div class="col-md-6">
-                        <div class="panelwb panelwbcs">
+                        <div class="panelwb panelwbcs newfix">
                             <div class="panelwb-head">
                                 <div class="head-panel">
                                     <div class="name">Маржинальность %</div>
@@ -126,14 +104,18 @@
 
                                 <div class="footer-panel">
                                     <div class="panel-pcs"><div class="opts"></div> Все категории</div>
-                                    <div id="circle"><div class="number-circle">@Math.Round(Model.DashboardReport.Marginality,1)</div></div>
+                                    <div id="circle"><div class="number-circle">@Math.Round(Model.DashboardReport.Marginality,0)%</div></div>
                                     <script>
                                     $('#circle').circleProgress({
-                                        value: @Math.Round(Model.DashboardReport.Marginality/100,1).ToString().Replace(',','.'),
-                                        size: 80,
+                                        startAngle: 1.55,
+                                        value: @Math.Round(Model.DashboardReport.Marginality/100,2),
+                                        thickness: 8,
+                                        size: 60,
+                                        lineCap: "round",
                                         fill: {
                                         gradient: ["#4F46BA"]
-                                        }
+                                        },
+                                        emptyFill: "rgba(223, 223, 224, 1)",
                                     });
                                     </script>
                                 </div>
@@ -141,11 +123,28 @@
                         </div>
                     </div>
 
+                    <div class="col-md-6">
+                        <div class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Логистика</div>  
+                                </div>
+                                <div class="panelwb-content">
+                                    <div class="pelwb1">К клиенту: <div class="cost">@Math.Round(Model.DashboardReport.LogisticToClient,0) ₽</div></div>
+                                    <div class="pelwb2">От клиента: <div class="cost">@Math.Round(Model.DashboardReport.LogisticFromClient,0) ₽</div></div>
+                                </div>
+                                <div class="footer-panel">
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько всего потратил продавец на логистику товара до пункта выдачи (заказ) и от пункта выдачи до склада (возврат, отмена) за выбранный период." class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-
-            <div class="col-md-6">
+            <div class="col-md-6 desktop">
                 <div class="content-diagram">
                     <div class="header-diagram">
                         <div class="title-diagram">
@@ -163,80 +162,147 @@
                     </div>
                     <div class="tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-                            <canvas id="line-chart" width="600" height="400"></canvas>
+                            <canvas id="line-chart" width="600" height="255"></canvas>
                         </div>
                         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
-                            <canvas id="line-chart2" width="600" height="400"></canvas>
+                            <canvas id="line-chart2" width="600" height="255"></canvas>
                         </div>
                       
                     </div>
                     <script>
+                        var ctx = document.getElementById("line-chart").getContext("2d");
+                        ctx.height = 255;
+                        Chart.defaults.font.family = 'Manrope';
+                        Chart.defaults.font.style = 'normal';
+                        Chart.defaults.color = "#989898";
+                        Chart.defaults.font.size = 11;
+
+                        var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                        gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                        gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                        gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                        gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                        gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                        gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                        gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
                         new Chart(document.getElementById("line-chart"), {
                         type: 'line',
                         data: {
-
-                            @{
-                                string salesSumLabels = "";
-                                string salesSumDateLabels = "";
-
-                                    foreach(var sum in Model.DashboardReport.SalesPriceChartData)
-                                    {
-                                        salesSumLabels += $"{sum.Value},";
-                                        salesSumDateLabels += $"'{sum.Date.ToString("dd.MM.yyyy")}',";
-                                    }
-
-                            }
-
-
-                            labels: [@Html.Raw(salesSumDateLabels)],
+                            labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
                             datasets: [{ 
-                                data: [@Html.Raw(salesSumLabels)],
-                                label: "Сумма заказов",
-                                borderColor: "#4F46BA",
-                                fill: true
+                                data: [@string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Value.ToString()))],
+                                label: "Заказы",
+                                borderColor: gradient,
+                                pointBackgroundColor : "#2F2B5B",
+                                pointBorderColor : "#FFF",
+                                backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                fill: true,
+                                tension: 0.4
                             },
                             ]
                         },
                         options: {
-                            title: {
-                            display: true,
-                            text: 'World population per region (in millions)'
-                            }
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: "#2B2F42",
+                                    displayColors: false,
+                                    position: 'average',
+                                    titleAlign:  'center',
+                                    bodyColor: "rgba(255, 255, 255, 0.72)",
+                                    bodyAlign: 'center',
+                                    cornerRadius: 11,
+                                    padding: 15,
+                                    yAlign: 'bottom',
+                                    xAlign: 'center',
+                                }
+                            },
+                            scales:{
+                                x: {
+                                    display: true,
+                                    grid: {
+                                        color: "#F6F6FB",
+                                    },
+                                },
+                                y: {
+                                    display: true,
+                                    grid: {
+                                        color: "#F6F6FB",
+                                        display: false,
+                                    },
+                                },
+                            },
                         }
                         });
 
+                        var ctx = document.getElementById("line-chart2").getContext("2d");
+                        ctx.height = 255;
+                        Chart.defaults.font.family = 'Manrope';
+                        Chart.defaults.font.style = 'normal';
+                        Chart.defaults.color = "#989898";
+                        Chart.defaults.font.size = 11;
+
+                        var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                        gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                        gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                        gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                        gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                        gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                        gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                        gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
                         new Chart(document.getElementById("line-chart2"), {
                         type: 'line',
-                        data: {
-
-
-                             @{
-                                string salesCountLabels = "";
-                                string salesCountDateLabels = "";
-
-                                    foreach(var sum in Model.DashboardReport.SalesCountChartData)
-                                    {
-                                        salesCountLabels += $"{sum.Value},";
-                                        salesCountDateLabels += $"'{sum.Date.ToString("dd.MM.yyyy")}',";
-                                    }
-
-                            }
-
-
-                            labels: [@Html.Raw(salesCountDateLabels)],
+                        data: { //хуй
+                            labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
                             datasets: [{ 
-                                data: [@Html.Raw(salesCountLabels)],
-                                label: "Колөво заказов",
-                                borderColor: "#4F46BA",
-                                fill: true
+                                data: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Value.ToString())))],
+                                label: "Заказы",
+                                borderColor: gradient,
+                                pointBackgroundColor : "#2F2B5B",
+                                pointBorderColor : "#FFF",
+                                backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                fill: true,
+                                tension: 0.4
                             },
                             ]
                         },
                         options: {
-                            title: {
-                            display: true,
-                            text: 'World population per region (in millions)'
-                            }
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: "#2B2F42",
+                                    displayColors: false,
+                                    position: 'average',
+                                    titleAlign:  'center',
+                                    bodyColor: "rgba(255, 255, 255, 0.72)",
+                                    bodyAlign: 'center',
+                                    cornerRadius: 11,
+                                    padding: 15,
+                                    yAlign: 'bottom',
+                                    xAlign: 'center',
+                                }
+                            },
+                            scales:{
+                                x: {
+                                    display: true,
+                                    grid: {
+                                        color: "#F6F6FB",
+                                    },
+                                },
+                                y: {
+                                    display: true,
+                                    grid: {
+                                        color: "#F6F6FB",
+                                        display: false,
+                                    },
+                                },
+                            },
                         }
                         });
                     </script>
@@ -247,16 +313,12 @@
                             <div class="panelwb-head">
                                 <div class="head-panel">
                                     <div class="name2">Прибыль</div>
-                                    <div class="upgreen"></div>
-                                    <div class="procent">
-                                        1,3%
-                                    </div>
                                 </div>
 
-                                <div class="panel-cost2">@Convert.ToInt32(Model.DashboardReport.Profit) ₽</div>
+                                <div class="panel-cost2">@Math.Round(Model.DashboardReport.Profit,0) ₽</div>
                                 <div class="footer-panel">
                                     <div class="panel-info2">
-                                        <i data-bs-toggle="tooltip" data-bs-placement="top" data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заработал продавец за выбранный период с учетом логистики, комиссии и себестоимости." class="las la-info-circle windowapp"></i>
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заработал продавец за выбранный период с учетом логистики, комиссии и себестоимости" class="las la-info-circle windowapp"></i>
                                     </div>
                                 </div>
                             </div>
@@ -268,16 +330,12 @@
                             <div class="panelwb-head">
                                 <div class="head-panel">
                                     <div class="name2">Продажи-возврат</div>
-                                    <div class="upgreen"></div>
-                                    <div class="procent">
-                                        1,3%
-                                    </div>
                                 </div>
 
-                                <div class="panel-cost2">@Convert.ToInt32(Model.DashboardReport.SalesSum  -  Model.DashboardReport.ReturnsSum) ₽</div>
+                                <div class="panel-cost2">@(Math.Round(Model.DashboardReport.SalesSum-Model.DashboardReport.ReturnsSum,0)) ₽</div>
                                 <div class="footer-panel">
                                     <div class="panel-info2">
-                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая выручка продавца выручка за выбранный период (продажи минус возвраты)." data-bs-toggle="tooltip" data-bs-placement="top" class="las la-info-circle windowapp"></i>
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая выручка продавца выручка за выбранный период (продажи минус возвраты)" class="las la-info-circle windowapp"></i>
                                     </div>
                                 </div>
                             </div>
@@ -286,4 +344,1353 @@
                 </div>
             </div>
         </div>
+
+        <!-- ЕБАНАЯ ХУЙНЯ-КОНТЕЙНЕР НА ЕБУЧИЙ 1000 РАЗМЕР ХУЕВ ВОТ СТОЛЬКО ХУЕВ ДИЗАЙНЕРУ ПЖ -->
+        <div class="row main-adapt-1000">
+            <!-- РОТ В ГОВНЕ И ЖОПЕ БОЛЬНО, ЮЗАТЬ FEENO ПРОСТО КРУТО -->
+            <!-- БЛЯДСКАЯ ЛИНИЯ 1-->
+            <div class="row">
+                <div class="col-md-4">
+                    <a asp-action="Sales" asp-controller="Dashboard" class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Продажи</div>
+                            </div>
+
+                            <div class="panel-cost">@Math.Round(Model.DashboardReport.SalesSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">@Model.DashboardReport.SalesCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько продаж и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a asp-action="Returns" asp-controller="Dashboard" class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Возвраты</div>
+                            </div>
+
+                            <div class="panel-cost">@Math.Round(Model.DashboardReport.ReturnsSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">-@Model.DashboardReport.ReturnsCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму были возвращены за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-4">
+                    <a asp-action="Orders" asp-controller="Dashboard" class="panelwb active">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Заказы</div>
+                            </div>
+
+                            <div class="panel-cost">@Math.Round(Model.DashboardReport.OrdersSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">@Model.DashboardReport.OrdersCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a asp-action="Cancels" asp-controller="Dashboard" class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Отмены</div>  
+                            </div>
+
+                            <div class="panel-cost">-@Math.Round(Model.DashboardReport.CancelsSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">@Model.DashboardReport.CancelsCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="От какого количества заказов и на какую сумму покупатели отказались за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="panelwb panelwbgradient">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name2">Прибыль</div>
+                            </div>
+
+                            <div class="panel-cost2">@Math.Round(Model.DashboardReport.Profit,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-info2">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заработал продавец за выбранный период с учетом логистики, комиссии и себестоимости" class="las la-info-circle windowapp"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panelwb panelwbgradient">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name2">Продажи-возврат</div>
+                            </div>
+
+                            <div class="panel-cost2">@(Math.Round(Model.DashboardReport.SalesSum-Model.DashboardReport.ReturnsSum,0)) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-info2">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая выручка продавца выручка за выбранный период (продажи минус возвраты)" class="las la-info-circle windowapp"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- БЛЯДСКАЯ ЛИНИЯ 2 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="panelwb panelwbcs newfix">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Маржинальность %</div>
+                            </div>
+
+                            <div class="footer-panel">
+                                <div class="panel-pcs"><div class="opts"></div> Все категории</div>
+                                <div id="circle1"><div class="number-circle">@Math.Round(Model.DashboardReport.Marginality,0)%</div></div>
+                                <script>
+                                $('#circle1').circleProgress({
+                                    startAngle: 1.55,
+                                    value: @Math.Round(Model.DashboardReport.Marginality/100,2),
+                                    thickness: 8,
+                                    size: 60,
+                                    lineCap: "round",
+                                    fill: {
+                                    gradient: ["#4F46BA"]
+                                    },
+                                    emptyFill: "rgba(223, 223, 224, 1)",
+                                });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Логистика</div>  
+                            </div>
+                            <div class="panelwb-content">
+                                <div class="pelwb1">К клиенту: <div class="cost">@Math.Round(Model.DashboardReport.LogisticToClient,0) ₽</div></div>
+                                <div class="pelwb2">От клиента: <div class="cost">@Math.Round(Model.DashboardReport.LogisticFromClient,0) ₽</div></div>
+                            </div>
+                            <div class="footer-panel">
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько всего потратил продавец на логистику товара до пункта выдачи (заказ) и от пункта выдачи до склада (возврат, отмена) за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- БЛЯДСКИЙ ГРАФИК И РЕЗУЛЬТАТ ИНЦЕСТА -->
+                <div class="col-md-8">
+                    <div class="content-diagram">
+                        <div class="header-diagram">
+                            <div class="title-diagram">
+                                Продажи по дням
+    
+                                <ul class="nav nav-pills mb-3 justify-content-end wbswitchdia" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                      <button class="nav-link active" id="pills-home2-tab" data-bs-toggle="pill" data-bs-target="#pills-home2" type="button" role="tab" aria-controls="pills-home2" aria-selected="true">₽</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                      <button class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" data-bs-target="#pills-profile2" type="button" role="tab" aria-controls="pills-profile2" aria-selected="false">шт</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home2" role="tabpanel" aria-labelledby="pills-home2-tab" tabindex="0">
+                                <canvas id="line-chart3" width="600" height="210"></canvas>
+                            </div>
+                            <div class="tab-pane fade" id="pills-profile2" role="tabpanel" aria-labelledby="pills-profile2-tab" tabindex="0">
+                                <canvas id="line-chart4" width="600" height="210"></canvas>
+                            </div>
+                          
+                        </div>
+                        <script>
+                            var ctx = document.getElementById("line-chart3").getContext("2d");
+                            ctx.height = 210;
+                            Chart.defaults.font.family = 'Manrope';
+                            Chart.defaults.font.style = 'normal';
+                            Chart.defaults.color = "#989898";
+                            Chart.defaults.font.size = 11;
+
+                            var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                            gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                            gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                            gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                            gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                            gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                            gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                            gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                            new Chart(document.getElementById("line-chart3"), {
+                            type: 'line',
+                            data: {
+                                labels: [ @Html.Raw(string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                datasets: [{ 
+                                    data: [ @string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Value))],
+                                    label: "Заказы",
+                                    borderColor: gradient,
+                                    pointBackgroundColor : "#2F2B5B",
+                                    pointBorderColor : "#FFF",
+                                    backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        backgroundColor: "#2B2F42",
+                                        displayColors: false,
+                                        position: 'average',
+                                        titleAlign:  'center',
+                                        bodyColor: "rgba(255, 255, 255, 0.72)",
+                                        bodyAlign: 'center',
+                                        cornerRadius: 11,
+                                        padding: 15,
+                                        yAlign: 'bottom',
+                                        xAlign: 'center',
+                                    }
+                                },
+                                scales:{
+                                    x: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                            display: false,
+                                        },
+                                    },
+                                },
+                            }
+                            });
+    
+                            var ctx = document.getElementById("line-chart4").getContext("2d");
+                            ctx.height = 210;
+                            Chart.defaults.font.family = 'Manrope';
+                            Chart.defaults.font.style = 'normal';
+                            Chart.defaults.color = "#989898";
+                            Chart.defaults.font.size = 11;
+
+                            var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                            gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                            gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                            gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                            gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                            gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                            gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                            gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                            new Chart(document.getElementById("line-chart4"), {
+                            type: 'line',
+                            data: {
+                                labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                datasets: [{ 
+                                    data: [@string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Value))],
+                                    label: "Заказы",
+                                    borderColor: gradient,
+                                    pointBackgroundColor : "#2F2B5B",
+                                    pointBorderColor : "#FFF",
+                                    backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        backgroundColor: "#2B2F42",
+                                        displayColors: false,
+                                        position: 'average',
+                                        titleAlign:  'center',
+                                        bodyColor: "rgba(255, 255, 255, 0.72)",
+                                        bodyAlign: 'center',
+                                        cornerRadius: 11,
+                                        padding: 15,
+                                        yAlign: 'bottom',
+                                        xAlign: 'center',
+                                    }
+                                },
+                                scales:{
+                                    x: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                            display: false,
+                                        },
+                                    },
+                                },
+                            }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЕБАНАЯ ХУЙНЯ-КОНТЕЙНЕР НА ЕБУЧИЙ 768 РАЗМЕР ХУЕВ -->
+        <div class="row main-adapt-768">
+            <!-- БЛЯДСКАЯ И СКОЛЬСКАЯ ЛИНИЯ 1-->
+            <div class="row">
+                <!-- OH FUCKIN' FUCKIN' CAROUSEL BITCH FUCKIN' CUNT FUCKIN' CUNT -->
+                <div class="owl-carousel owl-theme owl268">
+                    <div class="item">
+                        <a asp-action="Sales" asp-controller="Dashboard" class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Продажи</div>
+                                </div>
+    
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.SalesSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">@Model.DashboardReport.SalesCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько продаж и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+    
+                        <a asp-action="Returns" asp-controller="Dashboard" class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Возвраты</div>
+                                </div>
+    
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.ReturnsSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">-@Model.DashboardReport.ReturnsCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму были возвращены за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="item">
+                        <a asp-action="Orders" asp-controller="Dashboard" class="panelwb active">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Заказы</div>
+                                </div>
+    
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.OrdersSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">@Model.DashboardReport.OrdersCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+    
+                        <a asp-action="Cancels" asp-controller="Dashboard" class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Отмены</div>  
+                                </div>
+    
+                                <div class="panel-cost">-@Math.Round(Model.DashboardReport.CancelsSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">@Model.DashboardReport.CancelsCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="От какого количества заказов и на какую сумму покупатели отказались за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="item">
+                        <div class="panelwb panelwbgradient">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name2">Прибыль</div>
+                                </div>
+    
+                                <div class="panel-cost2">@Math.Round(Model.DashboardReport.Profit,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-info2">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заработал продавец за выбранный период с учетом логистики, комиссии и себестоимости" class="las la-info-circle windowapp"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="panelwb panelwbgradient">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name2">Продажи-возврат</div>
+                                </div>
+    
+                                <div class="panel-cost2">@(Math.Round(Model.DashboardReport.SalesSum-Model.DashboardReport.ReturnsSum,0)) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-info2">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая выручка продавца выручка за выбранный период (продажи минус возвраты)" class="las la-info-circle windowapp"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BULLSCRIPT SUKA LA DLA PIEPRZONEJ KURWY KARUZELOWEJ -->
+                <script>
+                    $('.owl268').owlCarousel({
+                        stagePadding: 50,
+                        loop:false,
+                        margin:10,
+                        nav:true,
+                        responsive:{
+                            0:{
+                                items:1
+                            },
+                            600:{
+                                items:2
+                            },
+                            1000:{
+                                items:2
+                            }
+                        }
+                    })
+                </script>
+
+                <!-- JESTEŚ JEBANĄ KURWĄ SUKĄ SUKĄ JEBAĆ CIĘ CHUJU -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panelwb panelwbcs newfix">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Маржинальность %</div>
+                                </div>
+    
+                                <div class="footer-panel">
+                                    <div class="panel-pcs"><div class="opts"></div> Все категории</div>
+                                    <div id="circle2"><div class="number-circle">@Math.Round(Model.DashboardReport.Marginality/100,0)%</div></div>
+                                    <script>
+                                    $('#circle2').circleProgress({
+                                        startAngle: 1.55,
+                                        value: @Math.Round(Model.DashboardReport.Marginality/100,2),
+                                        thickness: 8,
+                                        size: 60,
+                                        lineCap: "round",
+                                        fill: {
+                                        gradient: ["#4F46BA"]
+                                        },
+                                        emptyFill: "rgba(223, 223, 224, 1)",
+                                    });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <div class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Логистика</div>  
+                                </div>
+                                <div class="panelwb-content">
+                                    <div class="pelwb1">К клиенту: <div class="cost">@Math.Round(Model.DashboardReport.LogisticToClient/100,0) ₽</div></div>
+                                    <div class="pelwb2">От клиента: <div class="cost">@Math.Round(Model.DashboardReport.LogisticFromClient/100,0) ₽</div></div>
+                                </div>
+                                <div class="footer-panel">
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько всего потратил продавец на логистику товара до пункта выдачи (заказ) и от пункта выдачи до склада (возврат, отмена) за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="content-diagram">
+                            <div class="header-diagram">
+                                <div class="title-diagram">
+                                    Продажи по дням
+        
+                                    <ul class="nav nav-pills mb-3 justify-content-end wbswitchdia" id="pills-tab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                          <button class="nav-link active" id="pills-home3-tab" data-bs-toggle="pill" data-bs-target="#pills-home3" type="button" role="tab" aria-controls="pills-home3" aria-selected="true">₽</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button class="nav-link" id="pills-profile3-tab" data-bs-toggle="pill" data-bs-target="#pills-profile3" type="button" role="tab" aria-controls="pills-profile3" aria-selected="false">шт</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-home3" role="tabpanel" aria-labelledby="pills-home3-tab" tabindex="0">
+                                    <canvas id="line-chart5" width="600" height="210"></canvas>
+                                </div>
+                                <div class="tab-pane fade" id="pills-profile3" role="tabpanel" aria-labelledby="pills-profile3-tab" tabindex="0">
+                                    <canvas id="line-chart6" width="600" height="210"></canvas>
+                                </div>
+                              
+                            </div>
+                            <script>
+                                var ctx = document.getElementById("line-chart5").getContext("2d");
+                                ctx.height = 210;
+                                Chart.defaults.font.family = 'Manrope';
+                                Chart.defaults.font.style = 'normal';
+                                Chart.defaults.color = "#989898";
+                                Chart.defaults.font.size = 11;
+
+                                var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                                gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                                gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                                gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                                gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                                gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                                gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                                gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                                new Chart(document.getElementById("line-chart5"), {
+                                type: 'line',
+                                data: {
+                                    labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                    datasets: [{ 
+                                        data: [@string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Value.ToString()))],
+                                        label: "Заказы",
+                                        borderColor: gradient,
+                                        pointBackgroundColor : "#2F2B5B",
+                                        pointBorderColor : "#FFF",
+                                        backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                        fill: true,
+                                        tension: 0.4
+                                    },
+                                    ]
+                                },
+                                options: {
+                                    plugins: {
+                                        legend: {
+                                            display: false
+                                        },
+                                        tooltip: {
+                                            backgroundColor: "#2B2F42",
+                                            displayColors: false,
+                                            position: 'average',
+                                            titleAlign:  'center',
+                                            bodyColor: "rgba(255, 255, 255, 0.72)",
+                                            bodyAlign: 'center',
+                                            cornerRadius: 11,
+                                            padding: 15,
+                                            yAlign: 'bottom',
+                                            xAlign: 'center',
+                                        }
+                                    },
+                                    scales:{
+                                        x: {
+                                            display: true,
+                                            grid: {
+                                                color: "#F6F6FB",
+                                            },
+                                        },
+                                        y: {
+                                            display: true,
+                                            grid: {
+                                                color: "#F6F6FB",
+                                                display: false,
+                                            },
+                                        },
+                                    },
+                                }
+                                });
+        
+                                var ctx = document.getElementById("line-chart6").getContext("2d");
+                                ctx.height = 210;
+                                Chart.defaults.font.family = 'Manrope';
+                                Chart.defaults.font.style = 'normal';
+                                Chart.defaults.color = "#989898";
+                                Chart.defaults.font.size = 11;
+
+                                var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                                gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                                gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                                gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                                gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                                gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                                gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                                gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                                new Chart(document.getElementById("line-chart6"), {
+                                type: 'line',
+                                data: {
+                                    labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                    datasets: [{ 
+                                        data: [@string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Value.ToString()))],
+                                        label: "Заказы",
+                                        borderColor: gradient,
+                                        pointBackgroundColor : "#2F2B5B",
+                                        pointBorderColor : "#FFF",
+                                        backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                        fill: true,
+                                        tension: 0.4
+                                    },
+                                    ]
+                                },
+                                options: {
+                                    plugins: {
+                                        legend: {
+                                            display: false
+                                        },
+                                        tooltip: {
+                                            backgroundColor: "#2B2F42",
+                                            displayColors: false,
+                                            position: 'average',
+                                            titleAlign:  'center',
+                                            bodyColor: "rgba(255, 255, 255, 0.72)",
+                                            bodyAlign: 'center',
+                                            cornerRadius: 11,
+                                            padding: 15,
+                                            yAlign: 'bottom',
+                                            xAlign: 'center',
+                                        }
+                                    },
+                                    scales:{
+                                        x: {
+                                            display: true,
+                                            grid: {
+                                                color: "#F6F6FB",
+                                            },
+                                        },
+                                        y: {
+                                            display: true,
+                                            grid: {
+                                                color: "#F6F6FB",
+                                                display: false,
+                                            },
+                                        },
+                                    },
+                                }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЕБАНАЯ ХУЙНЯ-КОНТЕЙНЕР НА ЕБУЧИЙ 470 РАЗМЕР ХУЕВ -->
+        <div class="row main-adapt-470">
+            <div class="row">
+                <div class="col-6">
+                    <a asp-action="Sales" asp-controller="Dashboard" class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Продажи</div>
+                            </div>
+
+                            <div class="panel-cost">@Math.Round(Model.DashboardReport.SalesSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">@Model.DashboardReport.SalesCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько продаж и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-6">
+                    <a asp-action="Orders" asp-controller="Dashboard" class="panelwb active">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Заказы</div>
+                            </div>
+
+                            <div class="panel-cost">@Math.Round(Model.DashboardReport.OrdersSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">@Model.DashboardReport.OrdersCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <a asp-action="Returns" asp-controller="Dashboard" class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Возвраты</div>
+                            </div>
+
+                            <div class="panel-cost">@Math.Round(Model.DashboardReport.ReturnsSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">-@Model.DashboardReport.ReturnsCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму были возвращены за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-6">
+                    <a asp-action="Cancels" asp-controller="Dashboard" class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Отмены</div>  
+                            </div>
+
+                            <div class="panel-cost">-@Math.Round(Model.DashboardReport.CancelsSum,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-pcs">@Model.DashboardReport.CancelsCount шт.</div>
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="От какого количества заказов и на какую сумму покупатели отказались за выбранный период" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="panelwb panelwbgradient">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name2">Прибыль</div>
+                            </div>
+
+                            <div class="panel-cost2">@Math.Round(Model.DashboardReport.Profit,0) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-info2">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заработал продавец за выбранный период с учетом логистики, комиссии и себестоимости" class="las la-info-circle windowapp"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6">
+                    <div class="panelwb panelwbgradient">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name2">Продажи-возврат</div>
+                            </div>
+
+                            <div class="panel-cost2">@(Math.Round(Model.DashboardReport.SalesSum-Model.DashboardReport.ReturnsSum,0)) ₽</div>
+                            <div class="footer-panel">
+                                <div class="panel-info2">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая выручка продавца выручка за выбранный период (продажи минус возвраты)" class="las la-info-circle windowapp"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ЛОГИСТИКА ЕБАНАЯ -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Логистика</div>  
+                            </div>
+                            <div class="panelwb-content">
+                                <div class="pelwb1">К клиенту: <div class="cost">@(Math.Round(Model.DashboardReport.LogisticToClient,0)) ₽</div></div>
+                                <div class="pelwb2">От клиента: <div class="cost">@(Math.Round(Model.DashboardReport.LogisticFromClient,0)) ₽</div></div>
+                            </div>
+                            <div class="footer-panel">
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-diagram">
+                        <div class="header-diagram">
+                            <div class="title-diagram">
+                                Продажи по дням
+    
+                                <ul class="nav nav-pills mb-3 justify-content-end wbswitchdia" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                      <button class="nav-link active" id="pills-home4-tab" data-bs-toggle="pill" data-bs-target="#pills-home4" type="button" role="tab" aria-controls="pills-home4" aria-selected="true">₽</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                      <button class="nav-link" id="pills-profile4-tab" data-bs-toggle="pill" data-bs-target="#pills-profile4" type="button" role="tab" aria-controls="pills-profile4" aria-selected="false">шт</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home4" role="tabpanel" aria-labelledby="pills-home4-tab" tabindex="0">
+                                <canvas id="line-chart7" width="600" height="210"></canvas>
+                            </div>
+                            <div class="tab-pane fade" id="pills-profile4" role="tabpanel" aria-labelledby="pills-profile4-tab" tabindex="0">
+                                <canvas id="line-chart8" width="600" height="210"></canvas>
+                            </div>
+                          
+                        </div>
+                        <script>
+                            var ctx = document.getElementById("line-chart7").getContext("2d");
+                            ctx.height = 210;
+                            Chart.defaults.font.family = 'Manrope';
+                            Chart.defaults.font.style = 'normal';
+                            Chart.defaults.color = "#989898";
+                            Chart.defaults.font.size = 11;
+
+                            var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                            gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                            gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                            gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                            gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                            gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                            gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                            gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                            new Chart(document.getElementById("line-chart7"), {
+                            type: 'line',
+                            data: {
+                                labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                datasets: [{ 
+                                    data: [@string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Value.ToString()))],
+                                    label: "Заказы",
+                                    borderColor: gradient,
+                                    pointBackgroundColor : "#2F2B5B",
+                                    pointBorderColor : "#FFF",
+                                    backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        backgroundColor: "#2B2F42",
+                                        displayColors: false,
+                                        position: 'average',
+                                        titleAlign:  'center',
+                                        bodyColor: "rgba(255, 255, 255, 0.72)",
+                                        bodyAlign: 'center',
+                                        cornerRadius: 11,
+                                        padding: 15,
+                                        yAlign: 'bottom',
+                                        xAlign: 'center',
+                                    }
+                                },
+                                scales:{
+                                    x: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                            display: false,
+                                        },
+                                    },
+                                },
+                            }
+                            });
+    
+                            var ctx = document.getElementById("line-chart8").getContext("2d");
+                            ctx.height = 210;
+                            Chart.defaults.font.family = 'Manrope';
+                            Chart.defaults.font.style = 'normal';
+                            Chart.defaults.color = "#989898";
+                            Chart.defaults.font.size = 11;
+
+                            var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                            gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                            gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                            gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                            gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                            gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                            gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                            gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                            new Chart(document.getElementById("line-chart8"), {
+                            type: 'line',
+                            data: {
+                                labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                datasets: [{ 
+                                    data: [@string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Value.ToString()))],
+                                    label: "Заказы",
+                                    borderColor: gradient,
+                                    pointBackgroundColor : "#2F2B5B",
+                                    pointBorderColor : "#FFF",
+                                    backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        backgroundColor: "#2B2F42",
+                                        displayColors: false,
+                                        position: 'average',
+                                        titleAlign:  'center',
+                                        bodyColor: "rgba(255, 255, 255, 0.72)",
+                                        bodyAlign: 'center',
+                                        cornerRadius: 11,
+                                        padding: 15,
+                                        yAlign: 'bottom',
+                                        xAlign: 'center',
+                                    }
+                                },
+                                scales:{
+                                    x: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                            display: false,
+                                        },
+                                    },
+                                },
+                            }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="panelwb panelwbcs newfix">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Маржинальность %</div>
+                            </div>
+
+                            <div class="footer-panel">
+                                <div class="panel-pcs"><div class="opts"></div> Все категории</div>
+                                <div id="circle3"><div class="number-circle">@Math.Round(Model.DashboardReport.Marginality,0)%</div></div>
+                                <script>
+                                $('#circle3').circleProgress({
+                                    startAngle: 1.55,
+                                    value: @Math.Round(Model.DashboardReport.Marginality/100,2),
+                                    thickness: 8,
+                                    size: 60,
+                                    lineCap: "round",
+                                    fill: {
+                                    gradient: ["#4F46BA"]
+                                    },
+                                    emptyFill: "rgba(223, 223, 224, 1)",
+                                });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЕБАНАЯ ХУЙНЯ-КОНТЕЙНЕР НА ЕБУЧИЙ 320 РАЗМЕР ХУЕВ -->
+        <div class="row main-adapt-320">
+            <div class="row">
+                <!-- OH FUCKIN' FUCKIN' CAROUSEL BITCH FUCKIN' CUNT FUCKIN' CUNT -->
+                <div class="owl-carousel owl-theme owl320">
+                    <div class="item">
+                        <a asp-action="Sales" asp-controller="Dashboard" class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Продажи</div>
+                                </div>
+    
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.SalesSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">@Model.DashboardReport.SalesCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько продаж и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+    
+                        <a asp-action="Returns" asp-controller="Dashboard" class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Возвраты</div>
+                                </div>
+    
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.ReturnsSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">-@Model.DashboardReport.ReturnsCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму были возвращены за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <div class="panelwb panelwbgradient">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name2">Прибыль</div>
+                                </div>
+    
+                                <div class="panel-cost2">>@Math.Round(Model.DashboardReport.Profit,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-info2">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заработал продавец за выбранный период с учетом логистики, комиссии и себестоимости" class="las la-info-circle windowapp"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <a asp-action="Orders" asp-controller="Dashboard" class="panelwb active">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Заказы</div>
+                                </div>
+    
+                                <div class="panel-cost">@Math.Round(Model.DashboardReport.OrdersSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">@Model.DashboardReport.OrdersCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сколько заказов и на какую сумму было совершено за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+    
+                        <a asp-action="Cancels" asp-controller="Dashboard" class="panelwb">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name">Отмены</div>  
+                                </div>
+    
+                                <div class="panel-cost">-@Math.Round(Model.DashboardReport.CancelsSum,0) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-pcs">@Model.DashboardReport.CancelsCount шт.</div>
+                                    <div class="panel-info">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="От какого количества заказов и на какую сумму покупатели отказались за выбранный период" class="las la-info-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <div class="panelwb panelwbgradient">
+                            <div class="panelwb-head">
+                                <div class="head-panel">
+                                    <div class="name2">Продажи-возврат</div>
+                                </div>
+    
+                                <div class="panel-cost2">@(Math.Round(Model.DashboardReport.SalesSum-Model.DashboardReport.ReturnsSum,0)) ₽</div>
+                                <div class="footer-panel">
+                                    <div class="panel-info2">
+                                        <i data-bs-toggle="tooltip" data-bs-placement="top" title="Общая выручка продавца выручка за выбранный период (продажи минус возвраты)" class="las la-info-circle windowapp"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BULLSCRIPT SUKA LA DLA PIEPRZONEJ KURWY KARUZELOWEJ -->
+                <script>
+                    $('.owl320').owlCarousel({
+                        stagePadding: 50,
+                        loop:false,
+                        margin:10,
+                        nav:true,
+                        responsive:{
+                            0:{
+                                items:1
+                            },
+                            600:{
+                                items:2
+                            },
+                            1000:{
+                                items:2
+                            }
+                        }
+                    })
+                </script>
+            </div>
+
+            <!-- ЛОГИСТИКА ЕБАНАЯ -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panelwb">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Логистика</div>  
+                            </div>
+                            <div class="panelwb-content">
+                                <div class="pelwb1">К клиенту: <div class="cost">@(Math.Round(Model.DashboardReport.LogisticToClient,0)) ₽</div></div>
+                                <div class="pelwb2">От клиента: <div class="cost">@(Math.Round(Model.DashboardReport.LogisticFromClient,0)) ₽</div></div>
+                            </div>
+                            <div class="footer-panel">
+                                <div class="panel-info">
+                                    <i data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" class="las la-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-diagram">
+                        <div class="header-diagram">
+                            <div class="title-diagram">
+                                Продажи по дням
+    
+                                <ul class="nav nav-pills mb-3 justify-content-end wbswitchdia" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                      <button class="nav-link active" id="pills-home5-tab" data-bs-toggle="pill" data-bs-target="#pills-home5" type="button" role="tab" aria-controls="pills-home5" aria-selected="true">₽</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                      <button class="nav-link" id="pills-profile5-tab" data-bs-toggle="pill" data-bs-target="#pills-profile5" type="button" role="tab" aria-controls="pills-profile5" aria-selected="false">шт</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home5" role="tabpanel" aria-labelledby="pills-home5-tab" tabindex="0">
+                                <canvas id="line-chart9" width="600" height="255"></canvas>
+                            </div>
+                            <div class="tab-pane fade" id="pills-profile5" role="tabpanel" aria-labelledby="pills-profile5-tab" tabindex="0">
+                                <canvas id="line-chart10" width="600" height="255"></canvas>
+                            </div>
+                          
+                        </div>
+                        <script>
+                            var ctx = document.getElementById("line-chart9").getContext("2d");
+                            ctx.height = 210;
+                            Chart.defaults.font.family = 'Manrope';
+                            Chart.defaults.font.style = 'normal';
+                            Chart.defaults.color = "#989898";
+                            Chart.defaults.font.size = 11;
+
+                            var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                            gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                            gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                            gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                            gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                            gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                            gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                            gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                            new Chart(document.getElementById("line-chart9"), {
+                            type: 'line',
+                            data: {
+                                labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                datasets: [{ 
+                                    data: [@string.Join(",",Model.DashboardReport.SalesPriceChartData.Select(o => o.Value.ToString()))],
+                                    label: "Заказы",
+                                    borderColor: gradient,
+                                    pointBackgroundColor : "#2F2B5B",
+                                    pointBorderColor : "#FFF",
+                                    backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        backgroundColor: "#2B2F42",
+                                        displayColors: false,
+                                        position: 'average',
+                                        titleAlign:  'center',
+                                        bodyColor: "rgba(255, 255, 255, 0.72)",
+                                        bodyAlign: 'center',
+                                        cornerRadius: 11,
+                                        padding: 15,
+                                        yAlign: 'bottom',
+                                        xAlign: 'center',
+                                    }
+                                },
+                                scales:{
+                                    x: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                            display: false,
+                                        },
+                                    },
+                                },
+                            }
+                            });
+    
+                            var ctx = document.getElementById("line-chart10").getContext("2d");
+                            ctx.height = 210;
+                            Chart.defaults.font.family = 'Manrope';
+                            Chart.defaults.font.style = 'normal';
+                            Chart.defaults.color = "#989898";
+                            Chart.defaults.font.size = 11;
+
+                            var gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                            gradient.addColorStop(1, 'rgba(253, 152, 107, 1)');
+                            gradient.addColorStop(0.8, 'rgba(215, 49, 97, 1)');
+                            gradient.addColorStop(0.7, 'rgba(202, 53, 122, 1)');
+                            gradient.addColorStop(0.6, 'rgba(177, 42, 142, 1)');
+                            gradient.addColorStop(0.4, 'rgba(110, 17, 161, 1)');
+                            gradient.addColorStop(0.2, 'rgba(48, 4, 191, 1)');
+                            gradient.addColorStop(0, 'rgba(62, 51, 187, 1)');
+
+                            new Chart(document.getElementById("line-chart10"), {
+                            type: 'line',
+                            data: {
+                                labels: [@Html.Raw(string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Date.ToString("dd/MM/yyyy").Insert(0,"'").Insert(11,"'"))))],
+                                datasets: [{ 
+                                    data: [@string.Join(",",Model.DashboardReport.SalesCountChartData.Select(o => o.Value.ToString()))],
+                                    label: "Заказы",
+                                    borderColor: gradient,
+                                    pointBackgroundColor : "#2F2B5B",
+                                    pointBorderColor : "#FFF",
+                                    backgroundColor: 'rgba(150, 124, 253, 0.06)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        backgroundColor: "#2B2F42",
+                                        displayColors: false,
+                                        position: 'average',
+                                        titleAlign:  'center',
+                                        bodyColor: "rgba(255, 255, 255, 0.72)",
+                                        bodyAlign: 'center',
+                                        cornerRadius: 11,
+                                        padding: 15,
+                                        yAlign: 'bottom',
+                                        xAlign: 'center',
+                                    }
+                                },
+                                scales:{
+                                    x: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        grid: {
+                                            color: "#F6F6FB",
+                                            display: false,
+                                        },
+                                    },
+                                },
+                            }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="panelwb panelwbcs newfix">
+                        <div class="panelwb-head">
+                            <div class="head-panel">
+                                <div class="name">Маржинальность %</div>
+                            </div>
+
+                            <div class="footer-panel">
+                                <div class="panel-pcs"><div class="opts"></div> Все категории</div>
+                                <div id="circle4"><div class="number-circle"> @Math.Round(Model.DashboardReport.Marginality,0)%</div></div>
+                                <script>
+                                $('#circle4').circleProgress({
+                                    startAngle: 1.55,
+                                    value:  @Math.Round(Model.DashboardReport.Marginality/100,2),
+                                    thickness: 8,
+                                    size: 60,
+                                    lineCap: "round",
+                                    fill: {
+                                    gradient: ["#4F46BA"]
+                                    },
+                                    emptyFill: "rgba(223, 223, 224, 1)",
+                                });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>

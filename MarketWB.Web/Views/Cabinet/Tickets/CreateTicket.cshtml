@@ -15,18 +15,13 @@
           <li class="breadcrumb-item active" aria-current="page">Создать тикет</li>
         </ol>
       </nav>
-
-      <div class="col-md-12">
-        <div class="wbalert">
-          Для поддержки предпринимателей компания также ввела бесплатное хранение товаров на большинстве складов, компенсировала продавцам участие в маркетинговых акциях за счет снижения собственной торговой комиссии, субсидировала клиентскую скидку, которая достигала 22%. В первом квартале 2022 года число предпринимателей, зарегистрированных на Wildberries, превысило 650 000: работу с компанией начали свыше 136 000 новых продавцов — вдвое больше, чем за аналогичный период прошлого года. Около 90% из них — 
-        </div>
-      </div>
     </div>
 
     <div class="container">
       <div class="row">
         <div class="ticket">
           <div class="ticket-header">Тикет</div>
+          <div class="ticketicon"></div>
           <div class="ticket-content">
             <form asp-action="CreateTicketPost" asp-controller="UserTickets" enctype="multipart/form-data" method="post">
               <div class="mb-3">
@@ -41,8 +36,8 @@
 
               <div class="input-group mb-3">
                 <label class="wblabel"></label>
-                <input type="text" readonly class="form-control" placeholder="Текст">
-                <button  type="button" class="btn btnprofile wbselfbtn" id="file-input" type="file" name="file" id="button-addon2" value="loadXml" onclick="document.getElementById('file').click();"><i class="las la-folder-open"></i> Вложения</button>
+                <input type="text" readonly class="feenoload form-control" id="filename" placeholder="">
+                <button  type="button" class="btn btnprofile wbselfbtn" id="file-input" name="file" value="loadXml" onclick="document.getElementById('file').click();"><i class="las la-folder-open"></i> Вложения</button>
                 <input type="file" style="display:none;" id="file" name="file"/>
               </div>
 
@@ -55,4 +50,13 @@
       </div>
     </div>
 
+
+    <script>
+         $('#file').change(function(){
+            // Если файл прикрепили то заносим значение value в переменную
+            var fileResult = $(this).val();
+            // И дальше передаем значение в инпут который под загрузчиком
+            $(this).parent().find('#filename').val(fileResult);
+            });
+    </script>
 

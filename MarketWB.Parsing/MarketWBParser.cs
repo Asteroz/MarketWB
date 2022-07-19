@@ -65,11 +65,16 @@ namespace MarketWB.Parsing
                     if (realization == null && realization2 == null) 
                         continue;
 
-                    var order = orders.FirstOrDefault(o => o.GNumber == sale.GNumber);
+                    var order = orders.FirstOrDefault(o => o.NmId == sale.NmId && o.Date >= sale.Date.AddDays(-15));
+                    if(order == null)
+                    {
+                        order = orders.FirstOrDefault(o => o.Date >= sale.Date.AddDays(-15));
+                    }
 
                     var salesRow = new SalesReportRow
                     {
                         ThumbnailPath = null,
+                        Odid = sale.Odid,
                         SaleDate = sale.Date,
                         Category = sale.Category,
                         Title = sale.Subject,
@@ -150,6 +155,7 @@ namespace MarketWB.Parsing
                     var salesRow = new OrdersReportRow
                     {
                         ThumbnailPath = null,
+                        Odid = order.Odid,
                         Category = order?.Category,
                         OrderDate = order.Date,
                         Title = order.Subject,
@@ -482,7 +488,7 @@ namespace MarketWB.Parsing
             report.LogisticToClient = logistic.ToClient;
 
 
-            foreach(var saleGroup in sales.Rows.GroupBy(o => o.SaleDate.Date))
+            foreach(var saleGroup in sales.Rows.GroupBy(o => o.SaleDate.Date).OrderBy(o => o.Key))
             {
                 report.SalesCountChartData.Add(new ChartDay
                 {
@@ -611,8 +617,17 @@ namespace MarketWB.Parsing
                       && o.RrDt <= user.UserData.SelectedPeriodTo)
                       .ToList();
 
-                info.FromClient += (double)realizations.Where(o => o.DeliveryAmount > 0 && o.DeliveryRub > 0).Sum(o => o.DeliveryRub);
-                info.ToClient += (double)realizations.Where(o => o.ReturnAmount > 0 && o.DeliveryRub > 0).Sum(o => o.DeliveryRub);
+                //var sales = GenerateSalesReport(user);
+                //var returns = GenerateReturnsReport(user);
+                //var orders = GenerateOrdersReport(user);
+                //var cancels = GenerateRejectsReport(user);
+
+                //info.FromClient = (double)sales.Rows.Sum(o => o.Logistic);
+                //info.FromClient = (double)sales.Rows.Sum(o => o.Logistic);
+
+
+                info.ToClient += (double)realizations.Where(o => o.DeliveryAmount > 0 && o.ReturnAmount == 0 && o.DeliveryRub > 0).Sum(o => o.DeliveryRub);
+                info.FromClient += (double)realizations.Where(o => o.ReturnAmount > 0 && o.DeliveryRub > 0).Sum(o => o.DeliveryRub);
             }
             return info;
         }

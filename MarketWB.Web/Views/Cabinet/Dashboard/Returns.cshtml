@@ -10,14 +10,14 @@
      <div class="container">
       <div class="row">
         <div class="dashboard-header wbmargin">
-            <div class="titledash"><i class="las la-shopping-bag"></i> Возвраты</div>
+                  <div class="titledash"><div class="dbicon bagarrow"></div> Возвраты</div>
             @await Component.InvokeAsync("PeriodsComponent",new {vm = Model})
         </div>
 
         <div class="col-md-12">
           <div class="wbalert">
           В таблице представлена детальная аналитика возвратов за выбранный период. Для
-            удобства вы можете отсортировать товары по бренду или категории. �
+            удобства вы можете отсортировать товары по бренду или категории. 
           </div>
         </div>
 
@@ -35,7 +35,7 @@
                       Фото
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Фото продукта" class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                 @*       <i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th>
@@ -145,9 +145,9 @@
                           <td>@row.Category</td>
                           <td>@Convert.ToInt32(row.Profit)</td>
                           <td>@Convert.ToInt32(row.Logistic)</td>
-                          <td>@row.OrderDate.ToString("dd MMM yyyy hh:mm")</td>
-                          <td>@row.SaleDate?.ToString("dd MMM yyyy hh:mm")</td>
-                          <td>@row.ReturnDate.ToString("dd MMM yyyy hh:mm")</td>
+                          <td>@row.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                          <td>@row.SaleDate?.ToString("dd.MM.yyyy HH:mm")</td>
+                          <td>@row.ReturnDate.ToString("dd.MM.yyyy HH:mm")</td>
                           <td>@Convert.ToInt32(row.InWayFromClient)</td>
                           <td>@Convert.ToInt32(row.InWayToClient)</td>
                           <td>@row.DeliveryAddress</td>

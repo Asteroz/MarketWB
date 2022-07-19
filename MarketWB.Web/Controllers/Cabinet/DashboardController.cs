@@ -175,9 +175,9 @@ namespace MarketWB.Web.Controllers.Cabinet
 
         [HttpPut]
         [Route("Cabinet/SetSelfBuyStatus")]
-        public async Task SetSelfBuyStatus(long nmId, bool isSelfBuy)
+        public async Task SetSelfBuyStatus(long nmId, long odid, bool isSelfBuy)
         {
-            await WBParsing.SetSelfBuyStatus(nmId, isSelfBuy);
+            await WBParsing.SetSelfBuyStatus(nmId,odid, isSelfBuy);
         }
 
         #region Дополнительные расходы

@@ -47,7 +47,13 @@ namespace MarketWB.Web.Controllers
         {
             return View();
         }
+        [Route("Privacy")]
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        [Route("Terms")]
+        public IActionResult Terms()
         {
             return View();
         }

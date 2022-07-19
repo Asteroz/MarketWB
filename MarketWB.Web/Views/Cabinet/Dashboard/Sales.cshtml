@@ -11,14 +11,14 @@
     <div class="container">
       <div class="row">
         <div class="dashboard-header wbmargin">
-            <div class="titledash"><i class="las la-shopping-bag"></i> Продажи</div>
+             <div class="titledash"><div class="dbicon bag"></div> Продажи</div>
               @await Component.InvokeAsync("PeriodsComponent",new {vm = Model})
         </div>
 
         <div class="col-md-12">
           <div class="wbalert">
              В таблице представлена детальная аналитика продаж за выбранный период. Для удобства
-             вы можете отсортировать товары по бренду или категории. �
+             вы можете отсортировать товары по бренду или категории. 
           </div>
         </div>
 
@@ -36,14 +36,14 @@
                     Самовыкуп
                     <div class="wbtcont">
                       <i data-bs-toggle="tooltip" data-bs-placement="top" title="Поставьте галочку, если это был самовыкуп и сервис не будет учитывать его в прибыли." class="las la-info-circle wbinfot"></i>
-                      <i class="las la-sort wbsort"></i>
+                     @* <i class="las la-sort wbsort"></i>*@
                     </div>
                   </th>
                   <th>
                     Фото
                     <div class="wbtcont">
                       <i data-bs-toggle="tooltip" data-bs-placement="top" title="Фото продукта" class="las la-info-circle wbinfot"></i>
-                      <i class="las la-sort wbsort"></i>
+                      @*<i class="las la-sort wbsort"></i>*@
                     </div>
                   </th>
                   <th>
@@ -131,7 +131,7 @@
                   <tr>
                       <td>
                         <div class="form-check wbtablepos">
-                          <input class="form-check-input" data-nmid="@row.Article" onchange="onSelfBuyCheckboxChanged(event)" type="checkbox" @if(row.IsSelfBuy){@("checked")}>
+                          <input class="form-check-input" data-nmid="@row.Article" data-odid="@row.Odid" data-nmid="@row.Article" onchange="onSelfBuyCheckboxChanged(event)" type="checkbox" @if(row.IsSelfBuy){@("checked")}>
                         </div>
                       </td>
                       <td>
@@ -145,8 +145,8 @@
                       <td>@row.Category</td>
                        <td>@Convert.ToInt32(row.Profit)</td>
                       <td>@Convert.ToInt32(row.Logistic)</td>
-                      <td>@row.OrderDate?.ToString("dd MMM yyyy hh:mm")</td>
-                      <td>@row.SaleDate.ToString("dd MMM yyyy hh:mm")</td>
+                      <td>@row.OrderDate?.ToString("dd.MM.yyyy HH:mm")</td>
+                      <td>@row.SaleDate.ToString("dd.MM.yyyy HH:mm")</td>
                       <td>@row.DeliveryAddress</td>
                   </tr>  
               }
@@ -165,7 +165,8 @@
          <script>
                async function onSelfBuyCheckboxChanged(e){
                    const id = e.target.getAttribute('data-nmid');
-                   let response = await fetch('/Cabinet/SetSelfBuyStatus?nmId='+id+'&isSelfBuy='+e.target.checked, {
+                   const odid = e.target.getAttribute('data-odid');
+                   let response = await fetch('/Cabinet/SetSelfBuyStatus?nmId='+id+'&odid='+odid+'&isSelfBuy='+e.target.checked, {
                            method: 'PUT',
                    });
 

@@ -92,17 +92,19 @@ namespace MarketWB.Web.Controllers.Cabinet
         }
         [HttpPut]
         [Route("WBKeys/SetChangedPeriodFrom")]
-        public async Task SetChangedPeriodFrom(DateTime period)
+        public async Task SetChangedPeriodFrom(string period)
         {
+            DateTime date = DateTime.Parse(period);
             var user = await UserHelper.GetUser(User);
-            await _wbKeysApi.SetChangedPeriodFrom(user.Id, period.Date);
+            await _wbKeysApi.SetChangedPeriodFrom(user.Id, date.Date);
         }
         [HttpPut]
         [Route("WBKeys/SetChangedPeriodTo")]
-        public async Task SetChangedPeriodTo(DateTime period)
+        public async Task SetChangedPeriodTo(string period)
         {
+            DateTime date = DateTime.Parse(period);
             var user = await UserHelper.GetUser(User);
-            await _wbKeysApi.SetChangedPeriodTo(user.Id, period.Date.AddHours(23).AddMinutes(59));
+            await _wbKeysApi.SetChangedPeriodTo(user.Id, date.Date.AddHours(23).AddMinutes(59));
         }
 
 

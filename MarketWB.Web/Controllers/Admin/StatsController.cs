@@ -1,6 +1,8 @@
-﻿using MarketWB.Web.Models;
+﻿using MarketAI.API.Core;
+using MarketWB.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,12 @@ namespace MarketWB.Web.Controllers.Admin
     {
         private readonly ILogger<StatsController> _logger;
         private readonly Stats _stats;
-        public StatsController(ILogger<StatsController> logger, Stats stats)
+        private readonly APIDBContext _db;
+        public StatsController(ILogger<StatsController> logger, Stats stats, APIDBContext db)
         {
             _logger = logger;
             _stats = stats;
+            _db = db;
         }
 
         [Route("Admin/Visitors")]
@@ -49,6 +53,13 @@ namespace MarketWB.Web.Controllers.Admin
         {
             var online = _stats.GetOnlineUsers();
             return View("Views/Admin/Stats/Online.cshtml", online);
+        }
+        [Route("Admin/WithdrawRequests")]
+        public IActionResult WithdrawRequests()
+        {
+            var requests = _db.WithdrawRequests.Include(o => o.User).ToList();
+            requests.Reverse();
+            return View("Views/Admin/Stats/WithdrawRequests.cshtml", requests);
         }
     }
 }

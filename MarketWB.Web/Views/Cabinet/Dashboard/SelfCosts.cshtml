@@ -4,66 +4,17 @@
 }
 @model DashboardSelfCostsVM
 
-@*    <div class="container">
-      <div class="row">
-          <div class="col-md-4">
-              <div>
-                  <div class="dropdown">
-                      <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                          Выбраны все ключи API
-                      </button>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">1</a></li>
-                        <li><a class="dropdown-item" href="#">2</a></li>
-                        <li><a class="dropdown-item" href="#">3</a></li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-
-          <div class="col-md-4">
-              <div>
-                  <div class="dropdown">
-                      <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                          Все бренды
-                      </button>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">1</a></li>
-                        <li><a class="dropdown-item" href="#">2</a></li>
-                        <li><a class="dropdown-item" href="#">3</a></li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-
-          <div class="col-md-4">
-              <div>
-                  <div class="dropdown">
-                      <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                          Все категории
-                      </button>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">1</a></li>
-                        <li><a class="dropdown-item" href="#">2</a></li>
-                        <li><a class="dropdown-item" href="#">3</a></li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>
-*@
     <div class="container">
       <div class="row">
         <div class="dashboard-header wbmargin">
-            <div class="titledash"><i class="las la-shopping-bag"></i> Себестоимость</div>
+             <div class="titledash"><div class="dbicon bagtag"></div> Себестоимость</div>
         </div>
 
         <div class="col-md-12">
           <div class="wbalert">
           В себестоимость продукта входит не только товар, но и расходы по его первоначальной
             логистике, упаковке и т.д. Посчитайте общую себестоимость для каждого продукта, она
-            сохраниться в сервисе и будет учтена в расчетах для дальнейшей аналитики. �
+            сохраниться в сервисе и будет учтена в расчетах для дальнейшей аналитики. 
           </div>
         </div>
 
@@ -83,7 +34,7 @@
                     Фото
                     <div class="wbtcont">
                       <i data-bs-toggle="tooltip" data-bs-placement="top" title="Фото продукта" class="las la-info-circle wbinfot"></i>
-                      <i class="las la-sort wbsort"></i>
+                    @*  <i class="las la-sort wbsort"></i>*@
                     </div>
                   </th>
                   <th>
@@ -164,12 +115,12 @@
                             <td>@selfcost.ProductId</td>
                             <td>@Math.Round(selfcost.CurrentPrice)</td>
                             <td id="self_@selfcost.Id">@Math.Round(selfcost.TotalSelfCost)</td>
-                            <td><input disabled id="self_@selfcost.Id-purchase" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.PurchaseCost"/></td>
-                            <td><input disabled id="self_@selfcost.Id-package" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.PackagingCost"/></td>
-                            <td><input disabled id="self_@selfcost.Id-delivery" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.DeliveryToYourStockCost"/></td>
-                            <td><input disabled id="self_@selfcost.Id-delivery_wb" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.DeliveryToWbStockCost"/></td>
-                            <td><input disabled id="self_@selfcost.Id-ff" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.FFServicesCost"/></td>
-                            <td><input disabled id="self_@selfcost.Id-content" data-id="@selfcost.Id" onchange="onFieldChange(event)" style="height:25px;border-width:0px;background:transparent;" type="number" value="@selfcost.PhotographCost"/></td>
+                            <td id="self_@selfcost.Id-purchase" data-id="@selfcost.Id">@selfcost.PurchaseCost</td>
+                            <td id="self_@selfcost.Id-package" data-id="@selfcost.Id">@selfcost.PackagingCost</td>
+                            <td id="self_@selfcost.Id-delivery" data-id="@selfcost.Id">@selfcost.DeliveryToYourStockCost</td>
+                            <td id="self_@selfcost.Id-delivery_wb" data-id="@selfcost.Id">@selfcost.DeliveryToWbStockCost</td>
+                            <td id="self_@selfcost.Id-ff" data-id="@selfcost.Id">@selfcost.FFServicesCost</td>
+                            <td id="self_@selfcost.Id-content" data-id="@selfcost.Id">@selfcost.PhotographCost</td>
                         </tr>
                     }
 
@@ -238,12 +189,12 @@
             document.getElementById('edit').setAttribute('data-id',id);
             document.getElementById('edit').setAttribute('data-product-id',productID);
 
-            document.getElementById('zakupka').value = document.getElementById(`self_${id}-purchase`).value ;
-            document.getElementById('upakovka').value =  document.getElementById(`self_${id}-package`).value ;
-            document.getElementById('stock_ff').value = document.getElementById(`self_${id}-delivery`).value ;
-            document.getElementById('wb_stock').value = document.getElementById(`self_${id}-delivery_wb`).value ;
-            document.getElementById('ff').value = document.getElementById(`self_${id}-ff`).value ;
-            document.getElementById('content_cost').value = document.getElementById(`self_${id}-content`).value ;
+            document.getElementById('zakupka').value = document.getElementById(`self_${id}-purchase`).innerHTML ;
+            document.getElementById('upakovka').value =  document.getElementById(`self_${id}-package`).innerHTML ;
+            document.getElementById('stock_ff').value = document.getElementById(`self_${id}-delivery`).innerHTML ;
+            document.getElementById('wb_stock').value = document.getElementById(`self_${id}-delivery_wb`).innerHTML ;
+            document.getElementById('ff').value = document.getElementById(`self_${id}-ff`).innerHTML ;
+            document.getElementById('content_cost').value = document.getElementById(`self_${id}-content`).innerHTML ;
         }
 
         async function updateSelfCost(){
@@ -333,12 +284,12 @@
                 let model = {
                     Id: new Number(row.getAttribute('data-id')),
                     ProductId: new Number(cells[2].innerHTML),
-                    PurchaseCost: new Number(cells[5].children[0].value),
-                    PackagingCost: new Number(cells[6].children[0].value),
-                    DeliveryToYourStockCost: new Number(cells[7].children[0].value),
-                    DeliveryToWbStockCost: new Number(cells[8].children[0].value),
-                    FFServicesCost: new Number(cells[9].children[0].value),
-                    PhotographCost: new Number(cells[10].children[0].value),
+                    PurchaseCost: new Number(cells[5].innerHTML),
+                    PackagingCost: new Number(cells[6].innerHTML),
+                    DeliveryToYourStockCost: new Number(cells[7].innerHTML),
+                    DeliveryToWbStockCost: new Number(cells[8].innerHTML),
+                    FFServicesCost: new Number(cells[9].innerHTML),
+                    PhotographCost: new Number(cells[10].innerHTML),
                 }
         
         

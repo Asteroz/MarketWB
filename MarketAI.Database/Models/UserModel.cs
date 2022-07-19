@@ -45,6 +45,7 @@ namespace MarketAI.API.Models
         public List<WBAPITokenModel> WBAPIKeys { get; set; } = new List<WBAPITokenModel>();
         public List<TicketModel> Tickets { get; set; } = new List<TicketModel>();
         public List<PaymentModel> Payments { get; set; } = new List<PaymentModel>();
+        public List<WithdrawRequest> WithdrawRequests { get; set; } = new List<WithdrawRequest>();
         public List<AuthStatsModel> Auths { get; set; } = new List<AuthStatsModel>();
 
         public List<ExtraExpenseModel> ExtraExpenses { get; set; } = new List<ExtraExpenseModel>();

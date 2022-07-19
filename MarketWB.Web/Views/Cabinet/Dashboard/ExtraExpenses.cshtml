@@ -9,13 +9,13 @@
   <div class="container">
       <div class="row">
         <div class="dashboard-header wbmargin">
-            <div class="titledash"><i class="las la-wallet"></i> Дополнительные расходы</div>
+             <div class="titledash"><div class="dbicon walletplus"></div> Дополнительные расходы</div>
         </div>
 
         <div class="col-md-12">
           <div class="wbalert">
             Заполняйте таблицу с дополнительными тратами, подсчитывайте все ваши расходы,
-            которые не учитывает Wildberries. �
+            которые не учитывает Wildberries. 
           </div>
         </div>
 
@@ -36,21 +36,21 @@
                       Дата платежа
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Выберите дату совершенной операции" class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                        @*<i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th>
                       Расчетный центр
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Пропишите откуда был произведен платеж. Пример: наличные / личная карта / расчётный счет и т.д." class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                       @* <i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th>
                       Категория
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Пропишите категорию расходов. Пример: самовыкуп / фотосессия / дизайн / сервис и т.д" class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                       @* <i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                  @*   <th>
@@ -64,28 +64,28 @@
                       Сумма
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Сумма произведенной операции" class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                        @*<i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th>
                       Кому
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Припишите детально кому был произведен платеж. Пример: название сервиса / название студии / имя исполнителя и т.д." class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                   @*     <i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th>
                       За что
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Пропишите детально за что был произведен платеж. Пример: самовыкуп футболки /инфографика новой карточки / аналитика на месяц и т.д." class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                       @* <i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th>
                       Комментарий
                       <div class="wbtcont">
                         <i data-bs-toggle="tooltip" data-bs-placement="top" title="Свободное поле для ввода" class="las la-info-circle wbinfot"></i>
-                        <i class="las la-sort wbsort"></i>
+                       @* <i class="las la-sort wbsort"></i>*@
                       </div>
                     </th>
                     <th></th>
@@ -98,14 +98,14 @@
                             <td>
                               <button onclick="setUpdatePopupId(@extra.Id)" style="background:transparent;border-width:0;" class="wbtablelink" data-bs-toggle="modal" data-bs-target="#updateExtraExpense"><i class="las la-edit"></i></button>
                             </td>
-                            <td><input disabled id="extra_@extra.Id-payDate" style="height:25px;border-width:0px;background:transparent;" type="datetime-local" value="@extra.PaymentDate.ToString("yyyy-MM-ddThh:mm")"/></td>
-                            <td><input disabled id="extra_@extra.Id-centre" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.ClearingCentre"/></td>
-                            <td><input disabled id="extra_@extra.Id-category" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.Category"/></td>
+                            <td id="extra_@extra.Id-payDate">@extra.PaymentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td id="extra_@extra.Id-centre">@extra.ClearingCentre</td>
+                            <td id="extra_@extra.Id-category">@extra.Category</td>
                           @*  <td><input disabled id="extra_@extra.Id-period" style="height:25px;border-width:0px;background:transparent;" type="datetime-local" value="@extra.Period.ToString("yyyy-MM-ddThh:mm")"/></td>*@
-                            <td><input disabled id="extra_@extra.Id-sum" style="height:25px;border-width:0px;background:transparent;" type="number" value="@extra.Sum"/></td>
-                            <td><input disabled id="extra_@extra.Id-receiver" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.PaymentReceiver"/></td>
-                            <td><input disabled id="extra_@extra.Id-desc" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.PaymentDescription"/></td>
-                            <td><input disabled id="extra_@extra.Id-comment" style="height:25px;border-width:0px;background:transparent;" type="text" value="@extra.Comment"/></td>
+                            <td id="extra_@extra.Id-sum">@extra.Sum</td>
+                            <td id="extra_@extra.Id-receiver">@extra.PaymentReceiver</td>
+                            <td id="extra_@extra.Id-desc">@extra.PaymentDescription</td>
+                            <td id="extra_@extra.Id-comment">@extra.Comment</td>
                             <td>
                                <button onclick="DeleteRow(@extra.Id)" style="background:transparent;color:red;border-width:0;font-size:20px;" class="wbtablelink"><i class="las la-trash"></i></button>
                             </td>
@@ -295,14 +295,14 @@
         async function setUpdatePopupId(id){
             document.getElementById('updateExtraExpense').setAttribute('data-id',id);
 
-            document.getElementById('upd_payment_date').value = document.getElementById(`extra_${id}-payDate`).value;
-            document.getElementById('upd_account_center').value = document.getElementById(`extra_${id}-centre`).value;
-            document.getElementById('upd_article').value = document.getElementById(`extra_${id}-category`).value;
+            document.getElementById('upd_payment_date').value = document.getElementById(`extra_${id}-payDate`).innerHTML;
+            document.getElementById('upd_account_center').value = document.getElementById(`extra_${id}-centre`).innerHTML;
+            document.getElementById('upd_article').value = document.getElementById(`extra_${id}-category`).innerHTML;
             //document.getElementById('upd_period').value = document.getElementById(`extra_${id}-period`).value;
-            document.getElementById('upd_sum').value = document.getElementById(`extra_${id}-sum`).value;
-            document.getElementById('upd_to_pay').value = document.getElementById(`extra_${id}-receiver`).value;
-            document.getElementById('upd_for_what').value = document.getElementById(`extra_${id}-desc`).value;
-            document.getElementById('upd_comment').value = document.getElementById(`extra_${id}-comment`).value;
+            document.getElementById('upd_sum').value = document.getElementById(`extra_${id}-sum`).innerHTML;
+            document.getElementById('upd_to_pay').value = document.getElementById(`extra_${id}-receiver`).innerHTML;
+            document.getElementById('upd_for_what').value = document.getElementById(`extra_${id}-desc`).innerHTML;
+            document.getElementById('upd_comment').value = document.getElementById(`extra_${id}-comment`).innerHTML;
         }
 
 

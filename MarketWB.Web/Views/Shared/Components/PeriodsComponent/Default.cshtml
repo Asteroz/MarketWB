@@ -1,46 +1,89 @@
 ﻿@using MarketWB.Web.ViewModels.Cabinet.Dashboard
 @model AbsDashboardVM
 
- <ul class="nav justify-content-end">
-                <li class="nav-item" onclick="setChangedPeriodFromDays(0)">
-                  <a class="nav-dash d-none d-md-block" href="#">Сегодня</a>
-                </li>
-                <li class="nav-item d-none d-md-block" onclick="setChangedYesterdayPeriod()">
-                  <a class="nav-dash" href="#">Вчера</a>
-                </li>
-                <li class="nav-item d-none d-lg-block" onclick="setChangedWeekPeriod()">
-                    <a class="nav-dash" href="#">1 неделя</a>
-                </li>
-                <li class="nav-item d-none d-lg-block" onclick="setChangedMonthPeriod()">
-                    <a class="nav-dash" href="#">1 месяц</a>
-                </li>
-                <li class="nav-item">
-                    <input type="text" placeholder="Диапазон дат"  value="@Model.User.UserData.SelectedPeriodFrom.ToString("dd.MM.yyyy") - @Model.User.UserData.SelectedPeriodTo.ToString("dd.MM.yyyy")" class="nav-dash nav-date" id="daterange" name="daterange" autocomplete="off">
-                    <script>
-                    $(function() {
-                        $('#daterange').datepicker({
-                        range: 'period', // режим - выбор периода
-                        numberOfMonths: 1,
-                        onSelect: async function(dateText, inst, extensionRange) {
-                            
-                            $('#daterange').val(extensionRange.startDateText + ' - ' + extensionRange.endDateText);
-                           
-                            if (extensionRange.step == 0) {
-                                 let response = await fetch('/WBKeys/SetChangedPeriodTo?period='+extensionRange.endDateText, {
-                                      method: 'PUT',
-                                 });
-                                 let response2 = await fetch('/WBKeys/SetChangedPeriodFrom?period='+extensionRange.startDateText, {
-                                      method: 'PUT',
-                                 });
-                                 document.location.reload();
-                            }
 
+
+      <ul class="nav justify-content-end">
+                    <li class="nav-item mobile320" onclick="setChangedPeriodFromDays(0)">
+                        <a class="nav-dash" href="#">Сегодня</a>
+                    </li>
+                    <li class="nav-item d-none d-md-block" onclick="setChangedYesterdayPeriod()">
+                        <a class="nav-dash" href="#">Вчера</a>
+                    </li>
+                    <li class="nav-item d-none d-lg-block" onclick="setChangedWeekPeriod()">
+                          <a class="nav-dash" href="#">1 неделя</a>
+                    </li>
+                    <li class="nav-item d-none d-lg-block" onclick="setChangedMonthPeriod()">
+                          <a class="nav-dash" href="#">1 месяц</a>
+                    </li>
+                    <li class="nav-item mobile">
+                        <div class="monthelement">
+                            <input class="nav-dash nav-date iconmob" id="daterange2" name="daterange" autocomplete="off" readonly>
+                            <span class="icondash calendar2"></span>
+                        </div>
+                        <script>
+                        $(function() {
+                        $('#daterange2').datepicker({
+                            range: 'period',
+                            monthNamesShort: [ "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" ],
+                            dateFormat: "dd.mm.yy",
+                            numberOfMonths: 1,
+                            changeMonth: true,
+                            showButtonPanel: false,
+                            firstDay: 1,
+                            onSelect:async function(dateText, inst, extensionRange) {
+                            // extensionRange - объект расширения
+                                 $('#daterange2').val('');
+
+                                 
+                                 if (extensionRange.step == 0) {
+                                    let response = await fetch('/WBKeys/SetChangedPeriodTo?period='+extensionRange.endDateText, {
+                                        method: 'PUT',
+                                    });
+                                    let response2 = await fetch('/WBKeys/SetChangedPeriodFrom?period='+extensionRange.startDateText, {
+                                        method: 'PUT',
+                                    });
+                                    document.location.reload();
+                                 }
                             }
                         });
-                    });
-                    </script>
-                </li> 
-            </ul>
+                        });
+                        </script>
+                    </li>
+                    <li class="nav-item desktop">
+                        <div class="monthelement">
+                            <input placeholder="Диапазон дат" class="nav-dash nav-date paddingel" id="daterange1" value="@Model.User.UserData.SelectedPeriodFrom.ToString("dd.MM.yyyy") - @Model.User.UserData.SelectedPeriodTo.ToString("dd.MM.yyyy")" name="daterange" autocomplete="off" readonly>
+                            <span class="icondash calendar"></span>
+                        </div>
+                        <script>
+                        $(function() {
+                        $('#daterange1').datepicker({
+                            range: 'period',
+                            monthNamesShort: [ "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" ],
+                            dateFormat: "dd.mm.yy",
+                            changeMonth: true,
+                            showButtonPanel: false,
+                            numberOfMonths: 1,
+                            firstDay: 1,
+                            onSelect: async function(dateText, inst, extensionRange) {
+                            // extensionRange - объект расширения
+                                $('#daterange1').val(extensionRange.startDateText + ' - ' + extensionRange.endDateText);
+
+                                 if (extensionRange.step == 0) {
+                                    let response = await fetch('/WBKeys/SetChangedPeriodTo?period='+extensionRange.endDateText, {
+                                        method: 'PUT',
+                                    });
+                                    let response2 = await fetch('/WBKeys/SetChangedPeriodFrom?period='+extensionRange.startDateText, {
+                                        method: 'PUT',
+                                    });
+                                    document.location.reload();
+                                 }
+                            }
+                        });
+                        });
+                        </script>
+                    </li>
+                </ul>
 
     <script>
      

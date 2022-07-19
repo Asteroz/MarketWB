@@ -293,12 +293,12 @@ namespace MarketWB.Web.Jobs
 
         }
 
-        public static async Task SetSelfBuyStatus(long nmId, bool isSelfBuy)
+        public static async Task SetSelfBuyStatus(long nmId, long odid, bool isSelfBuy)
         {
             using (var _db = new APIDBContext())
             {
-                var orders = _db.WBOrders.Where(o => o.NmId == nmId).ToList();
-                var sales = _db.WBSales.Where(o => o.NmId == nmId).ToList();
+                var orders = _db.WBOrders.Where(o => o.NmId == nmId && o.Odid == odid).ToList();
+                var sales = _db.WBSales.Where(o => o.NmId == nmId && o.Odid == odid).ToList();
 
                 orders.ForEach(o => o.IsSelfBuy = isSelfBuy);
                 sales.ForEach(o => o.IsSelfBuy = isSelfBuy);

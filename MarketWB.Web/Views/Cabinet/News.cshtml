@@ -9,23 +9,44 @@
 
 
  <div class="container">
-      <div class="row">
-           @foreach (var tag in Model.Tags)
-           {
-               
-                  <div class="col-md-4">
-                      <a asp-action="News" asp-controller="Cabinet" asp-route-tag="@tag">
-                      <div class="d-grid">
-                        <button class="btn btn-secondary btnnews" type="button">
-                          @tag
-                        </button>
+      <div class="container container news-adapt-desktop">
+          <div class="row">
+               @foreach (var tag in Model.Tags)
+               {
+                 
+                   <div class="col-md-4">
+                          <div class="d-grid">
+                                <button onclick="goToTag('/Cabinet/News/@tag')" class="btn btn-secondary btnnews" type="button">
+                                      @tag
+                                </button>
+                          </div>
                       </div>
-                        </a>
+               }
+          </div>
+       </div>
+    </div>
+
+    <!-- ЕБАНЫЕ DROPХУЕДАУНЫ ДЛЯ МОБИЛЫ -->
+    <div class="container news-adapt-mobile">
+      <div class="row">
+          <div class="col-md-4">
+              <div>
+                  <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Все новости
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                           @foreach (var tag in Model.Tags)
+                           {
+                               <li><a class="dropdown-item"asp-action="News" asp-controller="Cabinet" asp-route-tag="@tag"> @tag</a></li>
+                           }
+                      </ul>
                   </div>
-             
-           }
+              </div>
+          </div>
       </div>
     </div>
+
 
     <div class="container">
       <div class="row">
@@ -38,34 +59,41 @@
 
       
       
-               @foreach (var post in Model.Posts)
-                     { 
-          <div class="row">
-            <div class="col-md-12">
-                <div class="news">
-                    <div class="news-header">
-                    <div class="news-title">@post.Caption</div>
-
-                    <div class="news-time">@post.CreatedAt.ToString("dd/MM/yyyy hh:mm")</div>
-                    <div class="news-category">@post.Tags</div>
-               </div>
-
-               <div class="news-content">
-                    <div class="contentflex">
-                        <div class="newsleft">
-                        <div style="background: url('@post.ImgURL'); background-size: 100%;" class="news-image"></div>
+         @foreach (var post in Model.Posts)
+         { 
+                <div class="row">
+                    <div class="col-md-12">
+                      <div class="news">
+                        <div class="news-header">
+                          <div class="news-title">@post.Caption</div>
+                          <div class="news-time">@post.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                          <div class="news-category">@post.Tags</div>
                         </div>
-                        <div class="newsright">
-                             <div class="news-text">
-                                       @post.Description
-                             </div>
+
+                        <div class="news-content">
+                          <div class="row">
+                            <div class="col-md-4">
+                              <div style="background: url('@post.ImgURL'); background-size : 100% auto;" class="picturenews"></div>
+                            </div>
+                            <div class="col-md-8">
+                              <div class="news-text">
+                                 @post.Description
+                              </div>
+                            </div>
+                          </div>
+                          <div class="news-time news-time-mobile"><div class="datecalendar"></div> @post.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</div>
                         </div>
+                      </div>
                     </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                  </div>
         }
    
 
     </div>
+
+<script>
+    function goToTag(href){
+        document.location.href =document.location.origin+ href.replace(' ','%20');
+    }
+
+</script>

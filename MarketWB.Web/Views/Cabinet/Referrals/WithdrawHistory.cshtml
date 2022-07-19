@@ -1,0 +1,155 @@
+@using MarketAI.API.Models
+@using MarketWB.Web.Helpers
+@using MarketWB.Web.ViewModels.Cabinet.Dashboard
+@using MarkupCreator.Helpers.Converters
+@{
+    Layout = "_Layout";
+}
+@model UserModel
+
+   <div class="container">
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="dashboard-header wbmargin">
+            <div class="titledash">@*<i class="las la-shopping-bag"></i>*@ Выплаты по реферальной программе</div>
+             <div class="control-elements">
+                <div class="elements-content">
+                    <a data-bs-toggle="modal" data-bs-target="#payment" class="create-ticket">Вывести</a>
+                </div>
+            </div>
+        </div>
+
+       @* <div class="col-md-12">
+          <div class="wbalert">
+
+          </div>
+        </div>*@
+
+        <script>
+          $(document).ready(function () {
+              $('#buytable').DataTable();
+          });
+        </script>
+
+        <div class="panel panel-default">
+          <table id="buytable" class="table table-striped" style="width:100%">
+            <thead class="wbtableheader">
+                <tr>
+                    <th>
+                      Дата
+                      <div class="wbtcont">
+                       @* <i data-bs-toggle="tooltip" data-bs-placement="top" title="Название API ключа" class="las la-info-circle wbinfot"></i>*@
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Сумма
+                      <div class="wbtcont">
+                       @* <i data-bs-toggle="tooltip" data-bs-placement="top" title="Ваш уникальный цифровой идентификатор, с его помощью данные аналитики Wildberries поступают на сервер FEENO" class="las la-info-circle wbinfot"></i>*@
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Номер карты
+                      <div class="wbtcont">
+                       @* <i data-bs-toggle="tooltip" data-bs-placement="top" title="Ваш уникальный цифровой идентификатор, с его помощью данные аналитики Wildberries поступают на сервер FEENO" class="las la-info-circle wbinfot"></i>*@
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                    <th>
+                      Статус
+                      <div class="wbtcont">
+                       @* <i data-bs-toggle="tooltip" data-bs-placement="top" title="Ваш уникальный цифровой идентификатор, с его помощью данные аналитики Wildberries поступают на сервер FEENO" class="las la-info-circle wbinfot"></i>*@
+                        <i class="las la-sort wbsort"></i>
+                      </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                    @foreach(var token in Model.WithdrawRequests)
+                    {
+                         <tr data-id="@token.Id">
+                            <td>@token.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@Math.Round(token.Sum,2)</td>
+                            <td>@token.AccountNumber</td>
+                            <td>@EnumDescriptionHelper.GetDescription(@token.Status)</td>
+                         </tr>
+                    }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+    </div>
+
+
+ 
+  <!-- MODAL WINDOW -->
+    <div class="modal fade" id="payment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Вывод средств</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form" asp-action="MakeWithdrawRequest" asp-controller="Payments" onsubmit="onFormSubmit(event)" method="post">
+
+              <input type="hidden" name="userID" value="@Model.Id" />
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Сумма</label>
+                <input type="number" id="sum" name="sum" class="form-lk" placeholder="Текст">
+              </div>
+
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="wblabel">Реквизиты</label>
+                <input type="text" name="cardNumber" class="form-lk" placeholder="Текст">
+              </div>
+
+              <div class="clickers wbselfcenter">
+                <button class="btnprofile wbselfbtn">Вывести</button>
+                <a href="/" class="btnregister wbselfbtn" data-bs-dismiss="modal">Назад</a>
+              </div>
+
+              <h5 id="error_text" style="color:red;text-align:center;"></h5>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script>
+
+    async function onFormSubmit(event){
+
+        event.preventDefault();
+        let error_text = document.getElementById('error_text');
+
+        let sum = new Number(document.getElementById('sum').value);
+        if (sum < 2000) {
+            error_text.innerHTML = "Вывод возможен от 2000 рублей";
+            return;
+        }
+
+
+        await fetch(document.location.origin +`/HasUserEnoughMoney?userId=@Model.Id&sum=${sum}`)
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+              console.log(data);
+              if (data === true) {
+                  document.getElementById('form').submit();
+              }
+              else{
+                  error_text.innerHTML = "Недостаточно средств для вывода";
+              }
+
+        });
+    }
+
+</script>

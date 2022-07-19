@@ -31,8 +31,14 @@ namespace MarketWB.Web.Controllers
         {
             return View("Views/Cabinet/Referrals/Dashboard.cshtml");
         }
+        [Route("Cabinet/WithdrawHistory")]
+        public async Task<IActionResult> WithdrawHistory()
+        {
+            var user = await UserHelper.GetUser(User);
+            return View("Views/Cabinet/Referrals/WithdrawHistory.cshtml", user);
+        }
 
-     
-       
+
+
     }
 }

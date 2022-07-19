@@ -420,10 +420,12 @@ button.ui-button::-moz-focus-inner {
 	top: 1px;
 }
 .ui-datepicker .ui-datepicker-prev {
-	left: 2px;
+    left: 2px;
+    display: none;
 }
 .ui-datepicker .ui-datepicker-next {
 	right: 2px;
+	display: none;
 }
 .ui-datepicker .ui-datepicker-prev-hover {
 	left: 1px;
@@ -460,6 +462,9 @@ button.ui-button::-moz-focus-inner {
     text-align: center;
     color: #2F2B5B;
     border: 1px solid #fff;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
 }
 .ui-datepicker table {
 	width: 100%;
@@ -492,15 +497,35 @@ button.ui-button::-moz-focus-inner {
 	border-bottom: 0;
 }
 .ui-datepicker .ui-datepicker-buttonpane button {
-	float: right;
-	margin: .5em .2em .4em;
-	cursor: pointer;
-	padding: .2em .6em .3em .6em;
-	width: auto;
-	overflow: visible;
+    float: left;
+    margin: 0.5em 0.2em 0.4em;
+    cursor: pointer;
+    padding: 0.2em 0.6em 0.3em 0.6em;
+    width: auto;
+    overflow: visible;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 20px;
+    text-align: center;
+    color: #6762AA;
+    opacity: 1;
+    border: none;
+    background: #FFF;
 }
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
-	float: left;
+    float: right;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 20px;
+    text-align: center;
+    color: #6762AA;
+    opacity: 1;
+    border: none;
+    background: #FFF;
 }
 
 /* with multiple calendars */
@@ -985,16 +1010,11 @@ a.ui-button:focus {
 .ui-visual-focus {
 	box-shadow: 0 0 3px 1px rgb(94, 158, 214);
 }
-.ui-state-active,
-.ui-widget-content .ui-state-active,
-.ui-widget-header .ui-state-active,
-a.ui-button:active,
-.ui-button:active,
-.ui-button.ui-state-active:hover {
-	border: 1px solid #003eff;
-	background: #007fff;
-	font-weight: normal;
-	color: #ffffff;
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+    background: rgb(103 98 170 / 25%);
+    border-radius: 6px;
+    font-weight: normal;
+    color: #ffffff;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {

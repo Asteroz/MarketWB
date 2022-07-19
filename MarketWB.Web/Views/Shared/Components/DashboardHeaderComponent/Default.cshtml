@@ -1,206 +1,10 @@
 ﻿@using MarketWB.Web.ViewModels.Cabinet.Dashboard
 @model AbsDashboardVM
-<style>
-    .header-wb{
-        background:#e5e5e5;
-        padding:0;
-    }
-    .header-col{
-        padding:5px;
-    }
-    .header-h6{
-        color: black;
-    }
-    .header-select{
-        border-color: black;
-    }
-    .header-button{
-        width: 100%;
-        height: 45px;
-    }
 
-    .header_datepicker{
-        background: #FFFFFF;
-        border: 1px solid #999999;
-        width : 93%;
-        position: relative;
-        margin-right: 5px;
-        margin-left: 5px;
-    }
-    .header_absolute_btn{
-        position:absolute;
-        right:2px;
-        width: 15%;
-    }
-    .square_btn{
-        border : 1px #2196F3 solid;
-        color: #2196F3;
-        width: 25px;
-        height: 25px;
-    }
-    .circle_btn{
-        border : 1px #2196F3 solid;
-        color: #2196F3;
-        border-radius: 50%;
-        width: 25px;
-        height: 25px;
-    }
-    .add_key{
-        right: 10px;
-        top: 10px;
-    }
-    .refresh_key{
-        top: 22px;
-        right: 12px;
-        width: 44px;
-        height: 44px;
-    }
-
-    .popup-item{
-        margin-top: 10px;
-        height:30px;
-    }
-    .popup-close{
-        margin-top: -30px !important;
-    }
-
-    .period-button{
-        margin-left: 15px;
-    }
-
- </style>
-
-@*  <div class="col-md-12 header-wb">
-        <div class="col-md-4 header-col">
-            <h6 class="header-h6">Ключи API</h6>
-              <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle header-button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @if(Model.User.UserData.SelectedWBAPITokens.Count == 0)
-                    {
-                        <span>Ключ не выбран</span>
-                    }
-                    else if(Model.User.UserData.SelectedWBAPITokens.Count == Model.User.WBAPIKeys.Count)
-                    {
-                        <span>Выбраны все ключи</span>
-                    }
-                    else
-                    {
-                        <span>Выбрано ключей : @Model.User.UserData.SelectedWBAPITokens.Count </span>
-                    }
-                 </button>
-                 <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">   
-                        @foreach(var token in Model.User.WBAPIKeys)
-                        {
-                    <div style="display:inline;">
-                        <input type="checkbox" data-id="@token.Id" onchange="setKeySelected(event)" @if(token.IsSelected){ @("checked") } style="position:absolute;right: 10px;">
-                                 <div style="margin-left: 8px;">
-                                     <h5 class="dropdown-item">@token.Name 
-                                         &emsp;&emsp;&emsp;&emsp;&emsp; 
-                                        @if(token.CreatedFirstTime && token.CreatedAt.AddMinutes(7) > DateTime.UtcNow)
-                                        {
-                                             <span style="color: #2196F3;">(подготавливается)</span>
-                                        }
-                                    </h5> 
-                                     <h6 class="dropdown-item">@token.APIKey</h6>
-                                 </div>
-                            </div> 
-                        }
-                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 header-col">
-            <h6 class="header-h6">Бренд</h6>
-             <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle header-button" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                @if(Model.User.UserData.SelectedWBBrand == null)
-                {
-                    <span>Все бренды</span>
-                }
-                else
-                {
-                   <span>@Model.User.UserData.SelectedWBBrand</span>
-                }
-             </button>
-             <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton2">   
-                    @foreach(var brand in Model.Brands)
-                    {
-                       <div onclick="setBrandSelected('@brand.Brand')">
-                           <a class="dropdown-item" href="#">@brand.Brand</a>
-                       </div> 
-                    }
-             </div>
-          </div>
-        </div>
-        <div class="col-md-4 header-col">
-            <h6 class="header-h6">Категория</h6>
-              <div class="dropdown">
-              <button  class="btn btn-secondary dropdown-toggle header-button" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                @if(Model.User.UserData.SelectedWBCategory == null)
-                {
-                    <span>Все категории</span>
-                }
-                else
-                {
-                   <span>@Model.User.UserData.SelectedWBCategory</span>
-                }
-             </button>
-             <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton3">   
-                    @foreach(var category in Model.Categories)
-                    {
-                       <div onclick="setCategorySelected('@category.Category')">
-                           <a class="dropdown-item" href="#">@category.Category</a>
-                       </div> 
-                    }
-             </div>
-          </div>
-        </div>
-          <div class="col-md-12 header-col" style="background: white;height: 30px">*@
-          @*    <span>Сводка</span>*@
-@*              <div style="display:inline-block; position: absolute; right: 10px;">
-                   <button onclick="setChangedPeriodFromDays(0)" class="v-btn period-button">Сегодня</button>
-                   <button onclick="setChangedYesterdayPeriod()" class="v-btn period-button">Вчера</button>
-                   <button onclick="setChangedWeekPeriod()" class="v-btn period-button">Неделя</button>
-                   <button onclick="setChangedMonthPeriod()" class="v-btn period-button">Месяц</button>
-                   <div class="dropdown" style="display:inline-block;">
-                      <button class="v-btn period-button" type="button" id="dropdownDateButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          @Model.User.UserData.SelectedPeriodFrom.ToString("dd.MM.yyyy") - @Model.User.UserData.SelectedPeriodTo.ToString("dd.MM.yyyy")
-                     </button>
-                     <div class="dropdown-menu" style="width: 130%;margin-left: -25px" aria-labelledby="dropdownDateButton">   
-                        <div>
-                             <input name="from" class="header_datepicker" type="date" onchange="setChangedPeriodFrom(event)" value="@Model.User.UserData.SelectedPeriodFrom.ToString("yyyy-MM-dd")" />
-                        </div>
-                           <div>
-                             <input name="to" class="header_datepicker" type="date"  onchange="setChangedPeriodTo(event)" value="@Model.User.UserData.SelectedPeriodTo.ToString("yyyy-MM-dd")" />
-                        </div>
-                     </div>
-               </div>
-              </div>*@
-           
-           @* <div style="display:inline-block; width:85%;">
-                <div style="display:block;">
-                    <button onclick="document.location.reload()" class="v-btn header_absolute_btn circle_btn refresh_key">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </button>
-                    <div>
-                         <input name="from" class="header_datepicker" type="datetime-local" onchange="setChangedPeriodFrom(event)" value="@Model.User.UserData.SelectedPeriodFrom.ToString("yyyy-MM-ddThh:mm")" />
-                    </div>
-                       <div>
-                         <input name="to" class="header_datepicker" type="datetime-local"  onchange="setChangedPeriodTo(event)" value="@Model.User.UserData.SelectedPeriodTo.ToString("yyyy-MM-ddThh:mm")" />
-                    </div>
-              
-                </div>
-          
-            </div>*@
-          
-            
-
-         
-@*        </div>
-    </div>*@
 
        <div class="container">
-        <div class="row">
-            <div class="col-md-4">
+      <div class="row">
+            <div class="col-md-4 purpledrop">
                 <div>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -218,30 +22,49 @@
                             }
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                          
                             @foreach (var token in Model.User.WBAPIKeys)
                             {
                               <li>
-                                  <div style="display:inline;">
-                                  <input type="checkbox" data-id="@token.Id" onchange="setKeySelected(event)" @if(token.IsSelected){ @("checked") } style="position:absolute;right: 10px;">
-                                      <div style="margin-left: 8px;">
-                                          <h5 class="dropdown-item">@token.Name 
-                                                 &emsp;&emsp;&emsp;&emsp;&emsp; 
+                                <a class="dropdown-item" href="#">
+                                    <div class="content">
+                                        <div class="lncont">
+                                            <div class="name">@token.Name</div>
+                                            <div class="lncheck">
+                                                <input type="checkbox" data-id="@token.Id" onchange="setKeySelected(event)" @if(token.IsSelected){ @("checked") }  class="form-check-input check-dropdown" id="exampleCheck1">
+                                            </div>
+                                        </div>
+                                        <div class="lninfo">
+                                            <div class="apikey">@{
+                                                    try
+                                                    {
+                                                        @(token.APIKey.Substring(0,20) + "...")
+                                                    }
+                                                    catch{
+                                                        @("Неверный ключ API")
+                                                    }
+                                                }
+                                                   &emsp;&emsp;&emsp;&emsp;&emsp; 
                                                 @if(token.CreatedFirstTime && token.CreatedAt.AddMinutes(7) > DateTime.UtcNow)
                                                 {
                                                      <span style="color: #2196F3;">(подготавливается)</span>
                                                 }
-                                          </h5> 
-                                          @*<h6 class="dropdown-item">@token.APIKey</h6>*@
-                                     </div>
-                                </div> 
-                              </li>
+                                            </div>
+                                            <div class="interect">
+                                                <div class="url"><i class="las la-link"></i></div>
+                                                <div class="send"><i class="las la-external-link-alt"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
                             } 
                         </ul>
                     </div>
                 </div>
             </div>
   
-            <div class="col-md-4">
+            <div class="col-md-4 purpledrop">
                 <div>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -255,16 +78,16 @@
                             }
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            @foreach(var brand in Model.Brands)
-                            {
-                               <li onclick="setBrandSelected('@brand.Brand')"><a class="dropdown-item" href="#">@brand.Brand</a></li>
-                            }
+                          @foreach(var brand in Model.Brands)
+                          {
+                             <li onclick="setBrandSelected('@brand.Brand')"><a class="dropdown-item" href="#">@brand.Brand</a></li>
+                          }
                         </ul>
                     </div>
                 </div>
             </div>
   
-            <div class="col-md-4">
+            <div class="col-md-4 purpledrop">
                 <div>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle btnwb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -278,10 +101,9 @@
                             }
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                         @* <li><a class="dropdown-item" href="#">Все категории</a></li>*@
                            @foreach(var category in Model.Categories)
                            {
-                              <li  onclick="setCategorySelected('@category.Category')"><a class="dropdown-item" href="#">@category.Category</a></li>
+                              <li onclick="setCategorySelected('@category.Category')"><a class="dropdown-item" href="#">@category.Category</a></li>
                            }
                         </ul>
                     </div>
@@ -289,7 +111,6 @@
             </div>
         </div>
     </div>
-
 
     
 

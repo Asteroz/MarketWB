@@ -45,6 +45,8 @@ namespace MarketAI.API.Controllers
                    .Include(o => o.Referrals).ThenInclude(o => o.HisRef).ThenInclude(o => o.Payments)
                    .Include(o => o.UserData.SelectedWBAPITokens)
                    .Include(o => o.WBAPIKeys)
+                   .Include(o => o.Payments)
+                   .Include(o => o.WithdrawRequests)
                    .FirstOrDefault(o => o.Id == id);
             if (found != null)
                 found.UserData.SelectedWBAPITokens = found.WBAPIKeys.Where(o => o.IsSelected).ToList();

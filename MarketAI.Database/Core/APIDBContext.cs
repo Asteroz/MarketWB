@@ -37,6 +37,7 @@ namespace MarketAI.API.Core
         public DbSet<GlobalSettings> GlobalSettings { get; set; }
 
 
+        public DbSet<WithdrawRequest> WithdrawRequests { get; set; }
         public DbSet<PaymentModel> PaymentModels { get; set; }
         public DbSet<AuthStatsModel> AuthStatsModels { get; set; }
 
@@ -58,14 +59,14 @@ namespace MarketAI.API.Core
         {
             //Database.EnsureDeleted();
             //Database.EnsureCreated();
-            if (!Database.EnsureCreatedAsync().Result)
-                Database.MigrateAsync();
+           // if (!Database.EnsureCreated())
+                Database.Migrate();
 
             FillDB();
         }
         public APIDBContext(DbContextOptions<APIDBContext> options) : base(options)
         {
-            if (!Database.EnsureCreated())
+           // if (!Database.EnsureCreated())
                 Database.Migrate();
 
             FillDB();

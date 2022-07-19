@@ -1,7 +1,20 @@
+@using MarketWB.Web.Helpers
 @{
     Layout = "_Layout";
 }
 @model List<MarketAI.API.Models.SubscriptionModel>
+@{
+    var user = await @UserHelper.GetUser(User);
+    if (user.WasTrialActivated)
+    {
+        var trials = Model.Where(o => o.IsTrial || o.Price < 1);
+        foreach (var item in trials)
+        {
+            Model.Remove(item);
+        }
+    }
+}
+   
 
      <div class="container">
       <div class="dashboard-header">
@@ -10,26 +23,109 @@
 
       <div class="col-md-12">
           <div class="wbalert">
-          Выбирайте выгодный для себя тариф. � Если вы еще ни разу не пользовались FEENO, то
+          Выбирайте выгодный для себя тариф. Если вы еще ни разу не пользовались FEENO, то
             откройте для себя сервис с тарифом «Пробный» он предоставит вам полный доступ на 5
-            дней. �
+            дней. 
           </div>
       </div>
 
-      <div class="row">
+ 
 
-        @foreach(var sub in @Model)
+      <div class="row mobile-tarif">
+        <div class="col-md-12">
+            <div class="owl-carousel owl-theme">
+
+                @{
+                    int counter = 0;
+                }
+                @foreach(var sub in Model)
+                {
+                    <div class="item">
+                        <div class="tarif">
+                            <div class="tarif-gradient">
+                                @if(counter == 2)
+                                {
+                                    <div class="liketarif2"></div>
+                                }
+                                <div class="tarif-title">@sub.Title</div>
+                                <div class="tarif-cost">@sub.Price ₽</div>
+                                <div class="tarif-time">Срок: @sub.Days дней</div>
+                            </div>
+        
+                            <div class="tarif-list">
+                                <div class="tarif-name">Описание:</div>
+
+                                  @foreach(var item in sub.Descriptions)
+                                  {
+                                        <div class="tarif-text">    
+                                            @switch (item.Sign)
+                                            {
+                                                case MarketAI.Database.Enums.SubscriptionSign.CheckMark:
+                                                    <div class="icontf"><i class="las la-check"></i></div>
+                                                    break;
+                                               case MarketAI.Database.Enums.SubscriptionSign.Cross:
+                                                    <div class="icontf"><i class="las la-times"></i></div>
+                                                    break;
+                                            }
+                                            <div class="texttf">@item.Text</div>
+                                        </div>
+                                  }
+                            </div>
+        
+                            <div class="tarif-footer">
+                                <a asp-action="PaySubscription" asp-controller="Payments" asp-route-userID="@user.Id" asp-route-subscriptionId="@sub.Id" class="payment">Приобрести</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    counter++;
+                }
+            
+            </div>
+        </div>
+        <script>
+            $('.owl-carousel').owlCarousel({
+                stagePadding: 50,
+                loop: false,
+                margin:10,
+                nav:true,
+                responsive:{
+                    0:{
+                        items:1
+                    },
+                    600:{
+                        items:1
+                    },
+                    470:{
+                        items:1
+                    },
+                    768:{
+                        items:2
+                    },
+                    1000:{
+                        items:2
+                    },
+                    1200:{
+                        items:3
+                    }
+                }
+            })
+        </script>
+      </div>
+
+      <div class="row desktop-tarif">
+        @foreach(var sub in Model)
         {
-         <div class="col-md-4">
-            <div class="tarif">
-                <div class="tarif-gradient">
-                    <div class="tarif-title">@sub.Title</div>
-                    <div class="tarif-cost">@Math.Round(sub.Price,2) ₽</div>
-                    <div class="tarif-time">Срок: @sub.Days дней</div>
-                </div>
+            <div class="col-md-3">
+                <div class="tarif">
+                    <div class="tarif-gradient">
+                        <div class="tarif-title">@sub.Title</div>
+                        <div class="tarif-cost">@sub.Price ₽</div>
+                        <div class="tarif-time">Срок: @sub.Days дней</div>
+                    </div>
 
-                <div class="tarif-list">
-                    <div class="tarif-name">Описание:</div>
+                    <div class="tarif-list">
+                        <div class="tarif-name">Описание:</div>
                         @foreach(var item in sub.Descriptions)
                         {
                             <div class="tarif-text">    
@@ -38,23 +134,23 @@
                                     case MarketAI.Database.Enums.SubscriptionSign.CheckMark:
                                         <div class="icontf"><i class="las la-check"></i></div>
                                         break;
-                                   case MarketAI.Database.Enums.SubscriptionSign.Cross:
+                                    case MarketAI.Database.Enums.SubscriptionSign.Cross:
                                         <div class="icontf"><i class="las la-times"></i></div>
                                         break;
                                 }
                                 <div class="texttf">@item.Text</div>
                             </div>
                         }
-                </div>
+                    </div>
 
-                <div class="tarif-footer">
-                    <a href="/" class="payment">Приобрести</a>
+                    <div class="tarif-footer">
+                         <a asp-action="PaySubscription" asp-controller="Payments" asp-route-userID="@user.Id" asp-route-subscriptionId="@sub.Id" class="payment">Приобрести</a>
+                    </div>
                 </div>
             </div>
-        </div>
         }
 
-       
-
       </div>
+
+
     </div>
